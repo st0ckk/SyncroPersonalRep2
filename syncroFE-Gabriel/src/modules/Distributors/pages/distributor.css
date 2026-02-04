@@ -1,0 +1,192 @@
+.distributors-page {
+    padding: 24px;
+}
+
+.distributors-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Toolbar */
+.distributors-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Tabla */
+.distributors-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .distributors-table th {
+        text-align: left;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .distributors-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .distributors-table tbody tr:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+.name {
+    font-weight: 500;
+}
+
+.price {
+    font-weight: 600;
+}
+
+/* Botones */
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-success {
+    background: #22c55e;
+    color: white;
+}
+
+/* Estados */
+.loading,
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.distributors-form {
+    background: white;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+    .form-grid input {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+    }
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+/* ===== distributors Form ===== */
+.distributors-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 20px;
+    margin-top: 12px;
+}
+
+    .distributors-form .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .distributors-form label {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: #374151; /* gris oscuro */
+    }
+
+    .distributors-form input,
+    .distributors-form select {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        font-size: 14px;
+        outline: none;
+    }
+
+        .distributors-form input:focus,
+        .distributors-form select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
+        }
+
+    /* Campos que ocupan toda la fila */
+    .distributors-form .full-width {
+        grid-column: 1 / -1;
+    }
+
+/* ===== Actions ===== */
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: #6366f1;
+    color: white;
+}
+
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.btn-outline {
+    background: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+    .btn-outline:hover {
+        background: #f3f4f6;
+    }

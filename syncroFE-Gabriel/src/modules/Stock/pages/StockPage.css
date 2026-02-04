@@ -1,0 +1,225 @@
+﻿/* =========================
+   PAGE
+========================= */
+.stock-page {
+    padding: 24px;
+}
+
+.stock-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+.stock-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* =========================
+   FILTERS
+========================= */
+.stock-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+    .stock-filters input,
+    .stock-filters select {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        font-size: 13px;
+        background: var(--bg-input);
+        color: var(--text-primary);
+    }
+
+/* =========================
+   TABLE
+========================= */
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .stock-table th {
+        text-align: left;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .stock-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .stock-table tbody tr:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    .stock-table .name {
+        font-weight: 500;
+    }
+
+    .stock-table .price {
+        font-weight: 600;
+    }
+
+    /* =========================
+   TABLE ACTIONS
+========================= */
+    .stock-table td.actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+        .stock-table td.actions .btn {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+/* =========================
+   BUTTON BASE
+========================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+}
+
+/* =========================
+   BUTTON VARIANTS
+========================= */
+.btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+.btn-outline {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+    .btn-outline:hover {
+        background: rgba(0,0,0,0.05);
+    }
+
+/* Botones SOLO dentro de la tabla */
+.stock-table td.actions .btn-danger {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+    .stock-table td.actions .btn-danger:hover {
+        background-color: #dc2626;
+    }
+
+.stock-table td.actions .btn-success {
+    background-color: #22c55e;
+    color: #ffffff;
+}
+
+    .stock-table td.actions .btn-success:hover {
+        background-color: #16a34a;
+    }
+
+/* =========================
+   STATES
+========================= */
+.loading,
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* =========================
+   MODAL
+========================= */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 380px;
+    max-width: 520px;
+}
+
+/* =========================
+   STOCK FORM
+========================= */
+.stock-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 20px;
+    margin-top: 12px;
+}
+
+    .stock-form .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stock-form label {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+    }
+
+    .stock-form input,
+    .stock-form select {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+        background: var(--bg-input);
+        color: var(--text-primary);
+    }
+
+        .stock-form input:focus,
+        .stock-form select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            outline: none;
+        }
+
+    .stock-form .full-width {
+        grid-column: 1 / -1;
+    }

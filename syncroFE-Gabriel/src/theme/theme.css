@@ -1,0 +1,44 @@
+/* =========================
+   Tema claro (default)
+========================= */
+:root {
+    /* Backgrounds */
+    --bg-main: #f4f6f8;
+    --bg-header: #ffffff;
+    --bg-footer: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: linear-gradient(180deg, #0f172a, #020617);
+    /* Textos */
+    --text-main: #1f2937;
+    --text-secondary: #6b7280;
+    --text-inverted: #ffffff;
+    /* Compatibility variables (used by component CSS) */
+    --text-primary: var(--text-main);
+    --bg-input: #ffffff;
+    /* UI */
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --border: #e5e7eb;
+    /* Layout */
+    --sidebar-width: 240px;
+}
+
+/* =========================
+   Tema oscuro
+========================= */
+[data-theme="dark"] {
+    --bg-main: #020617;
+    --bg-header: #020617;
+    --bg-footer: #020617;
+    --bg-card: #020617;
+    --bg-sidebar: linear-gradient(180deg, #020617, #020617);
+    --text-main: #e5e7eb;
+    --text-secondary: #9ca3af;
+    --text-inverted: #ffffff;
+    /* Compatibility variables (used by component CSS) */
+    --text-primary: var(--text-main);
+    --bg-input: #061021;
+    --primary: #818cf8;
+    --primary-hover: #6366f1;
+    --border: #334155;
+}

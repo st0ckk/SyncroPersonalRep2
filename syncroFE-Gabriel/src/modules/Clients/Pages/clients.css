@@ -1,0 +1,106 @@
+/* =========================
+   PAGE
+========================= */
+.clients-page {
+    padding: 24px;
+}
+
+/* =========================
+   CARD (igual que stock-card)
+========================= */
+.clients-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+.clients-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+    .clients-toolbar .toolbar-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+/* =========================
+   TABLE (clon de stock-table)
+========================= */
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .clients-table th {
+        text-align: left;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .clients-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .clients-table tbody tr:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    .clients-table .name {
+        font-weight: 500;
+    }
+
+    /* =========================
+   TABLE ACTIONS (igual a stock)
+========================= */
+    .clients-table td.actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+        .clients-table td.actions .btn {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+/* =========================
+   STATUS (badge, sutil)
+========================= */
+.status-active {
+    background: rgba(34,197,94,0.15);
+    color: #15803d;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-inactive {
+    background: rgba(239,68,68,0.15);
+    color: #b91c1c;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* =========================
+   MÁS INFORMACIÓN
+========================= */
+.client-extra td {
+    background: rgba(0,0,0,0.02);
+    padding: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
