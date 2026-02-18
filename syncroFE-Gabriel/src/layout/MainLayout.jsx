@@ -5,19 +5,21 @@ import { Outlet } from "react-router-dom";
 import "./layout.css";
 
 export default function MainLayout() {
-    return (
-        <div className="app-layout">
-            <Sidebar />
+  const mustChange = localStorage.getItem("mustChangePassword") === "true";
 
-            <div className="app-content">
-                <Header  />
+  return (
+    <div className="app-layout">
+      {!mustChange && <Sidebar />}
 
-                <main className="app-main">
-                    <Outlet />
-                </main>
+      <div className="app-content">
+        <Header />
 
-                <Footer />
-            </div>
-        </div>
-    );
+        <main className="app-main">
+          <Outlet />
+        </main>
+
+        {!mustChange && <Footer />}
+      </div>
+    </div>
+  );
 }

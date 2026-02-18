@@ -7,8 +7,17 @@
 
 .toolbar-actions {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;        
 }
+.toolbar-actions .btn {
+  height: 38px;           
+  display: flex;
+  align-items: center;    
+  justify-content: center;
+  padding: 0 12px;
+}
+
 
 .btn {
   border-radius: 8px;
@@ -31,16 +40,17 @@
 .btn-outline:hover {
   background: #f1f5f9;
 }
-
+/*
 .btn-primary {
   background: #6366f1;
   border: none;
   color: white;
-}
+}*/
 
-.btn-primary:hover {
+/*.btn-primary:hover {
   background: #4f46e5;
-}
+}*/
+
 .users-container {
   width: 100%;
   padding: 0 24px; 
@@ -135,3 +145,11 @@
   gap: 10px;
   margin-top: 16px;
 }
+
+.users-table th:nth-child(4),
+.users-table td:nth-child(4),
+.users-table th:nth-child(5),
+.users-table td:nth-child(5) {
+  text-align: center;
+}
+

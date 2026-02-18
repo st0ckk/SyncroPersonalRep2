@@ -40,7 +40,7 @@ export default function Login() {
 
       // 🔥 FORZAR CAMBIO DE CONTRASEÑA
       if (data.mustChangePassword) {
-        navigate("/profile", { replace: true });
+        navigate("/change-password", { replace: true });
       } else {
         navigate("/", { replace: true });
       }

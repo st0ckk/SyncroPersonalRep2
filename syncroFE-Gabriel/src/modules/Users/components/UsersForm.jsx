@@ -77,7 +77,7 @@ export default function UsersForm({
         />
       </div>
 
-      {/* 🔥 ROL OBLIGATORIO */}
+      
       <div className="form-group">
         <label>Rol</label>
         <select

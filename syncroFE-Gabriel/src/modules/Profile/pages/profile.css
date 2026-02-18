@@ -2,85 +2,176 @@
   padding: 24px;
 }
 
+.page-title {
+  margin: 0 0 14px 0;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.profile-header-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;              /* ✅ menos espacio */
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .profile-header-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .profile-card {
-  max-width: 600px;        /* 🔥 MISMO ANCHO PARA TODO */
-  background: transparent;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px;          /* ✅ más compacto */
 }
 
 .btn-change-password {
- width: auto;
-align-self: flex-start;
-padding: 10px 16px;
-
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #4f46e5;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
 }
 
 .btn-change-password:hover {
-  background: #4f46e5;
+  opacity: 0.92;
 }
 
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
+.assets-table {
   width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.45);
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.assets-table th,
+.assets-table td {
+  border-top: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: left;
+}
+
+.assets-table thead th {
+  background: #f9fafb;
+  border-top: none;
+}
+
+.schedules-panel .page-title {
+  margin-bottom: 10px;
+}
+
+/* Header de horarios */
+.sched-head {
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-card {
-  background: white;
-  padding: 24px;
-  width: 380px;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.modal-card h3 {
-  margin-bottom: 8px;
+/* botón "Ver mes" NO full width */
+.btn-fit {
+  width: auto !important;
+  padding: 8px 12px !important;
+  height: 36px;
+  border-radius: 10px;
 }
 
-.modal-card input {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.muted {
+  opacity: 0.75;
+}
+
+/* Calendario compacto */
+.sched-calendar {
+  margin-top: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.sched-calendar .rdp {
+  --rdp-cell-size: 34px;
+  --rdp-caption-font-size: 16px;
+  margin: 0;
+}
+
+.sched-calendar .rdp-caption {
+  padding: 0 0 6px 0;
+}
+
+/* Marcar días con horario */
+.day-has-schedule {
+  outline: 2px solid #4f46e5;
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+/* Lista de horarios compacta */
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.schedule-item.compact {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.schedule-item.compact .row {
+  display: flex;
+  gap: 10px;
+  margin: 2px 0;
+  line-height: 1.2;
+}
+
+.schedule-item.compact .label {
+  width: 110px;
+  font-weight: 800;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+
+.modal-card {
+  width: 520px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.form-group {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.form-group input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
 }
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
-  margin-top: 10px;
-}
-
-.btn-primary {
-  background: #6366f1;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: #4f46e5;
-}
-
-.btn-secondary {
-  background: #e5e7eb;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.modal-error {
-  color: #dc2626;
-  font-size: 14px;
+  justify-content: flex-end;
+  margin-top: 14px;
 }

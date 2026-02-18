@@ -5,7 +5,9 @@ import {
   updateUserStatus,
   updateUser,
   createUser,
+  updateUserRole,   
 } from "../../../api/users.api";
+
 
 import UsersTable from "../components/UsersTable";
 import UsersToolbar from "../components/UsersToolbar";
@@ -57,18 +59,22 @@ export default function UsersPage() {
   };
 
   
-  const handleSubmit = async (values) => {
+ const handleSubmit = async (values) => {
   try {
     setSubmitting(true);
 
     if (editing) {
-      // ✏️ EDITAR (no se cambia password)
+      // Actualiza datos generales
       await updateUser(editing.userId, values);
+
+      // Si cambió el rol, llama al endpoint especial
+      if (values.userRole !== editing.userRole) {
+        await updateUserRole(editing.userId, values.userRole);
+      }
     } else {
-      // ➕ NUEVO USUARIO
       await createUser({
         ...values,
-        password: "Syncro123*", // 🔐 password temporal
+        password: "Syncro123*",
       });
     }
 
@@ -79,6 +85,7 @@ export default function UsersPage() {
     setSubmitting(false);
   }
 };
+
 
 
   const filteredData = allData.filter((u) => {
@@ -110,8 +117,7 @@ export default function UsersPage() {
           onToggleStatus={handleToggleStatus}
         />
       </div>
-
-      {/* 🔹 MODAL (NUEVO / EDITAR) */}
+      
       {showForm && (
         <div className="modal-backdrop">
           <div className="modal">

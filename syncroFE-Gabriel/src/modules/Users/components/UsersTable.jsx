@@ -31,12 +31,9 @@ export default function UsersTable({ data, onEdit, onToggleStatus }) {
 
             
             <td className="actions">
-              <button
-                className="btn btn-edit"
-                onClick={() => onEdit(u)}
-              >
-                Editar
-              </button>
+              <button className="btn btn-outline" onClick={() => onEdit(u)}>
+  Editar
+</button>
             </td>
           </tr>
         ))}

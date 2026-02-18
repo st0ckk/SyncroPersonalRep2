@@ -27,3 +27,8 @@ export const deactivateClient = (id) =>
 // activar
 export const activateClient = (id) =>
     api.put(`/clients/${id}/activate`);
+
+// lookup clientes (para filtros)
+export const getClientLookup = () =>
+    api.get("/clients/lookup");
+

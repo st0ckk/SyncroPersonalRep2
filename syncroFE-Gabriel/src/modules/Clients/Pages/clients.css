@@ -60,7 +60,7 @@
     }
 
     /* =========================
-   TABLE ACTIONS (igual a stock)
+   TABLE ACTIONS 
 ========================= */
     .clients-table td.actions {
         display: flex;
@@ -104,3 +104,108 @@
     font-size: 13px;
     color: var(--text-secondary);
 }
+
+.client-form-page {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    background: #f5f6fa;
+}
+
+.client-form-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 720px;
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+    .client-form-card h2 {
+        margin-bottom: 24px;
+    }
+
+.client-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: #444;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #dcdcdc;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        resize: none;
+        min-height: 80px;
+    }
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.btn-primary {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #374151; /* gris oscuro */
+    border: 1px solid #d1d5db; /* borde visible */
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+    .btn-secondary:hover {
+        background: #f3f4f6; /* gris claro */
+    }
+
+/* =========================
+   FILTERS
+========================= */
+.clients-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+    .clients-filters input,
+    .clients-filters select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+    }
+
+

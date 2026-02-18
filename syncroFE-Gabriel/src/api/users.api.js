@@ -17,8 +17,9 @@ export const updateUser = (id, data) =>
 export const deleteUser = (id) =>
   api.delete(`${baseUrl}/${id}`);
 
-export const updateUserRole = (id, role) =>
-  api.put(`${baseUrl}/${id}/role`, { role });
+export const updateUserRole = (id, userRole) =>
+  api.put(`${baseUrl}/${id}/role`, { userRole });
+
 
 export const updateUserStatus = (id, isActive) =>
   api.put(`${baseUrl}/${id}/status`, { isActive });

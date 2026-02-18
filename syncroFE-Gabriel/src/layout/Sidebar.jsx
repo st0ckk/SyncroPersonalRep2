@@ -2,26 +2,42 @@ import { Link } from "react-router-dom";
 import "./layout.css";
 
 const Sidebar = () => {
-    return (
-        <aside className="sidebar">
-            <h2 className="logo">SyncroCR</h2>
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const role = user?.userRole;
 
-            <nav>
-                <Link to="/clientes">Clientes</Link>
-                <Link to="/facturacion">Facturacion</Link>
-                <Link to="/stock">Stock</Link>
-                <Link to="/distributors">Distribuidores</Link>
-                <Link to="/reportes">Reportes</Link>
-                <Link to="/rutas">Rutas</Link>
-                <Link to="/ventas">Ventas</Link>
-                <Link to="/mapa-clientes">Mapa de clientes</Link>
-                <Link to="/usuarios">Usuarios</Link>
-                
+  const menu = [
+    { label: "Clientes", to: "/clientes", roles: ["SuperUsuario", "Administrador", "Vendedor", "Chofer"] },
+    { label: "Facturación", to: "/facturacion", roles: ["SuperUsuario", "Administrador", "Vendedor"] },
+    { label: "Stock", to: "/stock", roles: ["SuperUsuario", "Administrador"] },
+    { label: "Distribuidores", to: "/distributors", roles: ["SuperUsuario", "Administrador"] },
+    { label: "Reportes", to: "/reportes", roles: ["SuperUsuario", "Administrador"] },
+    { label: "Rutas", to: "/rutas", roles: ["SuperUsuario", "Administrador", "Chofer"] },
+    { label: "Cotizaciones", to: "/cotizaciones", roles: ["SuperUsuario", "Administrador", "Vendedor"] },
+    { label: "Ventas", to: "/ventas", roles: ["SuperUsuario", "Administrador", "Vendedor"] },
+    { label: "Mapa de clientes", to: "/mapa-clientes", roles: ["SuperUsuario", "Administrador", "Vendedor", "Chofer"] },
+    { label: "Usuarios", to: "/usuarios", roles: ["SuperUsuario", "Administrador"] },
+    { label: "Activos", to: "/activos", roles: ["SuperUsuario", "Administrador"] },
+    { label: "Horarios", to: "/horarios", roles: ["SuperUsuario", "Administrador"] },
+  ];
 
+  // si no hay user aún (ej login), no renderiza sidebar
+  if (!role) return null;
 
-            </nav>
-        </aside>
-    );
+  return (
+    <aside className="sidebar">
+      <h2 className="logo">SyncroCR</h2>
+
+      <nav>
+        {menu
+          .filter((item) => item.roles.includes(role))
+          .map((item) => (
+            <Link key={item.to} to={item.to}>
+              {item.label}
+            </Link>
+          ))}
+      </nav>
+    </aside>
+  );
 };
 
 export default Sidebar;

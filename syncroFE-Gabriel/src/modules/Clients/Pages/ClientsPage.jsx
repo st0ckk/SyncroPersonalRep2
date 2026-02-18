@@ -5,35 +5,91 @@ import {
     deactivateClient,
     activateClient
 } from "../../../api/clients.api";
-import { Link } from "react-router-dom";
-import "./clients.css"; 
 
+import { Link } from "react-router-dom";
+import "./clients.css";
+
+import ClientFilters from "../Components/ClientFilters";
+import ClientMap from "../Components/ClientMap";
+import ClientStateModal from "../Components/Modals/ClientStateModal";
 
 const ClientsPage = () => {
     const [clients, setClients] = useState([]);
     const [showInactive, setShowInactive] = useState(false);
     const [expandedClientId, setExpandedClientId] = useState(null);
 
-    const loadClients = async () => {
-        const res = showInactive
-            ? await getInactiveClients()
-            : await getClients();
+    // filtros
+    const [search, setSearch] = useState("");
+    const [clientType, setClientType] = useState(null);
 
-        setClients(res.data);
+    // modal
+    const [openModal, setOpenModal] = useState(false);
+    const [clientState, setClientState] = useState(null);
+
+    /* ======================
+       CARGA DE DATOS 
+    ====================== */
+    const loadData = async () => {
+        try {
+            let response;
+
+            if (search || clientType) {
+                response = await getClients(search);
+                let data = response.data ?? [];
+
+                if (search) {
+                    const q = search.toLowerCase();
+                    data = data.filter(c =>
+                        c.clientName.toLowerCase().includes(q) ||
+                        c.clientId.includes(q)
+                    );
+                }
+
+                if (clientType) {
+                    data = data.filter(c => c.clientType.toLowerCase() === clientType);
+                }
+
+                setClients(data);
+            } else {
+                response = showInactive
+                    ? await getInactiveClients()
+                    : await getClients();
+
+                setClients(response.data ?? []);
+            }
+        } catch (err) {
+            console.error("Error cargando clientes", err);
+        }
     };
 
+    /* ======================
+       EFECTO PRINCIPAL
+    ====================== */
     useEffect(() => {
-        loadClients();
-    }, [showInactive]);
+        loadData();
+    }, [showInactive, search, clientType]);
 
+    /* ======================
+       HANDLERS
+    ====================== */
     const toggleMoreInfo = (id) => {
         setExpandedClientId(prev => (prev === id ? null : id));
     };
 
+    const handleClientState = async () => {
+        await deactivateClient(clientState);
+        setOpenModal(false);
+        loadData(); 
+    };
+
+    /* ======================
+       RENDER
+    ====================== */
     return (
         <div className="clients-page">
             <div className="clients-card">
 
+                {/* TOOLBAR */}
                 <div className="clients-toolbar">
                     <h1>Clientes</h1>
 
@@ -58,6 +114,15 @@ const ClientsPage = () => {
                     </div>
                 </div>
 
+                {/* FILTROS */}
+                <ClientFilters
+                    search={search}
+                    clientType={clientType}
+                    onSearchChange={setSearch}
+                    onClientTypeChange={setClientType}
+                />
+
+                {/* TABLA */}
                 <table className="clients-table">
                     <thead>
                         <tr>
@@ -111,9 +176,9 @@ const ClientsPage = () => {
                                         {c.isActive ? (
                                             <button
                                                 className="btn btn-danger"
-                                                onClick={async () => {
-                                                    await deactivateClient(c.clientId);
-                                                    loadClients();
+                                                onClick={() => {
+                                                    setClientState(c.clientId);
+                                                    setOpenModal(true);
                                                 }}
                                             >
                                                 Desactivar
@@ -123,7 +188,7 @@ const ClientsPage = () => {
                                                 className="btn btn-success"
                                                 onClick={async () => {
                                                     await activateClient(c.clientId);
-                                                    loadClients();
+                                                    loadData(); 
                                                 }}
                                             >
                                                 Activar
@@ -135,18 +200,26 @@ const ClientsPage = () => {
                                 {expandedClientId === c.clientId && (
                                     <tr className="client-extra">
                                         <td colSpan={7}>
-                                            <strong>Provincia:</strong>{" "}
-                                            {c.provinceCode || "N/A"} <br />
+                                            <strong>Cédula jurídica:</strong> {c.clientId}<br />
+                                            <strong>Correo:</strong> {c.clientEmail || "N/A"}<br />
+                                            <strong>Teléfono:</strong> {c.clientPhone || "N/A"}<br />
+                                            <strong>Tipo:</strong> {c.clientType || "N/A"}<br /><br />
 
-                                            <strong>Cantón:</strong>{" "}
-                                            {c.cantonCode || "N/A"} <br />
+                                            <strong>Provincia:</strong> {c.provinceName}<br />
+                                            <strong>Cantón:</strong> {c.cantonName}<br />
+                                            <strong>Distrito:</strong> {c.districtName}<br />
+                                            <strong>Dirección exacta:</strong> {c.exactAddress || "N/A"}<br />
 
-                                            <strong>Distrito:</strong>{" "}
-                                            {c.districtCode || "N/A"} <br />
-
-                                            <strong>Dirección:</strong>{" "}
-                                            {c.exactAddress || "N/A"}
-
+                                            {c.location ? (
+                                                <div style={{ marginTop: 12 }}>
+                                                    <ClientMap
+                                                        location={c.location}
+                                                        name={c.clientName}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <p><em>Cliente sin ubicación geográfica</em></p>
+                                            )}
                                         </td>
                                     </tr>
                                 )}
@@ -155,6 +228,14 @@ const ClientsPage = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* MODAL */}
+            {openModal && (
+                <ClientStateModal
+                    closeModal={setOpenModal}
+                    confirmStateChange={handleClientState}
+                />
+            )}
         </div>
     );
 };
