@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import {
     filterQuote,
     getQuotes,
+    createQuote,
+    updateQuote,
 } from "../../../api/quote.api";
 
 import QuoteToolbar from "../components/QuoteToolbar";
 import QuoteTable from "../components/QuoteTable";
 import QuoteFilters from "../components/QuoteFilters";
+import QuoteForm from "../Components/QuoteForm";
 
 export default function QuotesPage() {
 
@@ -22,6 +25,11 @@ export default function QuotesPage() {
     const [statusType, setStatusType] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+
+    // CRUD cotizaciones
+    const [showForm, setShowForm] = useState(false);
+    const [editingQuote, setEditingQuote] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
 
     //Cargar datos de quotes
     const loadData = async () => {
@@ -41,6 +49,46 @@ export default function QuotesPage() {
         }
     };
 
+    // Nueva cotizacion
+    const handleNewQuote = () => {
+        setEditingQuote(null);
+        setShowForm(true);
+    };
+
+    // Editar cotizacion
+    const handleEdit = (quote) => {
+        setEditingQuote(quote);
+        setShowForm(true);
+    };
+
+    const handleSubmit = async (values) => {
+        try {
+            setSubmitting(true);
+
+            if (editingQuote) {
+                await updateQuote(editingQuote.quoteId, {
+                    ...values,
+                    quoteId: editingQuote.quoteId,
+                });
+            } else {
+                await createQuote(values);
+            }
+
+            setShowForm(false);
+            setEditingQuote(null);
+
+            const response = getQuotes();
+
+            setQuotes(response.data ?? []);
+            loadData();
+        } catch (err) {
+            console.error("Error guardando cotizacion", err);
+            alert("Error guardando producto");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     // Carga de cotizaciones
     useEffect(() => {
         loadData();
@@ -52,10 +100,7 @@ export default function QuotesPage() {
 
                 {/*Barra de acciones*/}
                 <QuoteToolbar
-                /*
-                    onNewProduct={handleNewProduct}
-                onAddStock={handleAddStock}
-                    */
+                    onNewQuote={handleNewQuote}
                 />
 
                 {/* Filtros */}
@@ -79,7 +124,21 @@ export default function QuotesPage() {
                 {!loading && (
                     <QuoteTable
                         quotes={quotes}
+                        onEdit={handleEdit}
                     />
+                )}
+
+                {/* Formulario de creacion */}
+                {showForm && (
+                            <QuoteForm
+                                initialValues={editingQuote}
+                                submitting={submitting}
+                                onSubmit={handleSubmit}
+                                onCancel={() => {
+                                    setShowForm(false);
+                                    setEditingQuote(null);
+                                }}
+                            />
                 )}
             </div>
         </div>

@@ -24,6 +24,8 @@ import ClientForm from "../modules/Clients/Components/ClientForm";
 
 import QuotesPage from "../modules/Quotes/Pages/QuotesPage";
 
+import VentasPage from "../modules/Sales/pages/VentasPage";
+
 export default function AppRoutes() {
     return (
         <Routes>
@@ -195,7 +197,7 @@ export default function AppRoutes() {
                     path="/ventas"
                     element={
                         <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
-                            <div>Ventas</div>
+                            <VentasPage />
                         </ProtectedRoute>
                     }
                 />

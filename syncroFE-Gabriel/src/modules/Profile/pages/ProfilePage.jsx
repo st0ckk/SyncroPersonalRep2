@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { updatePassword } from "../../../api/users.api";
 import { getAssetsByUser } from "../../../api/assets.api";
 import { getMySchedules } from "../../../api/schedules.api";
+import { getUserVacations } from "../../../api/vacations.api";
 
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale";
@@ -13,7 +14,6 @@ import "./Profile.css";
 
 const pad = (n) => String(n).padStart(2, "0");
 
-// Evita desfases UTC: manda "YYYY-MM-DDTHH:mm:00" sin Z
 const toLocalIsoNoZ = (d) => {
   const yyyy = d.getFullYear();
   const mm = pad(d.getMonth() + 1);
@@ -26,10 +26,10 @@ const toLocalIsoNoZ = (d) => {
 const fmtTime = (d) =>
   d
     ? new Date(d).toLocaleTimeString("es-CR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
     : "-";
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("es-CR") : "-");
@@ -45,17 +45,22 @@ const toMidnight = (dateOrIso) => {
   return d;
 };
 
-// true si el schedule cubre ese día (por rango startAt-endAt)
-const coversDay = (schedule, day) => {
-  const s = toMidnight(schedule.startAt);
-  const e = toMidnight(schedule.endAt);
+const coversRangeDay = (startIso, endIso, day) => {
+  const s = toMidnight(startIso);
+  const e = toMidnight(endIso);
   const d = toMidnight(day);
   return d >= s && d <= e;
 };
 
+// schedule cubre ese día
+const coversScheduleDay = (schedule, day) =>
+  coversRangeDay(schedule.startAt, schedule.endAt, day);
+
 export default function ProfilePage() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const userId = user?.userId ?? user?.id ?? user?.UserId ?? user?.Id;
 
   // Modal contraseña
   const [showModal, setShowModal] = useState(false);
@@ -74,11 +79,14 @@ export default function ProfilePage() {
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(true);
 
+  // Vacaciones
+  const [vacations, setVacations] = useState([]);
+  const [loadingVacations, setLoadingVacations] = useState(true);
+
   // ✅ Activos
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const userId = user?.userId ?? user?.id ?? user?.UserId ?? user?.Id;
         if (!userId) return;
 
         const res = await getAssetsByUser(userId);
@@ -92,7 +100,33 @@ export default function ProfilePage() {
     };
 
     fetchAssets();
-  }, [user]);
+  }, [userId]);
+
+  // ✅ Vacaciones del usuario (1 vez)
+  useEffect(() => {
+    const fetchVacations = async () => {
+      try {
+        if (!userId) return;
+
+        setLoadingVacations(true);
+        const res = await getUserVacations(userId);
+        const list = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res.data?.$values)
+            ? res.data.$values
+            : [];
+
+        setVacations(list);
+      } catch (err) {
+        console.error("Error cargando vacaciones:", err);
+        setVacations([]);
+      } finally {
+        setLoadingVacations(false);
+      }
+    };
+
+    fetchVacations();
+  }, [userId]);
 
   // ✅ Horarios del mes usando /api/me/schedules
   const loadSchedulesForMonth = async (monthDate) => {
@@ -112,8 +146,8 @@ export default function ProfilePage() {
       const list = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data?.$values)
-        ? res.data.$values
-        : [];
+          ? res.data.$values
+          : [];
 
       setSchedules(list);
     } catch (err) {
@@ -130,7 +164,7 @@ export default function ProfilePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
 
-  // ✅ Marcar días con horarios (marca TODOS los días del rango)
+  // ✅ Días con horarios (azul)
   const daysWithSchedules = useMemo(() => {
     const set = new Set();
 
@@ -149,11 +183,47 @@ export default function ProfilePage() {
     });
   }, [schedules]);
 
-  // ✅ Lista por día (si selecciona) o por mes
-  const filtered = useMemo(() => {
+  // ✅ Días con vacaciones (verde)
+  const daysWithVacations = useMemo(() => {
+    const set = new Set();
+
+    for (const v of vacations) {
+      if ((v.status ?? v.Status) !== "APPROVED") continue;
+
+      const start = toMidnight(v.startDate ?? v.StartDate);
+      const end = toMidnight(v.endDate ?? v.EndDate);
+
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        set.add(keyDay(d));
+      }
+    }
+
+    return Array.from(set).map((k) => {
+      const [y, m, d] = k.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    });
+  }, [vacations]);
+
+  // ✅ Horarios filtrados (día seleccionado)
+  const filteredSchedules = useMemo(() => {
     if (!selectedDay) return schedules;
-    return schedules.filter((s) => coversDay(s, selectedDay));
+    return schedules.filter((s) => coversScheduleDay(s, selectedDay));
   }, [schedules, selectedDay]);
+
+  // ✅ Vacaciones filtradas (día seleccionado)
+  const filteredVacations = useMemo(() => {
+    const approved = vacations.filter((v) => (v.status ?? v.Status) === "APPROVED");
+
+    if (!selectedDay) return approved;
+
+    return approved.filter((v) =>
+      coversRangeDay(
+        v.startDate ?? v.StartDate,
+        v.endDate ?? v.EndDate,
+        selectedDay
+      )
+    );
+  }, [vacations, selectedDay]);
 
   const handleChangePassword = async () => {
     setError("");
@@ -194,58 +264,112 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* HORARIOS (título fuera del card) */}
+        {/* HORARIOS + VACACIONES */}
         <div className="schedules-panel">
           <div className="profile-card">
             <h1 className="page-title" style={{ marginTop: 0 }}>
-            Mis horarios
-          </h1>
-            <div className="sched-calendar">
-              <DayPicker
-                mode="single"
-                selected={selectedDay}
-                onSelect={setSelectedDay}
-                month={month}
-                onMonthChange={setMonth}
-                locale={es}
-                weekStartsOn={1}
-                modifiers={{ hasSchedule: daysWithSchedules }}
-                modifiersClassNames={{ hasSchedule: "day-has-schedule" }}
-              />
-            </div>
+              Mis horarios
+            </h1>
 
-            {loadingSchedules ? (
-              <p className="muted" style={{ marginTop: 10 }}>
-                Cargando horarios...
-              </p>
-            ) : filtered.length === 0 ? (
-              <p className="muted" style={{ marginTop: 10 }}>
-                {selectedDay ? "No hay horarios para este día." : "No hay horarios en este mes."}
-              </p>
-            ) : (
-              <div className="schedule-list" style={{ marginTop: 10 }}>
-                {filtered.map((s) => (
-                  <div key={s.scheduleId} className="schedule-item compact">
-                    <div className="row">
-                      <span className="label">Inicio/Final:</span>
-                      <span>
-                        {fmtDate(s.startAt)} - {fmtDate(s.endAt)}
-                      </span>
-                    </div>
-                    <div className="row">
-                      <span className="label">Horario:</span>
-                      <span>
-                        {fmtTime(s.startAt)} a {fmtTime(s.endAt)}
-                      </span>
-                    </div>
-                    <div className="row">
-                      <span className="label">Notas:</span>
-                      <span>{s.notes ?? "-"}</span>
-                    </div>
-                  </div>
-                ))}
+            <div className="schedule-layout">
+              {/* Columna izquierda: Calendario */}
+              <div className="sched-calendar">
+                <DayPicker
+                  mode="single"
+                  selected={selectedDay}
+                  onSelect={setSelectedDay}
+                  month={month}
+                  onMonthChange={setMonth}
+                  locale={es}
+                  weekStartsOn={1}
+                  modifiers={{
+                    hasSchedule: daysWithSchedules,
+                    hasVacation: daysWithVacations,
+                  }}
+                  modifiersClassNames={{
+                    hasSchedule: "day-has-schedule",
+                    hasVacation: "day-has-vacation",
+                  }}
+                />
               </div>
-            )}
+
+              {/* Columna derecha: Listas */}
+              <div className="schedule-content">
+                {/* ===== HORARIOS ===== */}
+                <h3 className="section-title">Horarios</h3>
+
+                {loadingSchedules ? (
+                  <p className="muted">Cargando horarios...</p>
+                ) : filteredSchedules.length === 0 ? (
+                  <p className="muted">
+                    {selectedDay
+                      ? "No hay horarios para este día."
+                      : "No hay horarios en este mes."}
+                  </p>
+                ) : (
+                  <div className="schedule-list">
+                    {filteredSchedules.map((s) => (
+                      <div key={s.scheduleId} className="schedule-item compact">
+                        <div className="row">
+                          <span className="label">Horario:</span>
+                          <span>
+                            {fmtTime(s.startAt)} a {fmtTime(s.endAt)}
+                          </span>
+                        </div>
+                        <div className="row">
+                          <span className="label">Fechas:</span>
+                          <span>
+                            {fmtDate(s.startAt)} - {fmtDate(s.endAt)}
+                          </span>
+                        </div>
+                        <div className="row">
+                          <span className="label">Notas:</span>
+                          <span>{s.notes ?? "-"}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* ===== VACACIONES ===== */}
+                <h3 className="section-title">Vacaciones</h3>
+
+                {loadingVacations ? (
+                  <p className="muted">Cargando vacaciones...</p>
+                ) : filteredVacations.length === 0 ? (
+                  <p className="muted">
+                    {selectedDay
+                      ? "No hay vacaciones para este día."
+                      : "No hay vacaciones registradas."}
+                  </p>
+                ) : (
+                  <div className="schedule-list">
+                    {filteredVacations.map((v) => (
+                      <div
+                        key={v.vacationId ?? v.VacationId}
+                        className="schedule-item compact vacation"
+                      >
+                        <div className="row">
+                          <span className="label">Fechas:</span>
+                          <span>
+                            {fmtDate(v.startDate ?? v.StartDate)} -{" "}
+                            {fmtDate(v.endDate ?? v.EndDate)}
+                          </span>
+                        </div>
+                        <div className="row">
+                          <span className="label">Días:</span>
+                          <span>{v.daysRequested ?? v.DaysRequested}</span>
+                        </div>
+                        <div className="row">
+                          <span className="label">Motivo:</span>
+                          <span>{v.reason ?? v.Reason ?? "-"}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

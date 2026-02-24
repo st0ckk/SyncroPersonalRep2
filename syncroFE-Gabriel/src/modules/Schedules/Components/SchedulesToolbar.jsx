@@ -5,6 +5,7 @@ export default function SchedulesToolbar({
   showInactive,
   onToggleInactive,
   onNew,
+  onOpenVacations,
 }) {
   return (
     <div className="schedules-toolbar">
@@ -30,10 +31,20 @@ export default function SchedulesToolbar({
           {showInactive ? "Ocultar inactivos" : "Ver inactivos"}
         </button>
 
+        <button
+          className="btn btn-outline"
+          onClick={onOpenVacations}
+          disabled={!selectedUserId}
+          type="button"
+        >
+          Vacaciones
+        </button>
+
         <button className="btn btn-primary" onClick={onNew} disabled={!selectedUserId}>
           + Nuevo
         </button>
       </div>
     </div>
   );
+
 }

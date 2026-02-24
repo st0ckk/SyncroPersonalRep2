@@ -1,7 +1,8 @@
 ﻿import { useState } from "react";
 import { generateQuoteCopy } from "../../../api/quote.api";
 export default function QuoteTable({
-    quotes
+    quotes,
+    onEdit,
 }) {
     //PDF
     const [loadingPdf, setLoadingPdf] = useState(null);
@@ -105,14 +106,14 @@ export default function QuoteTable({
             <tbody>
                 {quotes.map(q => (
                     <>
-                    <tr key={q.quoteId}>
-                        <td>{q.quoteNumber}</td>
+                        <tr key={q.quoteId}>
+                            <td className="number">{q.quoteNumber}</td>
                         <td>
                             <span className={`${formatStatusType(q.quoteStatus, q.quoteValidTil)}-status`}>{formatStatusType(q.quoteStatus, q.quoteValidTil)}</span>                            
                         </td>
                         <td>{formatDate(q.quoteValidTil)}</td>
                         <td>{q.clientName}</td>
-                        <td>{formatCurrency(q.quoteTotal)}</td>
+                        <td>{formatCurrency(q.quoteTotal - (q.quoteTotal * (q.quoteDiscountPercentage/100)))}</td>
                         <td>{q.userName}</td>
                         <td>{formatDate(q.quoteDate)}</td>
                         <td className="actions">
@@ -125,8 +126,9 @@ export default function QuoteTable({
                             </button>
 
                             <button
-                                type="button"
-                                className="btn btn-outline"
+                                    type="button"
+                                    className="btn btn-outline"
+                                    onClick={() => onEdit(q)}
                             >
                                 Editar
                                 </button>
@@ -134,7 +136,7 @@ export default function QuoteTable({
                                     type="button"
                                     className="btn btn-outline"
                                     onClick={() => handlePDFDownload(q.quoteId, q.quoteNumber)}
-                                    disable={loadingPdf === q.quoteId ? true : false }
+                                    disabled={loadingPdf === q.quoteId ? true : false }
                                 >
                                     {loadingPdf === q.quoteId ? 'Generando...' : 'Descargar copia'}
                                 </button>
@@ -145,36 +147,62 @@ export default function QuoteTable({
                         {expandedQuoteId === q.quoteId && (
                             <tr className="quote-extra">
                                 <td colSpan={8}>
-                                    <strong>Condiciones: </strong>
-                                    {q.quoteConditions}<br />
-                                    <br />
-                                    <strong>Comentarios: </strong> 
-                                    {q.quoteRemarks} <br/>
-                                    <br />
-                                    <strong>Articulos cotizados: </strong>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Producto</th>
-                                                <th>Precio unitario</th>
-                                                <th>Cantidad</th>
-                                                <th>Total de linea</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {q.quoteDetails.map(qd =>
-                                                <>
+                                    <section className="quote-details-flex">
+                                        <span>
+                                            <strong>Articulos cotizados: </strong>
+                                            <table>
+                                                <thead>
                                                     <tr>
-                                                        <td>{qd.productName}</td>
-                                                        <td>{formatCurrency(qd.unitPrice)}</td>
-                                                        <td>{qd.quantity}</td>
-                                                        <td>{formatCurrency(qd.lineTotal)}</td>
+                                                        <th>Producto</th>
+                                                        <th>Precio unitario</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Total de linea</th>
                                                     </tr>
-                                                </>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                    <br />
+                                                </thead>
+                                                <tbody>
+                                                    {q.quoteDetails.map(qd =>
+                                                        <>
+                                                            <tr>
+                                                                <td>{qd.productName}</td>
+                                                                <td>{formatCurrency(qd.unitPrice)}</td>
+                                                                <td>{qd.quantity}</td>
+                                                                <td>{formatCurrency(qd.lineTotal)}</td>
+                                                            </tr>
+                                                        </>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                            <br />
+                                        </span>
+                                        <span class="quote-details-remarks">
+                                            <strong>Subtotal: </strong>
+                                            <br />
+                                            {formatCurrency(q.quoteTotal)}
+                                            <br />
+                                            <strong>Condiciones: </strong>
+                                            <br />
+                                            {q.quoteConditions}
+                                            <br />
+                                            <strong>Observaciones: </strong>
+                                            <br />
+                                            {q.quoteRemarks}
+                                            <br />
+                                        </span>
+                                        <span class="quote-details-discount">
+                                            <strong>Descuento aplicable: </strong>
+                                            <br />
+                                            {q.quoteDiscountApplied ? "Si" : "No"}
+                                            <br />
+                                            <strong>Porcentaje de descuento: </strong>
+                                            <br />
+                                            {q.quoteDiscountApplied ? `${q.quoteDiscountPercentage}%` : "N/A"}
+                                            <br />
+                                            <strong>Razon de descuento: </strong>
+                                            <br />
+                                            {q.quoteDiscountApplied ? `${q.quoteDiscountReason}` : "N/A"}
+                                            <br />
+                                        </span>
+                                    </section>
                                 </td>
                             </tr>
                         )}

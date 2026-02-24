@@ -19,6 +19,7 @@
     <PackageJsonDependenciesReactIcons Condition="$(PackageJsonDependenciesReactIcons) == ''">^5.5.0</PackageJsonDependenciesReactIcons>
     <PackageJsonDependenciesReactLeaflet Condition="$(PackageJsonDependenciesReactLeaflet) == ''">^5.0.0</PackageJsonDependenciesReactLeaflet>
     <PackageJsonDependenciesReactRouterDom Condition="$(PackageJsonDependenciesReactRouterDom) == ''">^7.11.0</PackageJsonDependenciesReactRouterDom>
+    <PackageJsonDependenciesReactSelect Condition="$(PackageJsonDependenciesReactSelect) == ''">^5.10.2</PackageJsonDependenciesReactSelect>
     <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^9.39.1</PackageJsonDevdependenciesEslintJs>
     <PackageJsonDevdependenciesTypesReact Condition="$(PackageJsonDevdependenciesTypesReact) == ''">^19.2.5</PackageJsonDevdependenciesTypesReact>
     <PackageJsonDevdependenciesTypesReactDom Condition="$(PackageJsonDevdependenciesTypesReactDom) == ''">^19.2.3</PackageJsonDevdependenciesTypesReactDom>

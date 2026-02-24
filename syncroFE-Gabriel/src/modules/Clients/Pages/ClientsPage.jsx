@@ -6,6 +6,8 @@ import {
     activateClient
 } from "../../../api/clients.api";
 
+import { getLatestQuoteByClient } from "../../../api/quote.api";
+
 import { Link } from "react-router-dom";
 import "./clients.css";
 
@@ -17,6 +19,7 @@ const ClientsPage = () => {
     const [clients, setClients] = useState([]);
     const [showInactive, setShowInactive] = useState(false);
     const [expandedClientId, setExpandedClientId] = useState(null);
+    const [quoteInfo, setQuoteInfo] = useState(null);
 
     // filtros
     const [search, setSearch] = useState("");
@@ -25,6 +28,64 @@ const ClientsPage = () => {
     // modal
     const [openModal, setOpenModal] = useState(false);
     const [clientState, setClientState] = useState(null);
+
+    const loadQuote = async (id) => {
+        try {
+            if (id)
+            {
+                const response = await getLatestQuoteByClient(id);
+                setQuoteInfo(response.data ?? []);
+            }
+            else
+            {
+                setQuoteInfo(null);
+            }
+
+        } catch( err ) {
+            console.log(err);
+        } 
+    }
+
+    //Formateo de fechas
+    const formatDate = (dateString) => {
+        if (!dateString) return "-";
+        return new Date(dateString).toLocaleDateString("es-CR");
+    };
+
+    //Formateo para moneda
+    const formatCurrency = (amount) => {
+        if (!amount) return "₡0.00";
+        var fixedAmount = parseFloat(amount);
+        return `₡${fixedAmount.toFixed(2)}`;
+    }
+
+    //Formateo de tipos de estados
+    const formatStatusType = (statusString, date) => {
+        var status = "";
+        var currentDate = new Date();
+        var validDate = new Date(date);
+
+        if (statusString == "expired" || currentDate > validDate) {
+            status = "Expirada";
+        }
+        else {
+            switch (statusString) {
+                case "pending":
+                    status = "Pendiente";
+                    break;
+                case "approved":
+                    status = "Aprobada";
+                    break;
+                case "rejected":
+                    status = "Rechazada";
+                    break;
+                default:
+                    status = "Sin estado"
+                    break;
+            }
+        }
+        return status;
+    }
 
     /* ======================
        CARGA DE DATOS 
@@ -74,6 +135,7 @@ const ClientsPage = () => {
     ====================== */
     const toggleMoreInfo = (id) => {
         setExpandedClientId(prev => (prev === id ? null : id));
+        loadQuote(id);
     };
 
     const handleClientState = async () => {
@@ -200,16 +262,79 @@ const ClientsPage = () => {
                                 {expandedClientId === c.clientId && (
                                     <tr className="client-extra">
                                         <td colSpan={7}>
-                                            <strong>Cédula jurídica:</strong> {c.clientId}<br />
-                                            <strong>Correo:</strong> {c.clientEmail || "N/A"}<br />
-                                            <strong>Teléfono:</strong> {c.clientPhone || "N/A"}<br />
-                                            <strong>Tipo:</strong> {c.clientType || "N/A"}<br /><br />
+                                            <div className="clients-expanded-section-flex">
+                                            <div className="clients-expanded-info">
+                                            <h2>Detalles de cliente:</h2>
+                                                <section>
+                                                    <span>
+                                                        <strong>Cédula jurídica:</strong>
+                                                        <br />
+                                                        {c.clientId}
+                                                        <br />
+                                                        <strong>Correo:</strong>
+                                                        <br />
+                                                        {c.clientEmail || "N/A"}
+                                                        <br />
+                                                        <strong>Teléfono:</strong>
+                                                        <br />
+                                                        {c.clientPhone || "N/A"}
+                                                        <br />
+                                                        <strong>Tipo:</strong>
+                                                        <br />
+                                                        {c.clientType || "N/A"}
+                                                        <br />
+                                                    </span>
+                                                </section>
+                                                </div>
 
-                                            <strong>Provincia:</strong> {c.provinceName}<br />
-                                            <strong>Cantón:</strong> {c.cantonName}<br />
-                                            <strong>Distrito:</strong> {c.districtName}<br />
-                                            <strong>Dirección exacta:</strong> {c.exactAddress || "N/A"}<br />
+                                                <div className="clients-expanded-location">
+                                                    <h2>Ubicacion:</h2>
+                                                    <section>
+                                                        <span>
+                                                            <strong>Provincia:</strong>
+                                                            <br />
+                                                            {c.provinceName}
+                                                            <br />
+                                                            <strong>Cantón:</strong>
+                                                            <br />
+                                                            {c.cantonName}
+                                                            <br />
+                                                            <strong>Distrito:</strong>
+                                                            <br />
+                                                            {c.districtName}
+                                                            <br />
+                                                            <strong>Dirección exacta:</strong>
+                                                            <br />
+                                                            {c.exactAddress || "N/A"}
+                                                            <br />
+                                                        </span>
+                                                    </section>
+                                                </div>
 
+                                                <div className="clients-expanded-quote">
+                                                    <h2>Cotizacion mas reciente:</h2>
+                                                    <section>
+                                                        <span>
+                                                            <strong>Numero de cotizacion:</strong>
+                                                            <br />
+                                                            {quoteInfo ? quoteInfo.quoteNumber : "N/A"}
+                                                            <br />
+                                                            <strong>Estado:</strong>
+                                                            <br />
+                                                            {quoteInfo ? formatStatusType(quoteInfo.quoteStatus) : "N/A"}
+                                                            <br />
+                                                            <strong>Vigencia:</strong>
+                                                            <br />
+                                                            {quoteInfo ? formatDate(quoteInfo.quoteValidTil) : "N/A"}
+                                                            <br />
+                                                            <strong>Total:</strong>
+                                                            <br />
+                                                            {quoteInfo ? formatCurrency(quoteInfo.quoteTotal - (quoteInfo.quoteTotal * (quoteInfo.quoteDiscountPercentage / 100))) : "N/A"}
+                                                            <br />
+                                                        </span>
+                                                    </section>
+                                                </div>
+                                            </div>
                                             {c.location ? (
                                                 <div style={{ marginTop: 12 }}>
                                                     <ClientMap

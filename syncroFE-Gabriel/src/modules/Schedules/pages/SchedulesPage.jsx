@@ -12,6 +12,9 @@ import {
 import SchedulesToolbar from "../Components/SchedulesToolbar";
 import SchedulesTable from "../Components/SchedulesTable";
 import SchedulesForm from "../Components/SchedulesForm";
+import VacationModal from "../Components/VacationModal";
+import VacationsTable from "../Components/VacationsTable";
+import { getUserVacations } from "../../../api/vacations.api";
 
 export default function SchedulesPage() {
   const [users, setUsers] = useState([]);
@@ -19,11 +22,11 @@ export default function SchedulesPage() {
 
   const [selectedUserId, setSelectedUserId] = useState("");
   const [showInactive, setShowInactive] = useState(false);
-
+  const [showVacationModal, setShowVacationModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-
+  const [vacations, setVacations] = useState([]);
 
   const [toast, setToast] = useState(null);
   const toastTimerRef = useRef(null);
@@ -49,7 +52,26 @@ export default function SchedulesPage() {
     }, 3500);
   };
 
+  const loadVacations = async () => {
+    if (!selectedUserId) {
+      setVacations([]);
+      return;
+    }
 
+    try {
+      const res = await getUserVacations(Number(selectedUserId));
+      setVacations(res.data ?? []);
+    } catch (err) {
+      console.error("Error cargando vacaciones:", err);
+      setVacations([]);
+      showToast("error", "No se pudieron cargar las vacaciones.");
+    }
+  };
+
+  const handleOpenVacations = () => {
+    if (!selectedUserId) return;
+    setShowVacationModal(true);
+  };
   const loadUsers = async () => {
     try {
       const res = await getUsers();
@@ -109,6 +131,7 @@ export default function SchedulesPage() {
 
   useEffect(() => {
     loadData();
+    loadVacations();
   }, [selectedUserId, showInactive]);
 
   useEffect(() => {
@@ -193,10 +216,10 @@ export default function SchedulesPage() {
     <div className="schedules-page">
       <div className="schedules-container">
 
+        {/* TOASTS */}
         {toast && (
           <div className={`toast toast-${toast.type}`} role="alert">
             <div className="toast-body">{toast.message}</div>
-
             <button
               className="toast-close"
               onClick={closeToast}
@@ -208,7 +231,6 @@ export default function SchedulesPage() {
           </div>
         )}
 
-
         <SchedulesToolbar
           users={users}
           selectedUserId={selectedUserId}
@@ -216,6 +238,7 @@ export default function SchedulesPage() {
           showInactive={showInactive}
           onToggleInactive={() => setShowInactive((s) => !s)}
           onNew={handleNew}
+          onOpenVacations={handleOpenVacations}
         />
 
         {!selectedUserId ? (
@@ -223,7 +246,16 @@ export default function SchedulesPage() {
             Seleccioná un empleado para ver sus horarios.
           </div>
         ) : (
-          <SchedulesTable data={data} onEdit={handleEdit} onToggleStatus={handleToggleStatus} />
+          <>
+            <SchedulesTable
+              data={data}
+              onEdit={handleEdit}
+              onToggleStatus={handleToggleStatus}
+            />
+
+            <h3 style={{ marginTop: 24 }}>Vacaciones del empleado</h3>
+            <VacationsTable data={vacations} />
+          </>
         )}
 
         {showForm && (
@@ -246,6 +278,19 @@ export default function SchedulesPage() {
             </div>
           </div>
         )}
+
+        {showVacationModal && (
+          <VacationModal
+            users={users}
+            selectedUserId={selectedUserId}
+            onClose={() => setShowVacationModal(false)}
+            onToast={showToast}
+            onSaved={async () => {
+              await loadData();
+            }}
+          />
+        )}
+
       </div>
     </div>
   );

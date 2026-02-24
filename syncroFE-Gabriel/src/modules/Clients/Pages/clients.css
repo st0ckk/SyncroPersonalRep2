@@ -59,6 +59,25 @@
         font-weight: 500;
     }
 
+.clients-expanded-section-flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.clients-expanded-flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.clients-expanded-location {
+    margin-left: 5%;
+}
+
+.clients-expanded-quote {
+    margin-left: 5%;
+}
+
+
     /* =========================
    TABLE ACTIONS 
 ========================= */
