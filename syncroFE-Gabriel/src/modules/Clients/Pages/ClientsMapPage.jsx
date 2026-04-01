@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { getClients } from "../../../api/clients.api";
-import ClientsMap from "../Components/ClientsMap";
+import ClientsMap from "../components/ClientsMap";
 import "./clients.css"; 
 
 

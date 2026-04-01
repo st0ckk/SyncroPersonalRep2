@@ -114,9 +114,9 @@ const ClientForm = () => {
                             onChange={handleChange}
                         >
                             <option value="">Seleccione</option>
-                            <option value="regular">Regular</option>
-                            <option value="premium">Premium</option>
-                            <option value="corporativo">Corporativo</option>
+                            <option value="Extranjero">Extranjero</option>
+                            <option value="Pulpero">Pulpero</option>
+                            <option value="Rutero">Rutero</option>
                         </select>
                     </label>
 

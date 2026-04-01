@@ -1,18 +1,24 @@
-﻿export default function StockTable({
+﻿import { usePagination } from "../../../hooks/usePagination";
+import PaginationControls from "../../../components/PaginationControls";
+
+export default function StockTable({
     products,
     onEdit,
     onActivate,
     onDeactivate,
 }) {
+    const pagination = usePagination(products);
+
     if (!products.length) {
         return <div className="empty-state">No hay productos</div>;
     }
 
     return (
+        <>
         <table className="stock-table">
             <thead>
                 <tr>
-                   
+
                     <th>Nombre</th>
                     <th>Proveedor</th>
                     <th>Tipo</th>
@@ -24,9 +30,9 @@
             </thead>
 
             <tbody>
-                {products.map(p => (
+                {pagination.paginatedData.map(p => (
                     <tr key={p.productId}>
-                        
+
                         <td className="name">{p.productName}</td>
                         <td>{p.distributorName}</td>
                         <td>{p.productType}</td>
@@ -65,5 +71,7 @@
                 ))}
             </tbody>
         </table>
+        <PaginationControls {...pagination} />
+        </>
     );
 }

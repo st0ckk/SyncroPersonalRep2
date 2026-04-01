@@ -3,7 +3,7 @@ import "./layout.css";
 export default function Footer() {
     return (
         <footer className="app-footer">
-            SyncroCR © all rights reserved
+            SyncroC Â© 2025-{new Date().getFullYear()} all rights reserved
         </footer>
     );
 }

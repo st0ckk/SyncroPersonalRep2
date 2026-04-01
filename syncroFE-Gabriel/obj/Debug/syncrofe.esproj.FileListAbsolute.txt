@@ -1,2 +1,1 @@
 C:\Users\Cuent\source\repos\syncroFE\obj\Debug\Syncrofe.esproj.CoreCompileInputs.cache
-C:\Users\josep\Documents\GitHub\syncroFE\obj\Debug\Syncrofe.esproj.CoreCompileInputs.cache

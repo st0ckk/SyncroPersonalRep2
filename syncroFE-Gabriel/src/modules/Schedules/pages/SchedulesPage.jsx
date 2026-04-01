@@ -9,11 +9,11 @@ import {
   activateSchedule,
 } from "../../../api/schedules.api";
 
-import SchedulesToolbar from "../Components/SchedulesToolbar";
-import SchedulesTable from "../Components/SchedulesTable";
-import SchedulesForm from "../Components/SchedulesForm";
-import VacationModal from "../Components/VacationModal";
-import VacationsTable from "../Components/VacationsTable";
+import SchedulesToolbar from "../components/SchedulesToolbar";
+import SchedulesTable from "../components/SchedulesTable";
+import SchedulesForm from "../components/SchedulesForm";
+import VacationModal from "../components/VacationModal";
+import VacationsTable from "../components/VacationsTable";
 import { getUserVacations } from "../../../api/vacations.api";
 
 export default function SchedulesPage() {

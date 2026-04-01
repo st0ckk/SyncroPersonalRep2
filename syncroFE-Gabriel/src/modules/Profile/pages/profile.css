@@ -201,3 +201,36 @@
 .muted {
   opacity: 0.75;
 }
+
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 12px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .schedule-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sched-calendar {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sched-calendar .rdp {
+    --rdp-cell-size: 32px;
+    --rdp-caption-font-size: 14px;
+  }
+}

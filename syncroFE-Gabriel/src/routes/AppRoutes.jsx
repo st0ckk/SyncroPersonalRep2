@@ -3,6 +3,7 @@ import MainLayout from "../layout/MainLayout";
 
 import Login from "../pages/Login";
 import Unauthorized from "../pages/Unauthorized";
+import NotFound from "../pages/NotFound";
 
 import ProtectedRoute from "../auth/ProtectedRoute";
 import ForcePasswordChangeGuard from "./ForcePasswordChangeGuard";
@@ -14,17 +15,23 @@ import UsersPage from "../modules/Users/pages/UsersPage";
 import AssetsPage from "../modules/Assets/pages/AssetsPage";
 import SchedulesPage from "../modules/Schedules/pages/SchedulesPage";
 
+import RoutesMonitoringPage from "../modules/Routes/pages/RoutesMonitoringPage";
+import RouteTemplatesPage from "../modules/RouteTemplates/pages/RouteTemplatesPage";
+import RoutesPage from "../modules/Routes/pages/RoutesPage";
+
 import StockPage from "../modules/Stock/pages/StockPage";
 import DistributorPage from "../modules/Distributors/pages/DistributorPage";
-
-import ClientsPage from "../modules/Clients/Pages/ClientsPage";
-import ClientDetailPage from "../modules/Clients/Pages/ClientDetailPage";
-import ClientsMapPage from "../modules/Clients/Pages/ClientsMapPage";
-import ClientForm from "../modules/Clients/Components/ClientForm";
-
-import QuotesPage from "../modules/Quotes/Pages/QuotesPage";
+import ClientsPage from "../modules/Clients/pages/ClientsPage";
+import ClientDetailPage from "../modules/Clients/pages/ClientDetailPage";
+import ClientsMapPage from "../modules/Clients/pages/ClientsMapPage";
+import ClientForm from "../modules/Clients/components/ClientForm";
+import QuotesPage from "../modules/Quotes/pages/QuotesPage";
 
 import VentasPage from "../modules/Sales/pages/VentasPage";
+import FacturacionPage from "../modules/Invoices/pages/FacturacionPage";
+
+import ClientAccountsPage from "../modules/ClientAccounts/pages/ClientAccountsPage";
+
 
 export default function AppRoutes() {
     return (
@@ -94,6 +101,14 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
+                    path="/rutas"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Chofer"]}>
+                            <RoutesPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/clientes/:id"
                     element={
                         <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]}>
@@ -132,12 +147,12 @@ export default function AppRoutes() {
                     }
                 />
 
-                {/* Facturación */}
+                {/* Facturación Electrónica */}
                 <Route
                     path="/facturacion"
                     element={
                         <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
-                            <div>Facturación</div>
+                            <FacturacionPage />
                         </ProtectedRoute>
                     }
                 />
@@ -181,10 +196,26 @@ export default function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/rutas/monitoreo"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                            <RoutesMonitoringPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/plantillas-rutas"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                            <RouteTemplatesPage />
+                        </ProtectedRoute>
+                    }
+                />
 
                 {/* Cotizaciones */}
                 <Route
-                    path="cotizaciones"
+                    path="/cotizaciones"
                     element={
                         <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Chofer"]}>
                             <QuotesPage />
@@ -201,7 +232,19 @@ export default function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
+
+                {/* Cuentas de credito */}
+                <Route
+                    path="/cuentas-credito"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
+                            <ClientAccountsPage />
+                        </ProtectedRoute>
+                    }
+                />
             </Route>
+            {/* 404 - catch-all */}
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }

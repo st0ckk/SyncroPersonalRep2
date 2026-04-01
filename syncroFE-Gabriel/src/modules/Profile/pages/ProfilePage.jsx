@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { updatePassword } from "../../../api/users.api";
+import { getMyProfile } from "../../../api/account.api";
 import { getAssetsByUser } from "../../../api/assets.api";
 import { getMySchedules } from "../../../api/schedules.api";
 import { getUserVacations } from "../../../api/vacations.api";
@@ -26,10 +26,10 @@ const toLocalIsoNoZ = (d) => {
 const fmtTime = (d) =>
   d
     ? new Date(d).toLocaleTimeString("es-CR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
     : "-";
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("es-CR") : "-");
@@ -52,43 +52,59 @@ const coversRangeDay = (startIso, endIso, day) => {
   return d >= s && d <= e;
 };
 
-// schedule cubre ese día
 const coversScheduleDay = (schedule, day) =>
   coversRangeDay(schedule.startAt, schedule.endAt, day);
 
 export default function ProfilePage() {
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
-  const userId = user?.userId ?? user?.id ?? user?.UserId ?? user?.Id;
+  const userId =
+    profile?.userId ?? profile?.id ?? profile?.UserId ?? profile?.Id;
 
-  // Modal contraseña
   const [showModal, setShowModal] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Activos
   const [assets, setAssets] = useState([]);
   const [loadingAssets, setLoadingAssets] = useState(true);
 
-  // Horarios (por mes)
   const [month, setMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState(undefined);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(true);
 
-  // Vacaciones
   const [vacations, setVacations] = useState([]);
   const [loadingVacations, setLoadingVacations] = useState(true);
 
-  // ✅ Activos
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        setLoadingProfile(true);
+        const res = await getMyProfile();
+        setProfile(res.data ?? null);
+      } catch (err) {
+        console.error("Error cargando perfil:", err);
+        console.error("STATUS:", err.response?.status);
+        console.error("DATA:", err.response?.data);
+        setProfile(null);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
   useEffect(() => {
     const fetchAssets = async () => {
       try {
         if (!userId) return;
 
+        setLoadingAssets(true);
         const res = await getAssetsByUser(userId);
         setAssets(res.data ?? []);
       } catch (err) {
@@ -102,7 +118,6 @@ export default function ProfilePage() {
     fetchAssets();
   }, [userId]);
 
-  // ✅ Vacaciones del usuario (1 vez)
   useEffect(() => {
     const fetchVacations = async () => {
       try {
@@ -113,8 +128,8 @@ export default function ProfilePage() {
         const list = Array.isArray(res.data)
           ? res.data
           : Array.isArray(res.data?.$values)
-            ? res.data.$values
-            : [];
+          ? res.data.$values
+          : [];
 
         setVacations(list);
       } catch (err) {
@@ -128,13 +143,26 @@ export default function ProfilePage() {
     fetchVacations();
   }, [userId]);
 
-  // ✅ Horarios del mes usando /api/me/schedules
   const loadSchedulesForMonth = async (monthDate) => {
     try {
       setLoadingSchedules(true);
 
-      const from = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1, 0, 0, 0);
-      const to = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0, 23, 59, 0);
+      const from = new Date(
+        monthDate.getFullYear(),
+        monthDate.getMonth(),
+        1,
+        0,
+        0,
+        0
+      );
+      const to = new Date(
+        monthDate.getFullYear(),
+        monthDate.getMonth() + 1,
+        0,
+        23,
+        59,
+        0
+      );
 
       const params = {
         includeInactive: false,
@@ -146,12 +174,16 @@ export default function ProfilePage() {
       const list = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data?.$values)
-          ? res.data.$values
-          : [];
+        ? res.data.$values
+        : [];
 
       setSchedules(list);
     } catch (err) {
-      console.error("Error cargando horarios:", err.response?.status, err.response?.data);
+      console.error(
+        "Error cargando horarios:",
+        err.response?.status,
+        err.response?.data
+      );
       setSchedules([]);
     } finally {
       setLoadingSchedules(false);
@@ -161,10 +193,8 @@ export default function ProfilePage() {
   useEffect(() => {
     loadSchedulesForMonth(month);
     setSelectedDay(undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
 
-  // ✅ Días con horarios (azul)
   const daysWithSchedules = useMemo(() => {
     const set = new Set();
 
@@ -183,7 +213,6 @@ export default function ProfilePage() {
     });
   }, [schedules]);
 
-  // ✅ Días con vacaciones (verde)
   const daysWithVacations = useMemo(() => {
     const set = new Set();
 
@@ -204,15 +233,15 @@ export default function ProfilePage() {
     });
   }, [vacations]);
 
-  // ✅ Horarios filtrados (día seleccionado)
   const filteredSchedules = useMemo(() => {
     if (!selectedDay) return schedules;
     return schedules.filter((s) => coversScheduleDay(s, selectedDay));
   }, [schedules, selectedDay]);
 
-  // ✅ Vacaciones filtradas (día seleccionado)
   const filteredVacations = useMemo(() => {
-    const approved = vacations.filter((v) => (v.status ?? v.Status) === "APPROVED");
+    const approved = vacations.filter(
+      (v) => (v.status ?? v.Status) === "APPROVED"
+    );
 
     if (!selectedDay) return approved;
 
@@ -225,18 +254,49 @@ export default function ProfilePage() {
     );
   }, [vacations, selectedDay]);
 
+  const resetPasswordModal = () => {
+    setShowModal(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+    setError("");
+  };
+
   const handleChangePassword = async () => {
     setError("");
-    setLoading(true);
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      setError("Todos los campos son obligatorios");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setError("La nueva contraseña debe tener al menos 8 caracteres");
+      return;
+    }
+
+    if (newPassword === currentPassword) {
+      setError("La nueva contraseña no puede ser igual a la actual");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setError("La confirmación de la contraseña no coincide");
+      return;
+    }
 
     try {
-      await updatePassword({ currentPassword, newPassword });
+      setLoading(true);
 
-      alert("Contraseña actualizada. Inicia sesión nuevamente.");
-      localStorage.clear();
-      navigate("/login", { replace: true });
+      await updatePassword({
+        currentPassword,
+        newPassword,
+      });
+
+      resetPasswordModal();
+      alert("Contraseña actualizada correctamente");
     } catch (err) {
-      setError(err.response?.data || "Error al cambiar la contraseña");
+      setError(err?.response?.data || "No se pudo cambiar la contraseña");
     } finally {
       setLoading(false);
     }
@@ -247,24 +307,41 @@ export default function ProfilePage() {
       <h1 className="page-title">Mi perfil</h1>
 
       <div className="profile-header-grid">
-        {/* PERFIL */}
         <div className="profile-card">
-          <p>
-            <strong>Nombre:</strong> {user?.userName} {user?.userLastname}
-          </p>
-          <p>
-            <strong>Email:</strong> {user?.userEmail}
-          </p>
-          <p>
-            <strong>Rol:</strong> {user?.userRole}
-          </p>
+          {loadingProfile ? (
+            <p>Cargando perfil...</p>
+          ) : !profile ? (
+            <p>No se pudo cargar el perfil.</p>
+          ) : (
+            <>
+              <p>
+                <strong>Nombre:</strong> {profile.userName}{" "}
+                {profile.userLastname}
+              </p>
+              <p>
+                <strong>Email:</strong> {profile.userEmail}
+              </p>
+              <p>
+                <strong>Teléfono:</strong> {profile.telefono || "-"}
+              </p>
+              <p>
+                <strong>Teléfono personal:</strong>{" "}
+                {profile.telefonoPersonal || "-"}
+              </p>
+              <p>
+                <strong>Rol:</strong> {profile.userRole}
+              </p>
 
-          <button className="btn-change-password" onClick={() => setShowModal(true)}>
-            🔐 Cambiar contraseña
-          </button>
+              <button
+                className="btn-change-password"
+                onClick={() => setShowModal(true)}
+              >
+                🔐 Cambiar contraseña
+              </button>
+            </>
+          )}
         </div>
 
-        {/* HORARIOS + VACACIONES */}
         <div className="schedules-panel">
           <div className="profile-card">
             <h1 className="page-title" style={{ marginTop: 0 }}>
@@ -272,7 +349,6 @@ export default function ProfilePage() {
             </h1>
 
             <div className="schedule-layout">
-              {/* Columna izquierda: Calendario */}
               <div className="sched-calendar">
                 <DayPicker
                   mode="single"
@@ -293,9 +369,7 @@ export default function ProfilePage() {
                 />
               </div>
 
-              {/* Columna derecha: Listas */}
               <div className="schedule-content">
-                {/* ===== HORARIOS ===== */}
                 <h3 className="section-title">Horarios</h3>
 
                 {loadingSchedules ? (
@@ -331,7 +405,6 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                {/* ===== VACACIONES ===== */}
                 <h3 className="section-title">Vacaciones</h3>
 
                 {loadingVacations ? (
@@ -374,7 +447,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ACTIVOS */}
       <div className="profile-card" style={{ marginTop: 16 }}>
         <h3 style={{ marginTop: 0 }}>Mis activos asignados</h3>
 
@@ -383,6 +455,7 @@ export default function ProfilePage() {
         ) : assets.length === 0 ? (
           <p>No tenés activos asignados.</p>
         ) : (
+          <div className="table-scroll">
           <table className="assets-table">
             <thead>
               <tr>
@@ -399,16 +472,18 @@ export default function ProfilePage() {
                   <td>{a.assetName}</td>
                   <td>{a.serialNumber || "-"}</td>
                   <td>{a.description || "-"}</td>
-                  <td>{new Date(a.assignmentDate).toLocaleDateString("es-CR")}</td>
+                  <td>
+                    {new Date(a.assignmentDate).toLocaleDateString("es-CR")}
+                  </td>
                   <td>{a.isActive ? "Activo" : "Inactivo"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
-      {/* MODAL CONTRASEÑA */}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-card">
@@ -434,21 +509,29 @@ export default function ProfilePage() {
               />
             </div>
 
+            <div className="form-group">
+              <label>Confirmar nueva contraseña</label>
+              <input
+                type="password"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+              />
+            </div>
+
             <div className="modal-actions">
               <button
                 className="btn btn-outline"
-                onClick={() => {
-                  setShowModal(false);
-                  setCurrentPassword("");
-                  setNewPassword("");
-                  setError("");
-                }}
+                onClick={resetPasswordModal}
                 disabled={loading}
               >
                 Cancelar
               </button>
 
-              <button className="btn btn-primary" onClick={handleChangePassword} disabled={loading}>
+              <button
+                className="btn btn-primary"
+                onClick={handleChangePassword}
+                disabled={loading}
+              >
                 {loading ? "Guardando..." : "Guardar"}
               </button>
             </div>

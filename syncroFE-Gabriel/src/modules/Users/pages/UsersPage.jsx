@@ -5,9 +5,9 @@ import {
   updateUserStatus,
   updateUser,
   createUser,
-  updateUserRole,   
+  updateUserRole,
+  resetUserPassword,
 } from "../../../api/users.api";
-
 
 import UsersTable from "../components/UsersTable";
 import UsersToolbar from "../components/UsersToolbar";
@@ -39,60 +39,70 @@ export default function UsersPage() {
       !window.confirm(
         `¿Deseas ${user.isActive ? "desactivar" : "activar"} este usuario?`
       )
-    )
+    ) {
       return;
+    }
 
     await updateUserStatus(user.userId, !user.isActive);
     loadData();
   };
 
-  
+  const handleResetPassword = async (user) => {
+    const ok = window.confirm(
+      `¿Deseas restablecer la contraseña de ${user.userName} ${user.userLastname || ""} a "Syncro123*"?\n\nEl usuario quedará obligado a cambiarla al iniciar sesión.`
+    );
+
+    if (!ok) return;
+
+    try {
+      await resetUserPassword(user.userId);
+      alert("Contraseña restablecida a Syncro123* correctamente.");
+      loadData();
+    } catch (err) {
+      alert(err?.response?.data?.message || err?.response?.data || "No se pudo restablecer la contraseña.");
+    }
+  };
+
   const handleEdit = (user) => {
     setEditing(user);
     setShowForm(true);
   };
 
-  
   const handleNew = () => {
-    setEditing(null); 
+    setEditing(null);
     setShowForm(true);
   };
 
-  
- const handleSubmit = async (values) => {
-  try {
-    setSubmitting(true);
+  const handleSubmit = async (values) => {
+    try {
+      setSubmitting(true);
 
-    if (editing) {
-      // Actualiza datos generales
-      await updateUser(editing.userId, values);
+      if (editing) {
+        await updateUser(editing.userId, values);
 
-      // Si cambió el rol, llama al endpoint especial
-      if (values.userRole !== editing.userRole) {
-        await updateUserRole(editing.userId, values.userRole);
+        if (values.userRole !== editing.userRole) {
+          await updateUserRole(editing.userId, values.userRole);
+        }
+      } else {
+        await createUser({
+          ...values,
+          password: "Syncro123*",
+        });
       }
-    } else {
-      await createUser({
-        ...values,
-        password: "Syncro123*",
-      });
+
+      setShowForm(false);
+      setEditing(null);
+      loadData();
+    } finally {
+      setSubmitting(false);
     }
-
-    setShowForm(false);
-    setEditing(null);
-    loadData();
-  } finally {
-    setSubmitting(false);
-  }
-};
-
-
+  };
 
   const filteredData = allData.filter((u) => {
     if (!showInactive && !u.isActive) return false;
     if (showInactive && u.isActive) return false;
 
-    const fullName = `${u.userName} ${u.userLastname}`.toLowerCase();
+    const fullName = `${u.userName} ${u.userLastname || ""}`.toLowerCase();
 
     return (
       fullName.includes(filters.name.toLowerCase()) &&
@@ -115,9 +125,10 @@ export default function UsersPage() {
           data={filteredData}
           onEdit={handleEdit}
           onToggleStatus={handleToggleStatus}
+          onResetPassword={handleResetPassword}
         />
       </div>
-      
+
       {showForm && (
         <div className="modal-backdrop">
           <div className="modal">

@@ -32,3 +32,7 @@ export const activateClient = (id) =>
 export const getClientLookup = () =>
     api.get("/clients/lookup");
 
+// consultar contribuyente en Hacienda
+export const lookupHacienda = (identificacion) =>
+    api.get(`/clients/hacienda-lookup/${identificacion}`);
+

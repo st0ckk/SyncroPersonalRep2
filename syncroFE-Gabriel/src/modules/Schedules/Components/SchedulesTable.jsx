@@ -1,5 +1,9 @@
+import { usePagination } from "../../../hooks/usePagination";
+import PaginationControls from "../../../components/PaginationControls";
+
 export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
   const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("es-CR") : "-");
+  const pagination = usePagination(data);
 
   const fmtTime = (d) => {
     if (!d) return "-";
@@ -12,6 +16,7 @@ export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
   };
 
   return (
+    <>
     <table className="schedules-table">
       <thead>
         <tr>
@@ -32,7 +37,7 @@ export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
             </td>
           </tr>
         ) : (
-          data.map((s) => (
+          pagination.paginatedData.map((s) => (
             <tr key={s.scheduleId}>
               <td>{s.userName}</td>
 
@@ -73,5 +78,7 @@ export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
         )}
       </tbody>
     </table>
+    <PaginationControls {...pagination} />
+    </>
   );
 }

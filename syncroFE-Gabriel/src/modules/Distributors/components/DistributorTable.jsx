@@ -2,6 +2,8 @@ import {
     deactivateDistributor,
     activateDistributor,
 } from "../../../api/distributors.api";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginationControls from "../../../components/PaginationControls";
 
 export default function DistributorTable({ data, reload, onEdit }) {
     const handleDeactivate = async (id) => {
@@ -14,7 +16,10 @@ export default function DistributorTable({ data, reload, onEdit }) {
         reload();
     };
 
+    const pagination = usePagination(data);
+
     return (
+        <>
         <table className="distributors-table">
             <thead>
                 <tr>
@@ -26,7 +31,7 @@ export default function DistributorTable({ data, reload, onEdit }) {
                 </tr>
             </thead>
             <tbody>
-                {data.map((d) => (
+                {pagination.paginatedData.map((d) => (
                     <tr key={d.distributorId}>
                         <td>{d.distributorCode}</td>
                         <td className="name">{d.name}</td>
@@ -64,5 +69,7 @@ export default function DistributorTable({ data, reload, onEdit }) {
                 ))}
             </tbody>
         </table>
+        <PaginationControls {...pagination} />
+        </>
     );
 }

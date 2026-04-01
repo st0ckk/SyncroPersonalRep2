@@ -1,5 +1,8 @@
 ﻿import { useState } from "react";
 import { generateQuoteCopy } from "../../../api/quote.api";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginationControls from "../../../components/PaginationControls";
+
 export default function QuoteTable({
     quotes,
     onEdit,
@@ -23,9 +26,9 @@ export default function QuoteTable({
 
     //Formateo para moneda
     const formatCurrency = (amount) => {
-        if (!amount) return "₡0.00";
+        if (!amount) return "₡ 0.00";
         var fixedAmount = parseFloat(amount);
-        return `₡${fixedAmount.toFixed(2) }`;
+        return `₡ ${fixedAmount.toFixed(2) }`;
     }
 
     //Formateo de tipos de estados
@@ -84,12 +87,15 @@ export default function QuoteTable({
         }
     }
 
+    const pagination = usePagination(quotes);
+
     //Si no hay cotizaciones
     if (!quotes.length) {
         return <div className="empty-state">No hay cotizaciones</div>;
     }
 
     return (
+        <>
         <table className="quote-table">
             <thead>
                 <tr>
@@ -104,7 +110,7 @@ export default function QuoteTable({
                 </tr>
             </thead>
             <tbody>
-                {quotes.map(q => (
+                {pagination.paginatedData.map(q => (
                     <>
                         <tr key={q.quoteId}>
                             <td className="number">{q.quoteNumber}</td>
@@ -122,7 +128,7 @@ export default function QuoteTable({
                                 className="btn btn-outline"
                                 onClick={() => toggleMoreInfo(q.quoteId)}
                             >
-                                Más información
+                                    {expandedQuoteId === q.quoteId ? "Ocultar" : "Detalle"}
                             </button>
 
                             <button
@@ -193,13 +199,14 @@ export default function QuoteTable({
                                             <br />
                                             {q.quoteDiscountApplied ? "Si" : "No"}
                                             <br />
-                                            <strong>Porcentaje de descuento: </strong>
-                                            <br />
-                                            {q.quoteDiscountApplied ? `${q.quoteDiscountPercentage}%` : "N/A"}
-                                            <br />
                                             <strong>Razon de descuento: </strong>
                                             <br />
                                             {q.quoteDiscountApplied ? `${q.quoteDiscountReason}` : "N/A"}
+                                            <br />
+
+                                            <strong>Porcentaje de descuento: </strong>
+                                            <br />
+                                            {q.quoteDiscountApplied ? `${q.quoteDiscountPercentage}%` : "N/A"}
                                             <br />
                                         </span>
                                     </section>
@@ -211,5 +218,7 @@ export default function QuoteTable({
                 ))}
             </tbody>
         </table>
+        <PaginationControls {...pagination} />
+        </>
     );
 }

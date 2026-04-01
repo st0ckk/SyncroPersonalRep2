@@ -1,6 +1,6 @@
 ﻿import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import ClientMap from "../Components/ClientMap";
+import ClientMap from "../components/ClientMap";
 import { getClientById } from "../../../api/clients.api";
 import "./clients.css"; 
 

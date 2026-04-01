@@ -11,6 +11,8 @@ export default function UsersForm({
     userLastname: "",
     userEmail: "",
     userRole: "",
+    telefono: "",
+    telefonoPersonal: "",
   });
 
   useEffect(() => {
@@ -20,14 +22,17 @@ export default function UsersForm({
         userLastname: initialValues.userLastname ?? "",
         userEmail: initialValues.userEmail ?? "",
         userRole: initialValues.userRole ?? "",
+        telefono: initialValues.telefono ?? "",
+        telefonoPersonal: initialValues.telefonoPersonal ?? "",
       });
     } else {
-      // 🔥 limpiar al crear nuevo
       setForm({
         userName: "",
         userLastname: "",
         userEmail: "",
         userRole: "",
+        telefono: "",
+        telefonoPersonal: "",
       });
     }
   }, [initialValues]);
@@ -76,8 +81,28 @@ export default function UsersForm({
           required
         />
       </div>
+      <div className="form-group">
+        <label>Teléfono</label>
+        <input
+          type="text"
+          name="telefono"
+          value={form.telefono}
+          onChange={handleChange}
+          placeholder="Ej: 88887777"
+        />
+      </div>
 
-      
+      <div className="form-group">
+        <label>Teléfono personal</label>
+        <input
+          type="text"
+          name="telefonoPersonal"
+          value={form.telefonoPersonal}
+          onChange={handleChange}
+          placeholder="Ej: 70001111"
+        />
+      </div>
+
       <div className="form-group">
         <label>Rol</label>
         <select

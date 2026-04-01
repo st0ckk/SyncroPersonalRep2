@@ -10,7 +10,7 @@ import {
 import QuoteToolbar from "../components/QuoteToolbar";
 import QuoteTable from "../components/QuoteTable";
 import QuoteFilters from "../components/QuoteFilters";
-import QuoteForm from "../Components/QuoteForm";
+import QuoteForm from "../components/QuoteForm";
 
 export default function QuotesPage() {
 
@@ -61,6 +61,8 @@ export default function QuotesPage() {
         setShowForm(true);
     };
 
+
+    //Subir nueva cotizacion
     const handleSubmit = async (values) => {
         try {
             setSubmitting(true);

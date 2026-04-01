@@ -27,3 +27,6 @@ export const searchProducts = (query) =>
     });
 export const addStock = (data) =>
     api.post("/stock/entry", data);
+
+export const searchCabys = (query, top = 10) =>
+    api.get("/stock/cabys", { params: { q: query, top } });

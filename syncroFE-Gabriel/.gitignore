@@ -25,3 +25,5 @@ dist-ssr
 
 # Visual Studio
 .vs/
+src/routes/AppRoutes.jsx
+src/routes/AppRoutes.jsx

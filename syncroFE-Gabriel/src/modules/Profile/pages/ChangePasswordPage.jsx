@@ -26,6 +26,11 @@ export default function ChangePasswordPage() {
       return;
     }
 
+    if (newPassword === currentPassword) {
+      setError("La nueva contraseña no puede ser igual a la actual");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -34,20 +39,17 @@ export default function ChangePasswordPage() {
         newPassword,
       });
 
-      // 🔓 desbloqueo definitivo
-      localStorage.setItem("mustChangePassword", "false");
-
-      // seguridad: cerrar sesión
+      // limpiar sesión completa
+      localStorage.removeItem("mustChangePassword");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("role");
+      localStorage.removeItem("roles");
 
       alert("Contraseña actualizada correctamente. Inicia sesión nuevamente.");
       navigate("/login", { replace: true });
     } catch (err) {
-      setError(
-        err?.response?.data || "Error al cambiar la contraseña"
-      );
+      setError(err?.response?.data || "Error al cambiar la contraseña");
     } finally {
       setLoading(false);
     }

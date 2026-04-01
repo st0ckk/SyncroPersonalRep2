@@ -20,11 +20,11 @@ export const deleteUser = (id) =>
 export const updateUserRole = (id, userRole) =>
   api.put(`${baseUrl}/${id}/role`, { userRole });
 
-
 export const updateUserStatus = (id, isActive) =>
   api.put(`${baseUrl}/${id}/status`, { isActive });
 
+export const resetUserPassword = (id) =>
+  api.put(`${baseUrl}/${id}/reset-password`);
+
 export const updatePassword = (data) =>
   api.put("/account/password", data);
-
-

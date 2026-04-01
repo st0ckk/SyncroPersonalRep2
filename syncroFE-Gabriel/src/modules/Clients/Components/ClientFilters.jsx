@@ -22,9 +22,9 @@ export default function ClientFilters({
                 }
             >
                 <option value="">Todos los tipos</option>
-                <option value="regular">Regular</option>
-                <option value="premium">Premium</option>
-                <option value="corporativo">Corporativo</option>
+                <option value="extranjero">Extranjero</option>
+                <option value="pulpero">Pulpero</option>
+                <option value="rutero">Rutero</option>
             </select>
         </div>
     );

@@ -153,3 +153,31 @@
   text-align: center;
 }
 
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .users-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .toolbar-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .users-container {
+    padding: 0 12px;
+  }
+
+  .users-page {
+    padding: 12px;
+  }
+}
+

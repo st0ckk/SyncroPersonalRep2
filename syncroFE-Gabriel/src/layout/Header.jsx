@@ -4,7 +4,7 @@ import userIcon from "../assets/user_icon.ico";
 import { FaUser } from "react-icons/fa";
 
 
-export default function Header({ user }) {
+export default function Header({ user, onMenuToggle }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,6 +16,12 @@ export default function Header({ user }) {
 
   return (
     <header className="header">
+      {onMenuToggle && (
+        <button className="hamburger-btn" onClick={onMenuToggle} title="Menú">
+          ☰
+        </button>
+      )}
+
       <div className="header-left">
         <h3>Syncro</h3>
       </div>

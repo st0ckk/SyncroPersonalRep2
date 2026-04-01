@@ -1,11 +1,15 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function ForcePasswordChangeGuard() {
+  const token = localStorage.getItem("token");
   const mustChange = localStorage.getItem("mustChangePassword") === "true";
-  const location = useLocation();
 
-  if (mustChange && location.pathname !== "/change-password") {
-    return <Navigate to="/change-password" replace />;
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!mustChange) {
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

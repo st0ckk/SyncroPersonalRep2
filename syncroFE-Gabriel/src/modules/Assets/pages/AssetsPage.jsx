@@ -21,6 +21,7 @@ export default function AssetsPage() {
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState("");
 
     const loadData = async () => {
         const res = showInactive
@@ -41,6 +42,11 @@ export default function AssetsPage() {
     useEffect(() => {
         loadUsers();
     }, []);
+
+    // Filtrar por usuario en el cliente
+    const filteredData = selectedUserId
+        ? data.filter((a) => a.userId === parseInt(selectedUserId))
+        : data;
 
     const handleSubmit = async (values) => {
         try {
@@ -90,10 +96,13 @@ export default function AssetsPage() {
                         setEditing(null);
                         setShowForm(true);
                     }}
+                    users={users}
+                    selectedUserId={selectedUserId}
+                    onUserFilter={setSelectedUserId}
                 />
 
                 <AssetsTable
-                    data={data}
+                    data={filteredData}
                     onEdit={(asset) => {
                         setEditing(asset);
                         setShowForm(true);

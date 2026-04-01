@@ -1,0 +1,378 @@
+.facturacion-page {
+    padding: 20px;
+}
+
+.facturacion-container {
+    background: var(--bg-card, #fff);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+.facturacion-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.facturacion-toolbar .toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* =========================
+   FILTERS
+========================= */
+.facturacion-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.facturacion-filters input,
+.facturacion-filters select {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    background: var(--bg-input, #fff);
+    color: var(--text-main, #1f2937);
+}
+
+/* =========================
+   TABLE
+========================= */
+.facturacion-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.facturacion-table th {
+    text-align: left;
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.facturacion-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.facturacion-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.facturacion-table .clave-cell {
+    font-family: monospace;
+    font-size: 11px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.facturacion-table .total-cell {
+    font-weight: 600;
+}
+
+/* =========================
+   TABLE ACTIONS
+========================= */
+.facturacion-table td.actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    flex-wrap: wrap;
+}
+
+.facturacion-table td.actions .btn {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* =========================
+   STATUS BADGES
+========================= */
+.status-accepted {
+    background: rgba(34, 197, 94, 0.15);
+    color: #15803d;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-sent {
+    background: rgba(59, 130, 246, 0.15);
+    color: #1d4ed8;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: rgba(234, 179, 8, 0.15);
+    color: #a16207;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-rejected {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* =========================
+   DOCUMENT TYPE BADGES
+========================= */
+.doctype-badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.doctype-fe {
+    background: rgba(99, 102, 241, 0.15);
+    color: #4338ca;
+}
+
+.doctype-nc {
+    background: rgba(249, 115, 22, 0.15);
+    color: #c2410c;
+}
+
+.doctype-nd {
+    background: rgba(168, 85, 247, 0.15);
+    color: #7e22ce;
+}
+
+.doctype-te {
+    background: rgba(107, 114, 128, 0.15);
+    color: #374151;
+}
+
+/* =========================
+   EXPANDED ROW DETAILS
+========================= */
+.facturacion-extra td {
+    background: rgba(0, 0, 0, 0.02);
+    padding: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.facturacion-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.facturacion-details-grid .detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.facturacion-details-grid .detail-group strong {
+    color: var(--text-main, #1f2937);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.facturacion-details-grid .detail-group span {
+    font-size: 13px;
+}
+
+.clave-full {
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-all;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* =========================
+   GENERATE MODAL
+========================= */
+.generate-modal {
+    width: 550px;
+    max-width: 95vw;
+}
+
+.generate-modal h3 {
+    margin-bottom: 16px;
+}
+
+.generate-modal .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.generate-modal .form-group label {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.generate-modal .form-group select,
+.generate-modal .form-group input {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    background: var(--bg-input, #fff);
+}
+
+.generate-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.sale-preview {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.sale-preview p {
+    margin: 4px 0;
+}
+
+/* =========================
+   VALIDATION MODAL
+========================= */
+.validation-modal {
+    width: 550px;
+    max-width: 95vw;
+}
+
+.validation-modal h3 {
+    margin-bottom: 12px;
+}
+
+.validation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+}
+
+.validation-list li {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.validation-list li.val-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.validation-list li.val-warning {
+    background: rgba(234, 179, 8, 0.1);
+    color: #a16207;
+}
+
+.validation-list li .val-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.validation-list li .val-text {
+    flex: 1;
+}
+
+.validation-list li .val-field {
+    font-weight: 600;
+    font-size: 11px;
+    font-family: monospace;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.validation-modal .form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* =========================
+   BUTTON STYLES (module-specific)
+========================= */
+.btn-icon {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-icon:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.btn-icon:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-success {
+    background-color: #22c55e;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-success:hover {
+    background-color: #16a34a;
+}
+
+.btn-success:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

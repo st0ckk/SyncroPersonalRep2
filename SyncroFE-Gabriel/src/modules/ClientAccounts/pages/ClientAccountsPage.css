@@ -1,0 +1,383 @@
+﻿/* =========================
+   PAGE
+========================= */
+.caccount-page {
+    padding: 24px;
+}
+
+.caccount-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+.caccount-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* =========================
+   FILTERS
+========================= */
+.caccounts-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+    .caccounts-filters input,
+    .caccounts-filters select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+    }
+
+
+/* =========================
+   TABLE
+========================= */
+.caccount-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .caccount-table th {
+        text-align: left;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .caccount-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .caccount-table tbody tr:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    .caccount-table .number {
+        font-weight: 500;
+    }
+
+    .caccount-table .price {
+        font-weight: 600;
+    }
+
+/* =========================
+   TABLE ACTIONS
+========================= */
+
+    .caccount-table td.actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+    
+    .caccount-table td.actions .btn {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+/* =========================
+   BUTTON BASE
+========================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+}
+
+/* =========================
+   BUTTON VARIANTS
+========================= */
+
+.btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+.btn-outline {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+    .btn-outline:hover {
+        background: rgba(0,0,0,0.05);
+    }
+
+/* Botones SOLO dentro de la tabla */
+.caccount-table td.actions .btn-danger {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+    .caccount-table td.actions .btn-danger:hover {
+        background-color: #dc2626;
+    }
+
+.caccount-table td.actions .btn-success {
+    background-color: #22c55e;
+    color: #ffffff;
+}
+
+    .caccount-table td.actions .btn-success:hover {
+        background-color: #16a34a;
+    }
+
+/* =========================
+   STATES
+========================= */
+.loading,
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 380px;
+    max-width: 1100px;
+}
+
+/* ── Modal de confirmacion ── */
+.modal-confirm {
+    width: 420px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+    .modal-confirm h3 {
+        margin-bottom: 12px;
+        color: #dc2626;
+    }
+
+    .modal-confirm p {
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .modal-confirm .hint {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .modal-confirm .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+/* =========================
+   caccount FORM
+========================= */
+.caccount-form {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 20px;
+    margin-top: 12px;
+}
+
+.caccount-form .form-group {
+        display: flex;
+        flex-direction: column;
+}
+
+.caccount-form label {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+}
+
+    .caccount-form input,
+    .caccount-form select {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+        background: var(--bg-input);
+        color: var(--text-primary);
+    }
+
+        .caccount-form input:focus,
+        .caccount-form select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            outline: none;
+        }
+
+    .caccount-form .full-width {
+        grid-column: 1 / -1;
+    }
+
+.caccount-form-details-items {
+    display: flex;
+    gap: 4%;
+}
+
+.caccount-form .form-group .section-header {
+    margin-bottom: 2%
+}
+
+    .caccount-form-details-items button {
+        position: absolute;
+        right: 0;
+        width: 5%;
+        height: 40px;
+        margin-top: 0%;
+    }
+
+    #caccount-items-select {
+        width: 60%;
+    }
+
+    .caccount-form-details-items input {
+        width: 10%;
+    }
+
+    .caccount-form-details-items span {
+        margin-top: 1%;
+    }
+
+
+
+
+/* =========================
+   caccount STATUSES
+========================= */
+
+.Suspendida-status {
+    background: rgba(183, 177, 177, 0.15);
+    color: #8C8383;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.Activa-status {
+    background: rgba(34,197,94,0.15);
+    color: #15803D;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.Cerrada-status {
+    background: rgba(239,68,68,0.15);
+    color: #B91C1C;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* =========================
+   MÁS INFORMACIÓN
+========================= */
+.caccount-extra td {
+    background: rgba(0,0,0,0.02);
+    padding: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.caccount-details-flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.caccount-details-remarks {
+    margin-left: 5%;
+}
+
+.caccount-details-discount {
+    margin-left: 5%;
+}
+
+/* =========================
+   MOVEMENT
+========================= */
+
+.caccount-movement-container {
+    overflow-y: scroll;
+    height: 50vh;
+}
+
+.caccount-movement-options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+    .caccount-movement-options button {
+        width: 25%;
+    }
+
+.debit-charge {
+    background: rgba(34,197,94,0.15);
+    color: #15803D;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.credit-charge {
+    background: rgba(239,68,68,0.15);
+    color: #B91C1C;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+
