@@ -1,5 +1,6 @@
-import "./RoutesPage.css";
 import { useEffect, useMemo, useState } from "react";
+import "./RoutesPage.css";
+import Swal from "sweetalert2";
 import {
     activateRoute,
     createRoute,
@@ -115,11 +116,7 @@ export default function RoutesPage() {
             await loadRoutes();
         } catch (err) {
             console.error("Error guardando ruta", err);
-            alert(
-                err?.response?.data?.message ||
-                err?.response?.data ||
-                "No se pudo guardar la ruta."
-            );
+            Swal.fire({ icon: "error", title: "Error", text: err?.response?.data?.message || err?.response?.data || "No se pudo guardar la ruta." });
         } finally {
             setSubmitting(false);
         }
@@ -131,7 +128,7 @@ export default function RoutesPage() {
             await loadRoutes();
         } catch (err) {
             console.error("Error desactivando ruta", err);
-            alert("No se pudo desactivar la ruta.");
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudo desactivar la ruta." });
         }
     };
 
@@ -141,7 +138,7 @@ export default function RoutesPage() {
             await loadRoutes();
         } catch (err) {
             console.error("Error activando ruta", err);
-            alert("No se pudo activar la ruta.");
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudo activar la ruta." });
         }
     };
 

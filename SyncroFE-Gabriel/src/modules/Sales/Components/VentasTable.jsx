@@ -1,5 +1,7 @@
 ﻿import { useState } from "react";
+import Button from "../../../components/Button";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { generateInvoice, validateInvoice } from "../../../api/electronicInvoice.api";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginationControls from "../../../components/PaginationControls";
@@ -16,6 +18,8 @@ export default function VentasTable(
 
     //Informacion extendida
     const [expandedSaleId, setExpandedSaleId] = useState(null);
+
+    //Borrado
     const [confirmDeleteId, setConfirmDeleteId] = useState(null);
     const [deleting, setDeleting] = useState(false);
 
@@ -34,22 +38,22 @@ export default function VentasTable(
             const valResponse = await validateInvoice({ purchaseId, documentType: "01" });
             if (!valResponse.data.isValid) {
                 const errorMsgs = valResponse.data.errors.map(e => `- ${e.message}`).join("\n");
-                alert(`Errores de validacion:\n${errorMsgs}`);
+                Swal.fire({ icon: "error", title: "Error", text: `Errores de validacion:\n${errorMsgs}` });
                 return;
             }
             // Generate
             const response = await generateInvoice({ purchaseId, documentType: "01" });
             if (response.data) {
-                alert(`Factura generada exitosamente.\nClave: ${response.data.clave}\nEstado: ${response.data.haciendaStatus}`);
+                Swal.fire({ icon: "success", title: "Éxito", text: `Factura generada exitosamente.\nClave: ${response.data.clave}\nEstado: ${response.data.haciendaStatus}`, timer: 2000, showConfirmButton: false });
                 navigate("/facturacion");
             }
         } catch (err) {
             const errorData = err.response?.data;
             if (errorData?.validationErrors) {
                 const msgs = errorData.validationErrors.map(e => `- ${e.message}`).join("\n");
-                alert(`Errores de validacion:\n${msgs}`);
+                Swal.fire({ icon: "error", title: "Error", text: `Errores de validacion:\n${msgs}` });
             } else {
-                alert(`Error al facturar: ${errorData?.error || errorData?.detail || err.message}`);
+                Swal.fire({ icon: "error", title: "Error", text: `Error al facturar: ${errorData?.error || errorData?.detail || err.message}` });
             }
         } finally {
             setFacturando(null);
@@ -96,6 +100,7 @@ export default function VentasTable(
 
     return (
         <>
+            <div className="table-scroll">
             <table className="ventas-table">
                 <thead>
                     <tr>
@@ -123,35 +128,39 @@ export default function VentasTable(
                                 <td className="paidStatus">{s.purchasePaid ? "✅" : "❌"}</td>
                                 <td>{formatDate(s.purchaseDate)}</td>
                                 <td className="actions">
-                                    <button
-                                        className="btn btn-outline btn-sm"
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
                                         onClick={() => setExpandedSaleId(expandedSaleId === s.purchaseId ? null : s.purchaseId)}
                                     >
                                         {expandedSaleId === s.purchaseId ? "Ocultar" : "Detalle"}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
-                                        className="btn btn-outline"
+                                        variant="outline"
                                         onClick={() => onEdit(s)}
                                         disabled={s.isActive && !s.purchasePaid ? false : true}
                                     >
                                         Editar
-                                    </button>
-                                    <button
-                                        className="btn btn-danger btn-sm"
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
                                         onClick={() => setConfirmDeleteId(s.purchaseId)}
                                         disabled={s.isActive && !s.purchasePaid ? false : true}
                                     >
                                         {!s.isActive && !s.purchasePaid ? "Cancelada" : "Cancelar"}
-                                    </button>
-                                    <button
-                                        className="btn btn-sm"
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
                                         style={{ backgroundColor: "#6366f1", color: "#fff", border: "none", borderRadius: "6px" }}
                                         onClick={() => setConfirmFacturarId(s.purchaseId)}
                                         disabled={!s.isActive || facturando === s.purchaseId}
                                     >
                                         {facturando === s.purchaseId ? "Facturando..." : "Facturar"}
-                                    </button>
+                                    </Button>
+
                                 </td>
                             </tr>
 
@@ -161,27 +170,27 @@ export default function VentasTable(
                                         <section className="ventas-details-flex">
                                             <span>
                                                 <strong>Articulos ordenados: </strong>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Producto</th>
-                                                    <th>Precio unitario</th>
-                                                    <th>Cantidad</th>
-                                                    <th>Total línea</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {s.saleDetails.map((d) => (
-                                                    <>
-                                                    <tr key={d.saleDetailId}>
-                                                        <td>{d.productName}</td>
-                                                        <td>{formatCurrency(d.unitPrice)}</td>
-                                                        <td>{d.quantity}</td>
-                                                        <td>{formatCurrency(d.lineTotal)}</td>
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Producto</th>
+                                                            <th>Precio unitario</th>
+                                                            <th>Cantidad</th>
+                                                            <th>Total línea</th>
                                                         </tr>
-                                                    </>
-                                                ))}
-                                            </tbody>
+                                                    </thead>
+                                                    <tbody>
+                                                        {s.saleDetails.map((d) => (
+                                                            <>
+                                                                <tr key={d.saleDetailId}>
+                                                                    <td>{d.productName}</td>
+                                                                    <td>{formatCurrency(d.unitPrice)}</td>
+                                                                    <td>{d.quantity}</td>
+                                                                    <td>{formatCurrency(d.lineTotal)}</td>
+                                                                </tr>
+                                                            </>
+                                                        ))}
+                                                    </tbody>
                                                 </table>
                                             </span>
                                             <span class="ventas-details-remarks">
@@ -203,6 +212,10 @@ export default function VentasTable(
                                                 <br />
                                             </span>
                                             <span class="ventas-details-discount">
+                                                <strong>Numero de caja: </strong>
+                                                <br />
+                                                {s.registerNumber}
+                                                <br />
                                                 <strong>Descuento aplicable: </strong>
                                                 <br />
                                                 {s.purchaseDiscountApplied ? "Si" : "No"}
@@ -224,6 +237,7 @@ export default function VentasTable(
                     ))}
                 </tbody>
             </table>
+            </div>
             <PaginationControls {...pagination} />
 
             {/* Modal de confirmación de facturación */}
@@ -238,15 +252,15 @@ export default function VentasTable(
                             Esta acción enviará el comprobante a Hacienda y no se puede deshacer.
                         </p>
                         <div className="form-actions">
-                            <button
-                                className="btn btn-outline"
+                            <Button
+                                variant="outline"
                                 onClick={() => setConfirmFacturarId(null)}
                                 disabled={facturando === confirmFacturarId}
                             >
                                 Cancelar
-                            </button>
-                            <button
-                                className="btn btn-primary"
+                            </Button>
+                            <Button
+                                variant="primary"
                                 onClick={async () => {
                                     await handleFacturar(confirmFacturarId);
                                     setConfirmFacturarId(null);
@@ -254,7 +268,7 @@ export default function VentasTable(
                                 disabled={facturando === confirmFacturarId}
                             >
                                 {facturando === confirmFacturarId ? "Facturando..." : "Sí, facturar"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -272,20 +286,20 @@ export default function VentasTable(
                             Esta acción restaurará el inventario de los productos asociados.
                         </p>
                         <div className="form-actions">
-                            <button
-                                className="btn btn-outline"
+                            <Button
+                                variant="outline"
                                 onClick={() => setConfirmDeleteId(null)}
                                 disabled={deleting}
                             >
                                 Cancelar
-                            </button>
-                            <button
-                                className="btn btn-danger"
+                            </Button>
+                            <Button
+                                variant="danger"
                                 onClick={() => handleDelete(confirmDeleteId)}
                                 disabled={deleting}
                             >
                                 {deleting ? "Eliminando..." : "Sí, eliminar"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

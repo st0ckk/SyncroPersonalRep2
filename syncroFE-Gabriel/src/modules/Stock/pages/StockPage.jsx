@@ -1,5 +1,6 @@
-﻿import "./StockPage.css";
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
+import "./StockPage.css";
+import Swal from "sweetalert2";
 import {
     getProducts,
     getInactiveProducts,
@@ -66,7 +67,7 @@ export default function StockPage() {
             setProducts(response.data ?? []);
         } catch (err) {
             console.error("Error agregando mercadería", err);
-            alert("Error agregando mercadería");
+            Swal.fire({ icon: "error", title: "Error", text: "Error agregando mercadería" });
         } finally {
             setSubmitting(false);
         }
@@ -139,7 +140,7 @@ export default function StockPage() {
             setProducts(response.data ?? []);
         } catch (err) {
             console.error("Error guardando producto", err);
-            alert("Error guardando producto");
+            Swal.fire({ icon: "error", title: "Error", text: "Error guardando producto" });
         } finally {
             setSubmitting(false);
         }

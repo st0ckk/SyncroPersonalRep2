@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 import { getUsers } from "../../../api/users.api";
 import { getClients } from "../../../api/clients.api";
 import RouteMapPreview from "../../Routes/components/RouteMapPreview";
@@ -107,7 +109,7 @@ export default function RouteTemplateForm({
                     latitude: client.location?.latitude,
                     longitude: client.location?.longitude,
                     stopOrder: prev.stops.length + 1,
-                    notes: "",
+                    notes: "Llamar antes de llegar",
                 },
             ],
         }));
@@ -156,16 +158,16 @@ export default function RouteTemplateForm({
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!form.templateName.trim()) {
-            alert("Debes ingresar el nombre de la plantilla.");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debes ingresar el nombre de la plantilla." });
             return;
         }
 
         if (!form.stops.length) {
-            alert("Debes agregar al menos una parada.");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debes agregar al menos una parada." });
             return;
         }
 
@@ -239,13 +241,13 @@ export default function RouteTemplateForm({
                                 ))}
                             </select>
 
-                            <button
+                            <Button
                                 type="button"
-                                className="btn btn-primary"
+                                variant="primary"
                                 onClick={addStop}
                             >
                                 Agregar parada
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -262,29 +264,29 @@ export default function RouteTemplateForm({
                                             <strong>Parada #{index + 1}</strong>
 
                                             <div className="template-stop-actions">
-                                                <button
+                                                <Button
                                                     type="button"
-                                                    className="btn btn-outline"
+                                                    variant="outline"
                                                     onClick={() => moveStop(index, "up")}
                                                     disabled={index === 0}
                                                 >
                                                     ↑
-                                                </button>
-                                                <button
+                                                </Button>
+                                                <Button
                                                     type="button"
-                                                    className="btn btn-outline"
+                                                    variant="outline"
                                                     onClick={() => moveStop(index, "down")}
                                                     disabled={index === form.stops.length - 1}
                                                 >
                                                     ↓
-                                                </button>
-                                                <button
+                                                </Button>
+                                                <Button
                                                     type="button"
-                                                    className="btn btn-danger"
+                                                    variant="danger"
                                                     onClick={() => removeStop(index)}
                                                 >
                                                     Quitar
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
 
@@ -322,22 +324,22 @@ export default function RouteTemplateForm({
                     </div>
 
                     <div className="form-group full-width template-form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="primary"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar plantilla"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

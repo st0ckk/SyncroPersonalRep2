@@ -36,3 +36,7 @@ export const getClientLookup = () =>
 export const lookupHacienda = (identificacion) =>
     api.get(`/clients/hacienda-lookup/${identificacion}`);
 
+// resuelve un enlace corto de Google Maps al URL completo
+export const resolveMapsUrl = (url) =>
+    api.get("/clients/resolve-maps-url", { params: { url } });
+

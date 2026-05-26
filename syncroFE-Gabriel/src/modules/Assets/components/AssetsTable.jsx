@@ -1,4 +1,5 @@
 import { usePagination } from "../../../hooks/usePagination";
+import Button from "../../../components/Button";
 import PaginationControls from "../../../components/PaginationControls";
 
 export default function AssetsTable({ data, onEdit, onToggleStatus }) {
@@ -15,6 +16,7 @@ export default function AssetsTable({ data, onEdit, onToggleStatus }) {
 
     return (
         <>
+        <div className="table-scroll">
         <table className="assets-table">
             <thead>
                 <tr>
@@ -41,20 +43,21 @@ export default function AssetsTable({ data, onEdit, onToggleStatus }) {
                             </span>
                         </td>
                         <td className="actions">
-                            <button className="btn btn-outline" onClick={() => onEdit(asset)}>
+                            <Button variant="outline" onClick={() => onEdit(asset)}>
                                 Editar
-                            </button>
-                            <button
-                                className={`btn ${asset.isActive ? "btn-danger" : "btn-success"}`}
+                            </Button>
+                            <Button
+                                variant={asset.isActive ? "danger" : "success"}
                                 onClick={() => onToggleStatus(asset)}
                             >
                                 {asset.isActive ? "Desactivar" : "Activar"}
-                            </button>
+                            </Button>
                         </td>
                     </tr>
                 ))}
             </tbody>
         </table>
+        </div>
         <PaginationControls {...pagination} />
         </>
     );

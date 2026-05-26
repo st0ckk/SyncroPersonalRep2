@@ -1,5 +1,6 @@
-import "./RouteTemplatesPage.css";
 import { useEffect, useMemo, useState } from "react";
+import "./RouteTemplatesPage.css";
+import Swal from "sweetalert2";
 import {
     activateRouteTemplate,
     createRouteTemplate,
@@ -86,11 +87,7 @@ export default function RouteTemplatesPage() {
             await loadTemplates();
         } catch (err) {
             console.error("Error guardando plantilla", err);
-            alert(
-                err?.response?.data?.message ||
-                err?.response?.data ||
-                "No se pudo guardar la plantilla."
-            );
+            Swal.fire({ icon: "error", title: "Error", text: err?.response?.data?.message || err?.response?.data || "No se pudo guardar la plantilla." });
         } finally {
             setSubmitting(false);
         }
@@ -102,7 +99,7 @@ export default function RouteTemplatesPage() {
             await loadTemplates();
         } catch (err) {
             console.error("Error desactivando plantilla", err);
-            alert("No se pudo desactivar la plantilla.");
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudo desactivar la plantilla." });
         }
     };
 
@@ -112,7 +109,7 @@ export default function RouteTemplatesPage() {
             await loadTemplates();
         } catch (err) {
             console.error("Error activando plantilla", err);
-            alert("No se pudo activar la plantilla.");
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudo activar la plantilla." });
         }
     };
 
@@ -123,14 +120,10 @@ export default function RouteTemplatesPage() {
             setInstantiating(true);
             await instantiateRouteTemplate(instantiateTarget.templateId, values);
             setInstantiateTarget(null);
-            alert("Ruta creada desde plantilla correctamente.");
+            Swal.fire({ icon: "success", title: "Éxito", text: "Ruta creada desde plantilla correctamente.", timer: 2000, showConfirmButton: false });
         } catch (err) {
             console.error("Error instanciando plantilla", err);
-            alert(
-                err?.response?.data?.message ||
-                err?.response?.data ||
-                "No se pudo crear la ruta desde la plantilla."
-            );
+            Swal.fire({ icon: "error", title: "Error", text: err?.response?.data?.message || err?.response?.data || "No se pudo crear la ruta desde la plantilla." });
         } finally {
             setInstantiating(false);
         }

@@ -1,4 +1,5 @@
 ﻿import axios from "axios";
+import Swal from "sweetalert2";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -14,6 +15,25 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Ocurrió un error inesperado.";
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: message,
+      confirmButtonText: "Aceptar",
+    });
+
+    return Promise.reject(error);
+  }
 );
 
 export default api;

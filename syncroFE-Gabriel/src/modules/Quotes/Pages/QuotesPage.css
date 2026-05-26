@@ -129,7 +129,7 @@
 }
 
     .btn-outline:hover {
-        background: rgba(0,0,0,0.05);
+        background: rgba(255,255,255,0.1);
     }
 
 /* Botones SOLO dentro de la tabla */
@@ -264,8 +264,8 @@
 ========================= */
 
 .Expirada-status {
-    background: rgba(183, 177, 177, 0.15);
-    color: #8C8383;
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -273,8 +273,8 @@
 }
 
 .Pendiente-status {
-    background: rgba(47, 107, 166, 0.15);
-    color: #1E3F5F;
+    background: rgba(56, 189, 248, 0.15);
+    color: #7dd3fc;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -282,8 +282,8 @@
 }
 
 .Aprobada-status {
-    background: rgba(34,197,94,0.15);
-    color: #15803D;
+    background: rgba(34,197,94,0.2);
+    color: #86efac;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -291,8 +291,8 @@
 }
 
 .Rechazada-status {
-    background: rgba(239,68,68,0.15);
-    color: #B91C1C;
+    background: rgba(239,68,68,0.2);
+    color: #fca5a5;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -300,7 +300,7 @@
 }
 
 /* =========================
-   MÁS INFORMACIÓN
+   Mï¿½S INFORMACIï¿½N
 ========================= */
 .quote-extra td {
     background: rgba(0,0,0,0.02);
@@ -320,4 +320,74 @@
 
 .quote-details-discount {
     margin-left: 5%;
+}
+
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .quote-page {
+        padding: 12px;
+    }
+
+    .quote-card {
+        padding: 14px;
+    }
+
+    .quote-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .toolbar-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .quotes-filters {
+        flex-direction: column;
+    }
+
+    .quotes-filters input,
+    .quotes-filters select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .quote-form {
+        grid-template-columns: 1fr;
+    }
+
+    .modal {
+        max-width: 95vw;
+        width: 95vw;
+        min-width: unset;
+    }
+
+    .quote-details-flex {
+        flex-direction: column;
+    }
+
+    .quote-details-remarks,
+    .quote-details-discount {
+        margin-left: 0;
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .quote-page {
+        padding: 8px;
+    }
+
+    .quote-table th,
+    .quote-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
 }

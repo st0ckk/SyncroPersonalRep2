@@ -2,6 +2,7 @@ import {
     deactivateDistributor,
     activateDistributor,
 } from "../../../api/distributors.api";
+import Button from "../../../components/Button";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginationControls from "../../../components/PaginationControls";
 
@@ -20,6 +21,7 @@ export default function DistributorTable({ data, reload, onEdit }) {
 
     return (
         <>
+        <div className="table-scroll">
         <table className="distributors-table">
             <thead>
                 <tr>
@@ -38,37 +40,38 @@ export default function DistributorTable({ data, reload, onEdit }) {
                         <td>{d.email}</td>
                         <td>{d.phone}</td>
                         <td style={{ display: "flex", gap: "8px" }}>
-                            <button
-                                className="btn btn-outline"
+                            <Button
+                                variant="outline"
                                 onClick={() => onEdit(d)}
                             >
                                 Editar
-                            </button>
+                            </Button>
 
                             {d.isActive ? (
-                                <button
-                                    className="btn btn-danger"
+                                <Button
+                                    variant="danger"
                                     onClick={() =>
                                         handleDeactivate(d.distributorId)
                                     }
                                 >
                                     Desactivar
-                                </button>
+                                </Button>
                             ) : (
-                                <button
-                                    className="btn btn-success"
+                                <Button
+                                    variant="success"
                                     onClick={() =>
                                         handleActivate(d.distributorId)
                                     }
                                 >
                                     Activar
-                                </button>
+                                </Button>
                             )}
                         </td>
                     </tr>
                 ))}
             </tbody>
         </table>
+        </div>
         <PaginationControls {...pagination} />
         </>
     );

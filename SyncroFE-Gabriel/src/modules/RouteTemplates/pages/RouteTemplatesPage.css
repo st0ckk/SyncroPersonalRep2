@@ -43,6 +43,14 @@
     font-size: 14px;
 }
 
+.route-templates-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
 .route-templates-table {
     width: 100%;
     border-collapse: collapse;
@@ -81,13 +89,13 @@
 }
 
 .template-status.active {
-    background: rgba(34, 197, 94, 0.15);
-    color: #15803d;
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
 }
 
 .template-status.inactive {
-    background: rgba(239, 68, 68, 0.15);
-    color: #b91c1c;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
 }
 
 .template-extra td {
@@ -200,7 +208,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 14px;
-    background: rgba(0,0,0,0.02);
+    background: rgba(255,255,255,0.04);
 }
 
 .template-stop-card-header {

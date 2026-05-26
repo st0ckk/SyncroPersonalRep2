@@ -1,5 +1,5 @@
-﻿import "./VentasPage.css";
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
+import "./VentasPage.css";
 import {
     getSales,
     filterSale,
@@ -12,6 +12,9 @@ import VentasToolbar from "../components/VentasToolbar";
 import VentasTable from "../components/VentasTable";
 import VentasFilters from "../components/VentasFilters";
 import VentasForm from "../components/VentasForm";
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 export default function VentasPage() {
 
@@ -33,6 +36,8 @@ export default function VentasPage() {
     const [editingSale, setEditingSale] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
+    // Sweet alert
+    const SwalAlert = withReactContent(Swal);
 
     //Cargar datos de ventas
     const loadData = async () => {
@@ -92,7 +97,11 @@ export default function VentasPage() {
             loadData();
         } catch (err) {
             console.error("Error guardando la venta", err);
-            alert("Error guardando producto");
+            SwalAlert.fire({
+                icon: "error",
+                title: "Error...",
+                text: "Error guardando venta"
+            });
         } finally {
             setSubmitting(false);
         }

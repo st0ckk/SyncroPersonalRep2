@@ -1,38 +1,43 @@
 import { useState } from "react";
+import "./layout.css";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
-import "./layout.css";
+import { PermissionsProvider } from "../context/PermissionsContext";
 
 export default function MainLayout() {
   const mustChange = localStorage.getItem("mustChangePassword") === "true";
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="app-layout">
-      {!mustChange && (
-        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      )}
+    <PermissionsProvider>
+      <div className="app-bg" />
 
-      {!mustChange && sidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <div className="app-layout">
+        {!mustChange && (
+          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        )}
 
-      <div className="app-content">
-        <Header
-          onMenuToggle={!mustChange ? () => setSidebarOpen((v) => !v) : undefined}
-        />
+        {!mustChange && sidebarOpen && (
+          <div
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-        <main className="app-main">
-          <Outlet />
-        </main>
+        <div className="app-content">
+          <Header
+            onMenuToggle={!mustChange ? () => setSidebarOpen((v) => !v) : undefined}
+          />
 
-        {!mustChange && <Footer />}
+          <main className="app-main">
+            <Outlet />
+          </main>
+
+          {!mustChange && <Footer />}
+        </div>
       </div>
-    </div>
+    </PermissionsProvider>
   );
 }

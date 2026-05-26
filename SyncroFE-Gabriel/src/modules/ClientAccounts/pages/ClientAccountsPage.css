@@ -129,7 +129,7 @@
 }
 
     .btn-outline:hover {
-        background: rgba(0,0,0,0.05);
+        background: rgba(255,255,255,0.1);
     }
 
 /* Botones SOLO dentro de la tabla */
@@ -293,8 +293,8 @@
 ========================= */
 
 .Suspendida-status {
-    background: rgba(183, 177, 177, 0.15);
-    color: #8C8383;
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -302,8 +302,8 @@
 }
 
 .Activa-status {
-    background: rgba(34,197,94,0.15);
-    color: #15803D;
+    background: rgba(34,197,94,0.2);
+    color: #86efac;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -311,8 +311,8 @@
 }
 
 .Cerrada-status {
-    background: rgba(239,68,68,0.15);
-    color: #B91C1C;
+    background: rgba(239,68,68,0.2);
+    color: #fca5a5;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -362,8 +362,8 @@
     }
 
 .debit-charge {
-    background: rgba(34,197,94,0.15);
-    color: #15803D;
+    background: rgba(34,197,94,0.2);
+    color: #86efac;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 15px;
@@ -371,13 +371,74 @@
 }
 
 .credit-charge {
-    background: rgba(239,68,68,0.15);
-    color: #B91C1C;
+    background: rgba(239,68,68,0.2);
+    color: #fca5a5;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 15px;
     font-weight: 500;
 }
 
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .caccount-page {
+        padding: 12px;
+    }
 
+    .caccount-card {
+        padding: 14px;
+    }
+
+    .caccount-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .toolbar-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .caccounts-filters {
+        flex-direction: column;
+    }
+
+    .caccounts-filters input,
+    .caccounts-filters select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .caccount-form {
+        grid-template-columns: 1fr;
+    }
+
+    .modal {
+        max-width: 95vw;
+        width: 95vw;
+        min-width: unset;
+    }
+
+    .caccount-movement-options button {
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .caccount-page {
+        padding: 8px;
+    }
+
+    .caccount-table th,
+    .caccount-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}

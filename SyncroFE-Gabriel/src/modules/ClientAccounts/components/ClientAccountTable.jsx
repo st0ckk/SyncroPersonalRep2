@@ -1,5 +1,6 @@
 ﻿import { useState } from "react";
 import { generateAccountStatement } from "../../../api/clientAccount.api";
+import Button from "../../../components/Button";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginationControls from "../../../components/PaginationControls";
 
@@ -78,6 +79,7 @@ export default function ClientAccountTable({
 
     return (
         <>
+        <div className="table-scroll">
         <table className="caccount-table">
             <thead>
                 <tr>
@@ -107,35 +109,35 @@ export default function ClientAccountTable({
                             <td className="actions">
 
                                 
-                            <button
-                                    className="btn btn-outline"
+                            <Button
+                                    variant="outline"
                                     onClick={() => toggleMoreInfo(ca.clientAccountId)}
                             >
                                     {expandedAccountId === ca.clientAccountId ? "Ocultar" : "Detalles"}
-                                </button>
+                                </Button>
 
-                                <button
+                                <Button
                                     type="button"
-                                    className="btn btn-outline"
+                                    variant="outline"
                                     onClick={() => onEdit(ca)}
                                     disabled={ca.clientAccountStatus == "closed"}
                                 >
                                     Editar
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
-                                    className="btn btn-outline"
+                                    variant="outline"
                                     onClick={() => onHistory(ca)}
                                 >
                                     Ver historial de movimientos
-                                </button>
-                                <button
-                                    className="btn btn-danger"
+                                </Button>
+                                <Button
+                                    variant="danger"
                                     onClick={() => setConfirmClosedId(ca.clientAccountId)}
                                     disabled={ca.clientAccountStatus != "closed" ? false : true}
                                 >
                                     Cerrar cuenta
-                                </button>
+                                </Button>
                             </td>
                         </tr>
 
@@ -157,7 +159,9 @@ export default function ClientAccountTable({
                     </>
                 ))}
             </tbody>
+
             </table>
+            </div>
 
             {/* Modal de confirmación de cierre de cuenta */}
             {confirmClosedId && (
@@ -171,20 +175,20 @@ export default function ClientAccountTable({
                             La cuenta de credito no se podra utilizar en futuras compras.
                         </p>
                         <div className="form-actions">
-                            <button
-                                className="btn btn-outline"
+                            <Button
+                                variant="outline"
                                 onClick={() => setConfirmClosedId(null)}
                                 disabled={closing}
                             >
                                 Cancelar
-                            </button>
-                            <button
-                                className="btn btn-danger"
+                            </Button>
+                            <Button
+                                variant="danger"
                                 onClick={() => handleAccountClosure(confirmClosedId)}
                                 disabled={closing}
                             >
                                 {closing ? "Cerrando..." : "Sí, cerrar"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

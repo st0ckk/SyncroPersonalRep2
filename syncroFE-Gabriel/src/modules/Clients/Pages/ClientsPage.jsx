@@ -1,4 +1,6 @@
 ﻿import { Fragment, useEffect, useState } from "react";
+import "./clients.css";
+import Button from "../../../components/Button";
 import {
   getClients,
   getInactiveClients,
@@ -9,7 +11,6 @@ import {
 import { getLatestQuoteByClient } from "../../../api/quote.api";
 
 import { Link } from "react-router-dom";
-import "./clients.css";
 
 import ClientFilters from "../components/ClientFilters";
 import ClientMap from "../components/ClientMap";
@@ -149,19 +150,19 @@ const ClientsPage = () => {
           <h1>Clientes</h1>
 
           <div className="toolbar-actions">
-            <button
-              className={`btn ${!showInactive ? "btn-primary" : "btn-outline"}`}
+            <Button
+              variant={!showInactive ? "primary" : "outline"}
               onClick={() => setShowInactive(false)}
             >
               Activos
-            </button>
+            </Button>
 
-            <button
-              className={`btn ${showInactive ? "btn-primary" : "btn-outline"}`}
+            <Button
+              variant={showInactive ? "primary" : "outline"}
               onClick={() => setShowInactive(true)}
             >
               Inactivos
-            </button>
+            </Button>
 
             {!isDriver && (
               <Link to="/clientes/nuevo" className="btn btn-primary">
@@ -171,22 +172,6 @@ const ClientsPage = () => {
           </div>
         </div>
 
-        {isDriver && (
-          <div
-            style={{
-              marginBottom: "14px",
-              padding: "10px 12px",
-              borderRadius: "10px",
-              background: "#f5f7fb",
-              border: "1px solid #d9e2f1",
-              color: "#4b5563",
-              fontSize: "14px",
-            }}
-          >
-            Modo solo lectura: como chofer puedes ver los clientes, pero no
-            puedes agregar, editar, activar ni desactivar.
-          </div>
-        )}
 
         <ClientFilters
           search={search}
@@ -203,7 +188,6 @@ const ClientsPage = () => {
               <th>Correo</th>
               <th>Teléfono</th>
               <th>Tipo</th>
-              <th>Total compras</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -217,7 +201,6 @@ const ClientsPage = () => {
                   <td>{c.clientEmail}</td>
                   <td>{c.clientPhone}</td>
                   <td>{c.clientType || "-"}</td>
-                  <td>₡ {c.totalPurchases ?? 0}</td>
 
                   <td>
                     <span
@@ -230,14 +213,14 @@ const ClientsPage = () => {
                   </td>
 
                   <td className="actions">
-                    <button
-                      className="btn btn-outline"
+                    <Button
+                      variant="outline"
                       onClick={() => toggleMoreInfo(c.clientId)}
                     >
                       {expandedClientId === c.clientId
                         ? "Ocultar información"
                         : "Más información"}
-                    </button>
+                    </Button>
 
                     {!isDriver && (
                       <>
@@ -249,25 +232,25 @@ const ClientsPage = () => {
                         </Link>
 
                         {c.isActive ? (
-                          <button
-                            className="btn btn-danger"
+                          <Button
+                            variant="danger"
                             onClick={() => {
                               setClientState(c.clientId);
                               setOpenModal(true);
                             }}
                           >
                             Desactivar
-                          </button>
+                          </Button>
                         ) : (
-                          <button
-                            className="btn btn-success"
+                          <Button
+                            variant="success"
                             onClick={async () => {
                               await activateClient(c.clientId);
                               loadData();
                             }}
                           >
                             Activar
-                          </button>
+                          </Button>
                         )}
                       </>
                     )}
@@ -278,7 +261,7 @@ const ClientsPage = () => {
 
                 {expandedClientId === c.clientId && (
                   <tr className="client-extra">
-                    <td colSpan={7}>
+                    <td colSpan={6}>
                       <div className="clients-expanded-section-flex">
                         <div className="clients-expanded-info">
                           <h2>Detalles de cliente:</h2>

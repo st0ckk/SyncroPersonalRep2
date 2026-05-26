@@ -1,5 +1,6 @@
-import "../users.css";
 import { useEffect, useState } from "react";
+import "../users.css";
+import Swal from "sweetalert2";
 import {
   getUsers,
   updateUserStatus,
@@ -35,11 +36,15 @@ export default function UsersPage() {
   }, []);
 
   const handleToggleStatus = async (user) => {
-    if (
-      !window.confirm(
-        `¿Deseas ${user.isActive ? "desactivar" : "activar"} este usuario?`
-      )
-    ) {
+    const result = await Swal.fire({
+      title: "¿Está seguro?",
+      text: `¿Deseas ${user.isActive ? "desactivar" : "activar"} este usuario?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "Cancelar",
+    });
+    if (!result.isConfirmed) {
       return;
     }
 
@@ -48,18 +53,22 @@ export default function UsersPage() {
   };
 
   const handleResetPassword = async (user) => {
-    const ok = window.confirm(
-      `¿Deseas restablecer la contraseña de ${user.userName} ${user.userLastname || ""} a "Syncro123*"?\n\nEl usuario quedará obligado a cambiarla al iniciar sesión.`
-    );
-
-    if (!ok) return;
+    const result = await Swal.fire({
+      title: "¿Está seguro?",
+      text: `¿Deseas restablecer la contraseña de ${user.userName} ${user.userLastname || ""} a "Syncro123*"? El usuario quedará obligado a cambiarla al iniciar sesión.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "Cancelar",
+    });
+    if (!result.isConfirmed) return;
 
     try {
       await resetUserPassword(user.userId);
-      alert("Contraseña restablecida a Syncro123* correctamente.");
+      Swal.fire({ icon: "success", title: "Éxito", text: "Contraseña restablecida a Syncro123* correctamente.", timer: 2000, showConfirmButton: false });
       loadData();
     } catch (err) {
-      alert(err?.response?.data?.message || err?.response?.data || "No se pudo restablecer la contraseña.");
+      Swal.fire({ icon: "error", title: "Error", text: err?.response?.data?.message || err?.response?.data || "No se pudo restablecer la contraseña." });
     }
   };
 

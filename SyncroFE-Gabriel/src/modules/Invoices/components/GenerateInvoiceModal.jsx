@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
+import Button from "../../../components/Button";
 import { createPortal } from "react-dom";
+import Swal from "sweetalert2";
 
 export default function GenerateInvoiceModal({
     sales,
@@ -42,9 +44,9 @@ export default function GenerateInvoiceModal({
         return new Date(dateStr).toLocaleDateString("es-CR");
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!selectedPurchaseId) {
-            alert("Seleccione una venta");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Seleccione una venta" });
             return;
         }
         onGenerate(Number(selectedPurchaseId), documentType);
@@ -136,13 +138,13 @@ export default function GenerateInvoiceModal({
                 )}
 
                 <div className="form-actions">
-                    <button
-                        className="btn btn-outline"
+                    <Button
+                        variant="outline"
                         onClick={onCancel}
                         disabled={generating}
                     >
                         Cancelar
-                    </button>
+                    </Button>
                     <button
                         className="btn-primary"
                         onClick={handleSubmit}

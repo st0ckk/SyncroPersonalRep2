@@ -1,44 +1,33 @@
 /* =========================
-   Tema claro (default)
+   Paleta de hielo (default)
 ========================= */
 :root {
     /* Backgrounds */
-    --bg-main: #f4f6f8;
-    --bg-header: #ffffff;
-    --bg-footer: #ffffff;
-    --bg-card: #ffffff;
-    --bg-sidebar: linear-gradient(180deg, #0f172a, #020617);
+    --bg-main:    #0f172a;
+    --bg-header:  rgba(10, 18, 38, 0.97);
+    --bg-footer:  rgba(10, 18, 38, 0.97);
+    --bg-card:    #162033;
+    --bg-sidebar: rgba(10, 18, 38, 0.97);
+
     /* Textos */
-    --text-main: #1f2937;
-    --text-secondary: #6b7280;
-    --text-inverted: #ffffff;
-    /* Compatibility variables (used by component CSS) */
-    --text-primary: var(--text-main);
-    --bg-input: #ffffff;
+    --text-main:      #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-inverted:  #ffffff;
+    --text-primary:   var(--text-main);
+
+    /* Inputs */
+    --bg-input: #0d1b2e;
+
     /* UI */
-    --primary: #6366f1;
+    --primary:       #6366f1;
     --primary-hover: #4f46e5;
-    --border: #e5e7eb;
+    --border:        #1e3a5f;
+
     /* Layout */
     --sidebar-width: 240px;
-}
 
-/* =========================
-   Tema oscuro
-========================= */
-[data-theme="dark"] {
-    --bg-main: #020617;
-    --bg-header: #020617;
-    --bg-footer: #020617;
-    --bg-card: #020617;
-    --bg-sidebar: linear-gradient(180deg, #020617, #020617);
-    --text-main: #e5e7eb;
-    --text-secondary: #9ca3af;
-    --text-inverted: #ffffff;
-    /* Compatibility variables (used by component CSS) */
-    --text-primary: var(--text-main);
-    --bg-input: #061021;
-    --primary: #818cf8;
-    --primary-hover: #6366f1;
-    --border: #334155;
+    /* Glassmorphism */
+    --blur: blur(14px);
+    --card-border: 1px solid #1e3a5f;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }

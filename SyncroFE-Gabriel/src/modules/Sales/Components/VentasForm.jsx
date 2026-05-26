@@ -1,10 +1,14 @@
+
 import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
 import { getClientLookup } from "../../../api/clients.api";
 import { getProducts } from "../../../api/stock.api";
 import { getCreditAccountByClient } from "../../../api/clientAccount.api";
 import { createPortal } from "react-dom";
 import SearchSelect from "react-select";
 import { getRoutes } from "../../../api/routes.api";
+import { getRegisters } from "../../../api/cashRegisters";
+import Swal from "sweetalert2";
 
 const emptySale = {
     clientId: null,
@@ -18,6 +22,7 @@ const emptySale = {
     discountId: null,
     routeId: null,
     clientAccountId: null,
+    cashRegisterId: null,
     purchaseDiscountApplied: false,
     purchaseDiscountPercentage: null,
     purchaseDiscountReason: "",
@@ -38,6 +43,7 @@ function VentasForm({
     const [orderPaid, setOrderPaid] = useState(false);
     const [routes, setRoutes] = useState([]);
     const [clientAccounts, setClientAccounts] = useState([]);
+    const [registers, setRegisters] = useState([]);
 
     // Form
     const [details, setDetails] = useState([]);
@@ -56,6 +62,7 @@ function VentasForm({
             discountId: initialValues.discountId ?? null,
             routeId: initialValues.routeId ?? null,
             clientAccountId: initialValues.clientAccountId ?? null,
+            cashRegisterId: initialValues.cashRegisterId ?? null,
             purchaseDiscountApplied: initialValues.purchaseDiscountApplied ?? false,
             purchaseDiscountPercentage: initialValues.purchaseDiscountPercentage ?? null,
             purchaseDiscountReason: initialValues.purchaseDiscountReason ?? "",
@@ -156,11 +163,35 @@ function VentasForm({
             borderRadius: "8px",
             boxShadow: "none",
             textAlign: "left",
+            backgroundColor: "#0a1228",
+            borderColor: "rgba(255, 255, 255, 0.1)",
+            color: "#e2e8f0",
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: "#e2e8f0",
+        }),
+        input: (provided) => ({
+            ...provided,
+            color: "#e2e8f0",
+        }),
+        menu: (provided) => ({
+            ...provided,
+            backgroundColor: "#0f172a",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
         }),
         option: (provided, state) => ({
             ...provided,
-            color: "black",
-            backgroundColor: state.isSelected ? "lightgrey" : "white",
+            color: "#e2e8f0",
+            backgroundColor: state.isSelected
+                ? "rgba(99, 102, 241, 0.4)"
+                : state.isFocused
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "transparent",
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: "#94a3b8",
         }),
     };
 
@@ -210,7 +241,7 @@ function VentasForm({
     /* ══════════════════════════════
        SUBMIT
     ══════════════════════════════ */
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
 
@@ -220,31 +251,31 @@ function VentasForm({
         console.log(account);
 
         if (!form.clientId || Number.isNaN(form.clientId)) {
-            alert("Debe seleccionar a un cliente válido");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar a un cliente válido" });
             return;
         }
 
         if (!client) {
-            alert("El cliente seleccionado no existe o no esta activado. Intente con otro cliente");
+            await Swal.fire({ icon: "error", title: "Error", text: "El cliente seleccionado no existe o no esta activado. Intente con otro cliente" });
             return;
         }
 
         if (details.length === 0) {
-            alert("Debe tener al menos un producto agregado");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe tener al menos un producto agregado" });
             return;
         }
 
         if (form.purchasePaymentMethod === "") {
-            alert("Seleccione un método de pago para la orden");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Seleccione un método de pago para la orden" });
             return;
         }
 
         // Use user-entered reason, fallback to auto-generated
         const discountReason = form.purchaseDiscountReason.trim() || "Descuento comercial";
-        if (account) { 
-        if (account.clientAccountCurrentBalance >= account.clientAccountCreditLimit || (account.clientAccountCurrentBalance + total) >= account.clientAccountCreditLimit) {
-            alert("El limite de credito fue excedido o se sobrepaso con la compra. Por favor seleccione otra cuenta de credito o metodo de pago");
-            return;
+        if (account) {
+            if (account.clientAccountCurrentBalance >= account.clientAccountCreditLimit || (account.clientAccountCurrentBalance + total) >= account.clientAccountCreditLimit) {
+                await Swal.fire({ icon: "error", title: "Error", text: "El limite de credito fue excedido o se sobrepaso con la compra. Por favor seleccione otra cuenta de credito o metodo de pago" });
+                return;
             }
         }
 
@@ -260,6 +291,7 @@ function VentasForm({
             discountId: null,
             routeId: form.routeId ? Number(form.routeId) : null,
             clientAccountId: form.clientAccountId ? Number(form.clientAccountId) : null,
+            cashRegisterId: form.cashRegisterId ? Number(form.cashRegisterId) : null,
             purchaseDiscountApplied: hasAnyDiscount,
             purchaseDiscountPercentage: hasAnyDiscount
                 ? Number(((totalDiscount / subTotal) * 100).toFixed(2))
@@ -297,6 +329,9 @@ function VentasForm({
         });
         getCreditAccountByClient(initialValues ? initialValues.clientId : "").then((res) => {
             setClientAccounts(res.data.filter(ca => ca.clientAccountStatus === "active") ?? []);
+        });
+        getRegisters().then((res) => {
+            setRegisters(res.data.filter(cr => cr.cashRegisterStatus === "open") ?? []);
         });
         loadDetails();
     }, []);
@@ -338,29 +373,13 @@ function VentasForm({
                                 ))}
                         </datalist>
                         {selectedClient && (
-                            <span style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
+                            <span style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
                                 {selectedClient.clientName} — Tipo: <strong>{selectedClient.clientType || "pulpero"}</strong>
                             </span>
                         )}
                     </div>
 
-                    {/* ── Factura electrónica checkbox ── */}
                     <div className="form-group">
-                        <label style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-                            Requiere factura electrónica
-                            <input
-                                type="checkbox"
-                                checked={requiresInvoice}
-                                onChange={(e) => setRequiresInvoice(e.target.checked)}
-                                style={{ margin: 0 }}
-                            />
-                        </label>
-                        <span style={{ fontSize: 12, color: requiresInvoice ? "#15803d" : "#6b7280" }}>
-                            {requiresInvoice ? "IVA 13% aplicado" : "Sin impuesto (0%)"}
-                        </span>
-                    </div>
-
-                    <div className="form-group full-width">
                         <label>Ruta de cliente</label>
                         <SearchSelect
                             value={routeSelectOptions().find(op => op.value === form.routeId)}
@@ -402,6 +421,44 @@ function VentasForm({
                     </div>
 
                     <div className="form-group">
+                        <label>Numero de caja</label>
+                        <select
+                            name="cashRegisterId"
+                            value={form.cashRegisterId}
+                            onChange={(e) =>
+                                setForm({ ...form, cashRegisterId: e.target.value === "" ? "" : e.target.value })
+                            }
+                            required
+                            disabled={initialValues !== null}
+                        >
+                            <option value="">Seleccione una caja para insertar esta transaccion</option>
+                            {[...registers]
+                                .sort((a, b) => a.name?.localeCompare(b.name))
+                                .map((cr) => (
+                                    <option key={cr.cashRegisterId} value={cr.cashRegisterId}>
+                                        Caja #{cr.cashRegisterNumber} - {cr.userName}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+
+                    {/* ── Factura electrónica checkbox ── */}
+                    <div className="form-group">
+                        <label style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+                            Requiere factura electrónica
+                            <input
+                                type="checkbox"
+                                checked={requiresInvoice}
+                                onChange={(e) => setRequiresInvoice(e.target.checked)}
+                                style={{ margin: 0 }}
+                            />
+                        </label>
+                        <span style={{ fontSize: 12, color: requiresInvoice ? "#15803d" : "#6b7280" }}>
+                            {requiresInvoice ? "IVA 13% aplicado" : "Sin impuesto (0%)"}
+                        </span>
+                    </div>
+
+                    <div className="form-group">
                         <label style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
                             Pagado
                             <input
@@ -418,9 +475,9 @@ function VentasForm({
                     <div className="form-group full-width">
                         <label>Productos</label>
                         <div className="section-header">
-                            <button type="button" className="btn btn-outline btn-sm" onClick={addLine} disabled={initialValues !== null}>
+                            <Button type="button" variant="outline" size="sm" onClick={addLine} disabled={initialValues !== null}>
                                 + Agregar producto
-                            </button>
+                            </Button>
                         </div>
 
                         {details.length === 0 && (
@@ -438,11 +495,11 @@ function VentasForm({
 
                             return (
                                 <div key={i} style={{
-                                    border: "1px solid #e5e7eb",
+                                    border: "1px solid rgba(255,255,255,0.1)",
                                     borderRadius: 8,
                                     padding: "10px 12px",
                                     marginBottom: 8,
-                                    background: "#fafafa",
+                                    background: "rgba(255,255,255,0.04)",
                                 }}>
                                     {/* Row 1: Product selector + remove */}
                                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
@@ -482,7 +539,7 @@ function VentasForm({
                                     {/* Row 2: Quantity, discount, info */}
                                     <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Cant:</label>
+                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Cant:</label>
                                             <input
                                                 type="number"
                                                 min="1"
@@ -491,11 +548,11 @@ function VentasForm({
                                                 onChange={(e) => updateLine(i, "quantity", parseInt(e.target.value) || 0)}
                                                 required
                                                 disabled={initialValues !== null}
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #ccc", fontSize: 13 }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
                                             />
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Desc %:</label>
+                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Desc %:</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -505,18 +562,18 @@ function VentasForm({
                                                 onChange={(e) => updateLine(i, "discount", e.target.value)}
                                                 placeholder="0"
                                                 disabled={initialValues !== null}
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #ccc", fontSize: 13 }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
                                             />
                                         </div>
-                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#6b7280" }}>
-                                            <span>Precio: <strong style={{ color: "#111" }}>{formatCurrency(unitPrice)}</strong></span>
+                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#94a3b8" }}>
+                                            <span>Precio: <strong style={{ color: "#e2e8f0" }}>{formatCurrency(unitPrice)}</strong></span>
                                             {lineDiscAmt > 0 && (
-                                                <span style={{ color: "#b91c1c" }}>-{formatCurrency(lineDiscAmt)}</span>
+                                                <span style={{ color: "#fca5a5" }}>-{formatCurrency(lineDiscAmt)}</span>
                                             )}
                                             {requiresInvoice && (
                                                 <span>IVA: <strong style={{ color: "#15803d" }}>{formatCurrency(lineTax)}</strong></span>
                                             )}
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>
                                                 {formatCurrency(lineTotal)}
                                             </span>
                                         </div>
@@ -544,13 +601,13 @@ function VentasForm({
                     {/* ── Totals ── */}
                     {details.length > 0 && (
                         <div className="form-group full-width" style={{
-                            background: "#f9fafb",
-                            border: "1px solid #e5e7eb",
+                            background: "#0a1228",
+                            border: "1px solid rgba(255,255,255,0.1)",
                             borderRadius: 8,
                             padding: "14px 16px",
                         }}>
                             {selectedClient && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#6b7280" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#94a3b8" }}>
                                     <span>Tipo cliente: <strong style={{ textTransform: "capitalize" }}>{selectedClient.clientType || "pulpero"}</strong></span>
                                     <span>Impuesto: <strong>{requiresInvoice ? "IVA 13%" : "Sin impuesto"}</strong></span>
                                 </div>
@@ -560,13 +617,13 @@ function VentasForm({
                                 <strong>{formatCurrency(subTotal)}</strong>
                             </div>
                             {hasAnyDiscount && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#b91c1c" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#fca5a5" }}>
                                     <span>Descuento:</span>
                                     <strong>- {formatCurrency(totalDiscount)}</strong>
                                 </div>
                             )}
                             {requiresInvoice && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#6b7280" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#94a3b8" }}>
                                     <span>IVA (13%):</span>
                                     <strong>{formatCurrency(taxAmount)}</strong>
                                 </div>
@@ -575,7 +632,7 @@ function VentasForm({
                                 display: "flex",
                                 justifyContent: "space-between",
                                 paddingTop: 8,
-                                borderTop: "2px solid #e5e7eb",
+                                borderTop: "2px solid rgba(255,255,255,0.1)",
                                 fontSize: "1.1rem",
                             }}>
                                 <span>Total:</span>
@@ -585,21 +642,21 @@ function VentasForm({
                     )}
 
                     <div className="form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="primary"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
 

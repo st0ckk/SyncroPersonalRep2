@@ -1,7 +1,11 @@
 ﻿import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
 import { getClientLookup } from "../../../api/clients.api";
 import { getActiveCreditAccounts } from "../../../api/clientAccount.api";
 import { createPortal } from "react-dom";
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const emptyAccount = {
     clientId: null,
@@ -33,6 +37,8 @@ function ClientAccountForm({
         };
     })
 
+    // Sweet alert
+    const SwalAlert = withReactContent(Swal);
 
     //Formateo para moneda
     const formatCurrency = (amount) => {
@@ -57,17 +63,29 @@ function ClientAccountForm({
 
         //Condiciones
         if (!form.clientId || Number.isNaN(form.clientId)) {
-            alert("Debe seleccionar a un cliente válido");
+            SwalAlert.fire({
+                icon: "warning",
+                title: "Advertencia...",
+                text: "Debe seleccionar a un cliente válido"
+            });
             return;
         }
 
         if (!client) {
-            alert("El cliente seleccionado no existe o no esta activado. Intente con otro cliente");
+            SwalAlert.fire({
+                icon: "error",
+                title: "Error...",
+                text: "El cliente seleccionado no existe o no esta activado. Intente con otro cliente"
+            });
             return;
         }
 
         if (existingAccounts.length > 0 && !initialValues) {
-            alert("Ya existe una cuenta de credito para este cliente. Por favor seleccione otro cliente.");
+            SwalAlert.fire({
+                icon: "warning",
+                title: "Advertencia...",
+                text: "Ya existe una cuenta de credito para este cliente. Por favor seleccione otro cliente."
+            });
             return;
         }
 
@@ -213,21 +231,21 @@ function ClientAccountForm({
                     )}
 
                     <div className="form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="primary"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

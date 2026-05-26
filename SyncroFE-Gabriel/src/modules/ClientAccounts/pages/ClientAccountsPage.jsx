@@ -1,5 +1,6 @@
-﻿import "./ClientAccountsPage.css";
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
+import "./ClientAccountsPage.css";
+import Swal from "sweetalert2";
 import {
     getCreditAccounts,
     filterCreditAccounts,
@@ -36,7 +37,7 @@ export default function ClientAccountsPage() {
     const [editingClientAccount, setEditingClientAccount] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
-    //Cargar datos de quotes
+    //Cargar datos de cuentas
     const loadData = async () => {
         try {
             let response;
@@ -101,7 +102,7 @@ export default function ClientAccountsPage() {
             loadData();
         } catch (err) {
             console.error("Error guardando cuenta de credito", err);
-            alert("Error guardando cuenta de credito");
+            Swal.fire({ icon: "error", title: "Error", text: "Error guardando cuenta de credito" });
         } finally {
             setSubmitting(false);
         }

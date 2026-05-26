@@ -1,3 +1,5 @@
+import Button from "../../../components/Button";
+
 export default function AssetsToolbar({ showInactive, onToggle, onNew, users, selectedUserId, onUserFilter }) {
     return (
         <div className="assets-toolbar">
@@ -17,13 +19,13 @@ export default function AssetsToolbar({ showInactive, onToggle, onNew, users, se
                     ))}
                 </select>
 
-                <button className="btn btn-outline" onClick={onToggle}>
+                <Button variant="outline" onClick={onToggle}>
                     {showInactive ? "Ver activos" : "Ver inactivos"}
-                </button>
+                </Button>
 
-                <button className="btn btn-primary" onClick={onNew}>
+                <Button variant="primary" onClick={onNew}>
                     + Nuevo activo
-                </button>
+                </Button>
             </div>
         </div>
     );

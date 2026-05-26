@@ -18,8 +18,8 @@ const ClientMap = ({ location, name, isActive }) => {
             style={{ height: "400px" }}
         >
             <TileLayer
-                url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-                attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; OpenStreetMap contributors'
             />
 
             <Marker position={[lat, lng]}>

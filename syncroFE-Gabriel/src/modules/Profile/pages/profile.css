@@ -23,26 +23,54 @@
 }
 
 .profile-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border: var(--card-border);
   border-radius: 16px;
   padding: 12px;
 }
 
 /* ===== Botón cambiar contraseña ===== */
 .btn-change-password {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: none;
-  background: #4f46e5;
-  color: #fff;
+  margin-top: 14px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.18);
+  color: #a5b4fc;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .btn-change-password:hover {
-  opacity: 0.92;
+  background: rgba(99, 102, 241, 0.28);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+/* ===== Banner advertencia 2FA ===== */
+.profile-2fa-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #fcd34d;
+}
+
+/* ===== Error en modal contraseña ===== */
+.modal-error {
+  color: #fca5a5;
+  font-size: 13px;
+  margin: 8px 0 0;
+  padding: 6px 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 /* ===== Tabla activos ===== */
@@ -54,14 +82,16 @@
 
 .assets-table th,
 .assets-table td {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
   padding: 10px;
   text-align: left;
+  color: var(--text-main);
 }
 
 .assets-table thead th {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.04);
   border-top: none;
+  color: var(--text-secondary);
 }
 
 /* ===== Panel horarios ===== */
@@ -91,35 +121,85 @@
 
 /* ===== Calendario ===== */
 .sched-calendar .rdp {
-  --rdp-cell-size: 38px;   /* antes 34px */
+  --rdp-cell-size: 38px;
   --rdp-caption-font-size: 16px;
+  --rdp-accent-color: #6366f1;
+  --rdp-background-color: rgba(99, 102, 241, 0.15);
   margin: 0;
+  color: var(--text-main);
 }
-
 
 .sched-calendar .rdp-caption {
   padding: 0 0 6px 0;
 }
 
-/* ===== Días marcados ===== */
-.day-has-schedule {
+/* Texto del mes/año */
+.sched-calendar .rdp-caption_label {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+/* Días de la semana (Lu Ma Mi...) */
+.sched-calendar .rdp-head_cell {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Números de día */
+.sched-calendar .rdp-day {
+  color: var(--text-main);
+  border-radius: 8px;
+}
+
+/* Día fuera del mes */
+.sched-calendar .rdp-day_outside {
+  color: var(--text-secondary);
+  opacity: 0.4;
+}
+
+/* Hover sobre día */
+.sched-calendar .rdp-day:hover:not([disabled]):not(.rdp-day_selected) {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Día seleccionado */
+.sched-calendar .rdp-day_selected,
+.sched-calendar .rdp-day_selected:hover {
   background: #6366f1 !important;
   color: #fff !important;
+}
+
+/* Botones de navegación (← →) */
+.sched-calendar .rdp-nav_button {
+  color: var(--text-secondary);
+  border-radius: 6px;
+}
+
+.sched-calendar .rdp-nav_button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+}
+
+/* ===== Días marcados ===== */
+.day-has-schedule {
+  background: rgba(99, 102, 241, 0.35) !important;
+  color: #c7d2fe !important;
   border-radius: 8px !important;
-   width: 30px;
-    height: 30px;
-   align-items: center;
-   justify-content: center;
+  font-weight: 700;
 }
 
 .day-has-vacation {
-  background: #16a34a !important;
-  color: #fff !important;
+  background: rgba(34, 197, 94, 0.3) !important;
+  color: #86efac !important;
   border-radius: 8px !important;
+  font-weight: 700;
 }
 
+/* Día con ambos: vacaciones tienen prioridad visual */
 .day-has-schedule.day-has-vacation {
-  background: #16a34a !important;
+  background: rgba(34, 197, 94, 0.3) !important;
+  color: #86efac !important;
 }
 
 /* ===== Listas ===== */
@@ -137,9 +217,10 @@
 
 .schedule-item.compact {
   padding: 8px 10px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fafafa;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
 }
 
 .schedule-item.compact.vacation {
@@ -173,10 +254,11 @@
 .modal-card {
   width: 520px;
   max-width: 100%;
-  background: #fff;
+  background: rgba(15, 23, 42, 0.95);
   border-radius: 16px;
   padding: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
 }
 
 .form-group {
@@ -187,8 +269,10 @@
 
 .form-group input {
   padding: 10px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--text-main);
 }
 
 .modal-actions {

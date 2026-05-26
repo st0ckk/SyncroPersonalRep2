@@ -1,4 +1,5 @@
 ﻿import { usePagination } from "../../../hooks/usePagination";
+import Button from "../../../components/Button";
 import PaginationControls from "../../../components/PaginationControls";
 
 export default function StockTable({
@@ -15,6 +16,7 @@ export default function StockTable({
 
     return (
         <>
+        <div className="table-scroll">
         <table className="stock-table">
             <thead>
                 <tr>
@@ -40,30 +42,30 @@ export default function StockTable({
                         <td>{p.productQuantity}</td>
                         <td>{p.isActive ? "Activo" : "Inactivo"}</td>
                         <td className="actions">
-                            <button
+                            <Button
                                 type="button"
-                                className="btn btn-outline"
+                                variant="outline"
                                 onClick={() => onEdit(p)}
                             >
                                 Editar
-                            </button>
+                            </Button>
 
                             {p.isActive ? (
-                                <button
+                                <Button
                                     type="button"
-                                    className="btn btn-danger"
+                                    variant="danger"
                                     onClick={() => onDeactivate(p.productId)}
                                 >
                                     Desactivar
-                                </button>
+                                </Button>
                             ) : (
-                                <button
+                                <Button
                                     type="button"
-                                    className="btn btn-success"
+                                    variant="success"
                                     onClick={() => onActivate(p.productId)}
                                 >
                                     Activar
-                                </button>
+                                </Button>
                             )}
                         </td>
 
@@ -71,6 +73,7 @@ export default function StockTable({
                 ))}
             </tbody>
         </table>
+        </div>
         <PaginationControls {...pagination} />
         </>
     );

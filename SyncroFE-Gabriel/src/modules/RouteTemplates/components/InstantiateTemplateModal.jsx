@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
 
 import { getUsers } from "../../../api/users.api";
 
@@ -134,8 +135,8 @@ export default function InstantiateTemplateModal({
                             value={form.status}
                             onChange={(e) => updateField("status", e.target.value)}
                         >
-                            <option value="Scheduled">Scheduled</option>
-                            <option value="Draft">Draft</option>
+                            <option value="Scheduled">Programada</option>
+                            <option value="Draft">Borrador</option>
                         </select>
                     </div>
 
@@ -158,22 +159,22 @@ export default function InstantiateTemplateModal({
                     </div>
 
                     <div className="form-group full-width template-form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="primary"
                             disabled={submitting}
                         >
                             {submitting ? "Creando ruta..." : "Crear ruta desde plantilla"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

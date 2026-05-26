@@ -1,5 +1,6 @@
-﻿import "./assets.css";
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
+import "./assets.css";
+import Swal from "sweetalert2";
 import {
     getAssets,
     getInactiveAssets,
@@ -63,7 +64,7 @@ export default function AssetsPage() {
             loadData();
         } catch (err) {
             console.error("Error guardando activo", err);
-            alert("Error guardando activo");
+            Swal.fire({ icon: "error", title: "Error", text: "Error guardando activo" });
         } finally {
             setSubmitting(false);
         }
@@ -71,7 +72,15 @@ export default function AssetsPage() {
 
     const handleToggleStatus = async (asset) => {
         const action = asset.isActive ? "desactivar" : "activar";
-        if (!window.confirm(`¿Deseas ${action} este activo?`)) return;
+        const result = await Swal.fire({
+            title: "¿Está seguro?",
+            text: `¿Deseas ${action} este activo?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "Cancelar",
+        });
+        if (!result.isConfirmed) return;
 
         try {
             if (asset.isActive) {
@@ -82,7 +91,7 @@ export default function AssetsPage() {
             loadData();
         } catch (err) {
             console.error("Error cambiando estado", err);
-            alert("Error cambiando estado");
+            Swal.fire({ icon: "error", title: "Error", text: "Error cambiando estado" });
         }
     };
 

@@ -2,6 +2,7 @@ import "./EmployeeTable.css";
 
 export default function EmployeeTable({ employees, onRefresh }) {
   return (
+    <div className="table-scroll">
     <table className="employee-table">
       <thead>
         <tr>
@@ -37,5 +38,6 @@ export default function EmployeeTable({ employees, onRefresh }) {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import Button from "../../../components/Button";
 import RouteMapPreview from "./RouteMapPreview";
 import { routeStatusToEs } from "../../../utils/routeStatus";
 import { usePagination } from "../../../hooks/usePagination";
@@ -43,6 +44,7 @@ export default function RouteTable({
 
   return (
     <>
+    <div className="routes-table-scroll">
     <table className="routes-table">
       <thead>
         <tr>
@@ -76,34 +78,34 @@ export default function RouteTable({
               <td>{formatDateTime(r.startAtPlanned)}</td>
 
               <td className="actions">
-                <button
-                  className="btn btn-outline"
+                <Button
+                  variant="outline"
                   onClick={() => toggleMoreInfo(r.routeId)}
                 >
                   Más información
-                </button>
+                </Button>
 
-                <button
-                  className="btn btn-outline"
+                <Button
+                  variant="outline"
                   onClick={() => onEdit(r)}
                 >
                   Editar
-                </button>
+                </Button>
 
                 {r.isActive ? (
-                  <button
-                    className="btn btn-danger"
+                  <Button
+                    variant="danger"
                     onClick={() => onDeactivate(r.routeId)}
                   >
                     Desactivar
-                  </button>
+                  </Button>
                 ) : (
-                  <button
-                    className="btn btn-success"
+                  <Button
+                    variant="success"
                     onClick={() => onActivate(r.routeId)}
                   >
                     Activar
-                  </button>
+                  </Button>
                 )}
               </td>
             </tr>
@@ -151,6 +153,7 @@ export default function RouteTable({
         ))}
       </tbody>
     </table>
+    </div>
     <PaginationControls {...pagination} />
     </>
   );

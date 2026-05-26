@@ -1,0 +1,87 @@
+/* ===========================================
+   BUTTON — Fuente única de estilos de botones
+=========================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, opacity 0.15s, border-color 0.15s;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Variantes --- */
+.btn-primary {
+  background: var(--primary, #6366f1);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover, #4f46e5);
+}
+
+.btn-outline {
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #111827);
+  border: 1px solid var(--border, #e5e7eb);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.btn-success {
+  background: #22c55e;
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary, #374151);
+  border: 1px solid var(--border, #d1d5db);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* --- Tamaños --- */
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.btn-lg {
+  padding: 10px 20px;
+  font-size: 15px;
+  border-radius: 10px;
+}

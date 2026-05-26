@@ -1,5 +1,6 @@
-import "./Modal.css";
 import { createPortal } from 'react-dom';
+import "./Modal.css";
+import Button from "../../../../components/Button";
 function ClientStateModal({ closeModal, confirmStateChange }) {
   return createPortal(
       <div className="modalBackground" onClick={() => closeModal(false)}>
@@ -11,8 +12,8 @@ function ClientStateModal({ closeModal, confirmStateChange }) {
               <p>Se cambiara el estado del cliente</p>
               </div>
               <div className="modalOptions">
-                  <button className="btn btn-danger" onClick={() => closeModal(false)}>Cancelar</button>
-                  <button className="btn btn-success" onClick={() => confirmStateChange()}>Continuar</button>
+                  <Button variant="danger" onClick={() => closeModal(false)}>Cancelar</Button>
+                  <Button variant="success" onClick={() => confirmStateChange()}>Continuar</Button>
               </div>
           </div>
         </div>,

@@ -1,9 +1,13 @@
 // src/modules/Routes/pages/RoutesMonitoringPage.jsx
 import "./RoutesMonitoringPage.css";
+import Button from "../../../components/Button";
 import { useEffect, useMemo, useState } from "react";
 import { buildBackendFileUrl, getRoutes } from "../../../api/routes.api";
 import { getUsers } from "../../../api/users.api";
 import { routeStatusToEs, stopStatusToEs } from "../../../utils/routeStatus";
+import { getActiveDriverLocations } from "../../../api/driverLocations.api";
+import { getIncidents } from "../../../api/incidents.api";
+import DriversLiveMap, { routeColor } from "../components/DriversLiveMap";
 
 function toISODate(d) {
   const yyyy = d.getFullYear();
@@ -90,6 +94,8 @@ export default function RoutesMonitoringPage() {
 
   const [expandedRouteId, setExpandedRouteId] = useState(null);
   const [lastUpdatedAt, setLastUpdatedAt] = useState(null);
+  const [activeDrivers, setActiveDrivers] = useState([]);
+  const [incidents, setIncidents] = useState([]);
 
   const loadDrivers = async () => {
     try {
@@ -138,6 +144,43 @@ export default function RoutesMonitoringPage() {
       loadRoutes();
     }, 8000);
 
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRefresh, date, driverUserId]);
+
+  // Polling de ubicaciones en vivo (cada 10 segundos)
+  const loadDriverLocations = async () => {
+    try {
+      const res = await getActiveDriverLocations();
+      setActiveDrivers(res.data ?? []);
+    } catch {
+      // silencioso
+    }
+  };
+
+  useEffect(() => {
+    loadDriverLocations();
+    const t = setInterval(loadDriverLocations, 10_000);
+    return () => clearInterval(t);
+  }, []);
+
+  const loadIncidents = async () => {
+    try {
+      const res = await getIncidents({ date, driverUserId: driverUserId || undefined });
+      setIncidents(res.data ?? []);
+    } catch {
+      // silencioso
+    }
+  };
+
+  useEffect(() => {
+    loadIncidents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, driverUserId]);
+
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const t = setInterval(loadIncidents, 15_000);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoRefresh, date, driverUserId]);
@@ -231,9 +274,9 @@ export default function RoutesMonitoringPage() {
           </div>
 
           <div className="monitor-actions">
-            <button className="btn btn-outline" onClick={loadRoutes}>
+            <Button variant="outline" onClick={loadRoutes}>
               Refrescar
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -305,6 +348,38 @@ export default function RoutesMonitoringPage() {
           </div>
         </div>
 
+        {/* Mapa unificado: rutas trazadas + choferes en tiempo real */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: 10,
+          }}>
+            <span style={{ fontWeight: 600, fontSize: 15 }}>
+              Mapa de rutas
+            </span>
+            {activeDrivers.length > 0 && (
+              <span style={{
+                background: "rgba(34,197,94,0.15)",
+                color: "#15803d",
+                padding: "2px 8px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 600,
+              }}>
+                {activeDrivers.length} chofer{activeDrivers.length !== 1 ? "es" : ""} en vivo
+              </span>
+            )}
+          </div>
+
+          <DriversLiveMap
+            routes={filteredRoutes}
+            drivers={activeDrivers}
+            height="440px"
+          />
+        </div>
+
         {loading ? (
           <div className="loading">Cargando rutas...</div>
         ) : !filteredRoutes.length ? (
@@ -313,18 +388,29 @@ export default function RoutesMonitoringPage() {
           </div>
         ) : (
           <div className="monitor-list">
-            {filteredRoutes.map((r) => {
+            {filteredRoutes.map((r, idx) => {
               const stops = (r.stops ?? [])
                 .slice()
                 .sort((a, b) => a.stopOrder - b.stopOrder);
 
               const progress = computeProgress(stops);
+              const color = routeColor(idx);
 
               return (
                 <div key={r.routeId} className="monitor-route">
                   <div className="monitor-route-header">
                     <div className="monitor-route-main">
                       <div className="monitor-route-title">
+                        {/* Punto de color que coincide con el mapa */}
+                        <span style={{
+                          display: "inline-block",
+                          width: 12, height: 12,
+                          borderRadius: 3,
+                          background: color,
+                          marginRight: 8,
+                          verticalAlign: "middle",
+                          flexShrink: 0,
+                        }} />
                         <strong>#{r.routeId}</strong> — {r.routeName}
                       </div>
 
@@ -380,14 +466,14 @@ export default function RoutesMonitoringPage() {
                         </div>
                       </div>
 
-                      <button
-                        className="btn btn-outline"
+                      <Button
+                        variant="outline"
                         onClick={() => toggleExpand(r.routeId)}
                       >
                         {expandedRouteId === r.routeId
                           ? "Ocultar paradas"
                           : "Ver paradas"}
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -473,6 +559,38 @@ export default function RoutesMonitoringPage() {
             })}
           </div>
         )}
+        {/* ── Incidentes del día ── */}
+        <div className="incidents-section">
+          <h3 className="incidents-title">
+            Incidentes del día
+            {incidents.length > 0 && (
+              <span className="incidents-count">{incidents.length}</span>
+            )}
+          </h3>
+
+          {incidents.length === 0 ? (
+            <div className="incidents-empty">Sin incidentes reportados para esta fecha.</div>
+          ) : (
+            <div className="incidents-list">
+              {incidents.map((inc) => (
+                <div key={inc.incidentId} className="incident-card">
+                  <div className="incident-card-header">
+                    <span className="incident-type">{inc.incidentType}</span>
+                    <span className="incident-meta">
+                      {inc.driverName} · {new Date(inc.occurredAt).toLocaleTimeString("es-CR")}
+                    </span>
+                  </div>
+                  {inc.description && (
+                    <p className="incident-desc">{inc.description}</p>
+                  )}
+                  {inc.routeId && (
+                    <p className="incident-route">Ruta #{inc.routeId}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

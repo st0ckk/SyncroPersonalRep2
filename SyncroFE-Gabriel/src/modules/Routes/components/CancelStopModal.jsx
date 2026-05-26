@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 
 export default function CancelStopModal({ open, onClose, onConfirm }) {
   const [note, setNote] = useState("");
@@ -19,14 +21,14 @@ export default function CancelStopModal({ open, onClose, onConfirm }) {
         />
 
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", marginTop: 12 }}>
-          <button className="btn btn-outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose}>
             Cancelar
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => {
+          </Button>
+          <Button
+            variant="danger"
+            onClick={async () => {
               if (!note.trim()) {
-                alert("Debes escribir el motivo.");
+                await Swal.fire({ icon: "warning", title: "Atención", text: "Debes escribir el motivo." });
                 return;
               }
               onConfirm(note.trim());
@@ -34,7 +36,7 @@ export default function CancelStopModal({ open, onClose, onConfirm }) {
             }}
           >
             Confirmar cancelación
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,0 +1,170 @@
+.tf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.tf-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.tf-subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.tf-status-on  { font-weight: 700; color: #86efac; }
+.tf-status-off { font-weight: 700; color: #fca5a5; }
+
+/* ── Botones ── */
+.tf-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+}
+
+.tf-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tf-btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+.tf-btn-danger:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.tf-btn-primary {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    border-color: rgba(99, 102, 241, 0.4);
+}
+.tf-btn-primary:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.3);
+}
+
+.tf-btn-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+.tf-btn-success:hover:not(:disabled) {
+    background: rgba(34, 197, 94, 0.25);
+}
+
+.tf-btn-neutral {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    border-color: var(--border);
+}
+.tf-btn-neutral:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+/* ── Error ── */
+.tf-error {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+/* ── Setup ── */
+.tf-setup-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+.tf-qr-wrapper {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.tf-qr-box {
+    background: rgba(255, 255, 255, 0.07);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tf-setup-side {
+    flex: 1;
+    min-width: 220px;
+}
+
+.tf-secret-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0 0 6px 0;
+}
+
+.tf-secret-code {
+    display: block;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    word-break: break-all;
+    margin-bottom: 16px;
+    color: #c7d2fe;
+    font-family: monospace;
+}
+
+.tf-confirm-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0 0 8px 0;
+}
+
+.tf-confirm-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tf-code-input {
+    flex: 1;
+    min-width: 100px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text-main);
+    font-size: 18px;
+    letter-spacing: 6px;
+    text-align: center;
+}
+
+.tf-code-input:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}

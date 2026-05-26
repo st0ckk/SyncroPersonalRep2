@@ -1,9 +1,13 @@
 import { useState } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 import {
     downloadInvoiceXml,
     downloadResponseXml,
+    downloadInvoicePdf,
     sendInvoiceEmail,
     resendInvoice,
+    cancelInvoice,
 } from "../../../api/electronicInvoice.api";
 
 export default function FacturacionTable({ invoices, onCheckStatus, onRefresh }) {
@@ -78,7 +82,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
             setActionLoading(`xml-${invoice.invoiceId}`);
             await downloadInvoiceXml(invoice.invoiceId, invoice.clave);
         } catch (err) {
-            alert("Error al descargar XML: " + (err.response?.data?.error || err.message));
+            Swal.fire({ icon: "error", title: "Error", text: "Error al descargar XML: " + (err.response?.data?.error || err.message) });
         } finally {
             setActionLoading(null);
         }
@@ -89,7 +93,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
             setActionLoading(`resp-${invoice.invoiceId}`);
             await downloadResponseXml(invoice.invoiceId, invoice.clave);
         } catch (err) {
-            alert("No hay respuesta XML disponible");
+            Swal.fire({ icon: "error", title: "Error", text: "No hay respuesta XML disponible" });
         } finally {
             setActionLoading(null);
         }
@@ -99,12 +103,53 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
         try {
             setActionLoading(`email-${invoice.invoiceId}`);
             const response = await sendInvoiceEmail(invoice.invoiceId);
-            alert(response.data?.message || "Correo enviado");
+            Swal.fire({ icon: "success", title: "Éxito", text: response.data?.message || "Correo enviado", timer: 2000, showConfirmButton: false });
         } catch (err) {
-            alert(
-                "Error al enviar correo: " +
-                    (err.response?.data?.error || err.message)
-            );
+            Swal.fire({ icon: "error", title: "Error", text: "Error al enviar correo: " + (err.response?.data?.error || err.message) });
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleDownloadPdf = async (invoice) => {
+        try {
+            setActionLoading(`pdf-${invoice.invoiceId}`);
+            await downloadInvoicePdf(invoice.invoiceId, invoice.consecutiveNumber);
+        } catch (err) {
+            Swal.fire({ icon: "error", title: "Error", text: "Error al descargar PDF: " + (err.response?.data?.error || err.message) });
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleCancel = async (invoice) => {
+        const { value, isConfirmed: reasonConfirmed } = await Swal.fire({
+            title: "Indique la razon de anulacion:",
+            input: "text",
+            inputPlaceholder: "...",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+        });
+        if (!reasonConfirmed || !value) return;
+
+        const result = await Swal.fire({
+            title: "¿Está seguro?",
+            text: `Esta seguro que desea anular la factura ${invoice.consecutiveNumber}? Se generara una Nota de Credito.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "Cancelar",
+        });
+        if (!result.isConfirmed) return;
+
+        try {
+            setActionLoading(`cancel-${invoice.invoiceId}`);
+            const response = await cancelInvoice(invoice.invoiceId, value);
+            Swal.fire({ icon: "success", title: "Éxito", text: response.data?.message || "Factura anulada exitosamente", timer: 2000, showConfirmButton: false });
+            onRefresh();
+        } catch (err) {
+            Swal.fire({ icon: "error", title: "Error", text: "Error al anular factura: " + (err.response?.data?.error || err.message) });
         } finally {
             setActionLoading(null);
         }
@@ -114,13 +159,10 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
         try {
             setActionLoading(`resend-${invoice.invoiceId}`);
             await resendInvoice(invoice.invoiceId);
-            alert("Factura reenviada a Hacienda");
+            Swal.fire({ icon: "success", title: "Éxito", text: "Factura reenviada a Hacienda", timer: 2000, showConfirmButton: false });
             onRefresh();
         } catch (err) {
-            alert(
-                "Error al reenviar: " +
-                    (err.response?.data?.error || err.message)
-            );
+            Swal.fire({ icon: "error", title: "Error", text: "Error al reenviar: " + (err.response?.data?.error || err.message) });
         } finally {
             setActionLoading(null);
         }
@@ -135,6 +177,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
     }
 
     return (
+        <div className="table-scroll">
         <table className="facturacion-table">
             <thead>
                 <tr>
@@ -170,8 +213,9 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                             </td>
                             <td>{formatDate(inv.emissionDate)}</td>
                             <td className="actions">
-                                <button
-                                    className="btn btn-outline btn-sm"
+                                <Button
+                                    variant="outline"
+                                    size="sm"
                                     onClick={() =>
                                         setExpandedId(
                                             expandedId === inv.invoiceId
@@ -183,23 +227,25 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                                     {expandedId === inv.invoiceId
                                         ? "Ocultar"
                                         : "Detalle"}
-                                </button>
+                                </Button>
 
                                 {(inv.haciendaStatus === "sent" ||
                                     inv.haciendaStatus === "pending") && (
-                                    <button
-                                        className="btn btn-outline btn-sm"
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
                                         onClick={() =>
                                             onCheckStatus(inv.invoiceId)
                                         }
                                     >
                                         Consultar
-                                    </button>
+                                    </Button>
                                 )}
 
                                 {inv.haciendaStatus === "error" && (
-                                    <button
-                                        className="btn btn-outline btn-sm"
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
                                         onClick={() => handleResend(inv)}
                                         disabled={
                                             actionLoading ===
@@ -207,7 +253,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                                         }
                                     >
                                         Reenviar
-                                    </button>
+                                    </Button>
                                 )}
                             </td>
                         </tr>
@@ -314,6 +360,20 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                                         <button
                                             className="btn-icon"
                                             onClick={() =>
+                                                handleDownloadPdf(inv)
+                                            }
+                                            disabled={
+                                                actionLoading ===
+                                                `pdf-${inv.invoiceId}`
+                                            }
+                                        >
+                                            {actionLoading === `pdf-${inv.invoiceId}`
+                                                ? "Generando..."
+                                                : "Descargar PDF"}
+                                        </button>
+                                        <button
+                                            className="btn-icon"
+                                            onClick={() =>
                                                 handleDownloadXml(inv)
                                             }
                                             disabled={
@@ -347,6 +407,23 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                                         >
                                             Enviar Correo
                                         </button>
+
+                                        {inv.haciendaStatus === "accepted" && inv.documentType !== "03" && (
+                                            <button
+                                                className="btn-icon btn-cancel"
+                                                onClick={() =>
+                                                    handleCancel(inv)
+                                                }
+                                                disabled={
+                                                    actionLoading ===
+                                                    `cancel-${inv.invoiceId}`
+                                                }
+                                            >
+                                                {actionLoading === `cancel-${inv.invoiceId}`
+                                                    ? "Anulando..."
+                                                    : "Anular"}
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -355,6 +432,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                 ))}
             </tbody>
         </table>
+        </div>
     );
 }
 

@@ -1,4 +1,6 @@
 ﻿import { useState } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 
 const emptyDistributor = {
     distributorCode: "",
@@ -30,16 +32,16 @@ export default function DistributorForm({
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!form.distributorCode.trim()) {
-            alert("El código es obligatorio");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "El código es obligatorio" });
             return;
         }
 
         if (!form.name.trim()) {
-            alert("El nombre es obligatorio");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "El nombre es obligatorio" });
             return;
         }
 
@@ -95,22 +97,22 @@ export default function DistributorForm({
             </div>
 
             <div className="form-actions">
-                <button
+                <Button
                     type="submit"
-                    className="btn btn-primary"
+                    variant="primary"
                     disabled={submitting}
                 >
                     {submitting ? "Guardando..." : "Guardar"}
-                </button>
+                </Button>
 
-                <button
+                <Button
                     type="button"
-                    className="btn btn-outline"
+                    variant="outline"
                     onClick={onCancel}
                     disabled={submitting}
                 >
                     Cancelar
-                </button>
+                </Button>
             </div>
         </form>
     );

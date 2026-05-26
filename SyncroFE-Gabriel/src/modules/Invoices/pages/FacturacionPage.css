@@ -3,7 +3,7 @@
 }
 
 .facturacion-container {
-    background: var(--bg-card, #fff);
+    background: var(--bg-card);
     border-radius: 8px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -41,8 +41,8 @@
     border-radius: 8px;
     border: 1px solid var(--border);
     font-size: 14px;
-    background: var(--bg-input, #fff);
-    color: var(--text-main, #1f2937);
+    background: #0a1228;
+    color: var(--text-main);
 }
 
 /* =========================
@@ -104,8 +104,8 @@
    STATUS BADGES
 ========================= */
 .status-accepted {
-    background: rgba(34, 197, 94, 0.15);
-    color: #15803d;
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -113,8 +113,8 @@
 }
 
 .status-sent {
-    background: rgba(59, 130, 246, 0.15);
-    color: #1d4ed8;
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -122,8 +122,8 @@
 }
 
 .status-pending {
-    background: rgba(234, 179, 8, 0.15);
-    color: #a16207;
+    background: rgba(234, 179, 8, 0.2);
+    color: #fcd34d;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -131,8 +131,8 @@
 }
 
 .status-rejected {
-    background: rgba(239, 68, 68, 0.15);
-    color: #dc2626;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -140,8 +140,8 @@
 }
 
 .status-error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #dc2626;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -159,23 +159,23 @@
 }
 
 .doctype-fe {
-    background: rgba(99, 102, 241, 0.15);
-    color: #4338ca;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
 }
 
 .doctype-nc {
-    background: rgba(249, 115, 22, 0.15);
-    color: #c2410c;
+    background: rgba(249, 115, 22, 0.2);
+    color: #fdba74;
 }
 
 .doctype-nd {
-    background: rgba(168, 85, 247, 0.15);
-    color: #7e22ce;
+    background: rgba(168, 85, 247, 0.2);
+    color: #d8b4fe;
 }
 
 .doctype-te {
-    background: rgba(107, 114, 128, 0.15);
-    color: #374151;
+    background: rgba(107, 114, 128, 0.2);
+    color: #cbd5e1;
 }
 
 /* =========================
@@ -201,7 +201,7 @@
 }
 
 .facturacion-details-grid .detail-group strong {
-    color: var(--text-main, #1f2937);
+    color: var(--text-main);
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -250,7 +250,7 @@
     border-radius: 6px;
     border: 1px solid var(--border);
     font-size: 14px;
-    background: var(--bg-input, #fff);
+    background: #0a1228;
 }
 
 .generate-modal .form-actions {
@@ -261,11 +261,12 @@
 }
 
 .sale-preview {
-    background: rgba(0, 0, 0, 0.03);
+    background: rgba(255, 255, 255, 0.05);
     padding: 12px;
     border-radius: 6px;
     margin-bottom: 16px;
     font-size: 13px;
+    border: 1px solid var(--border);
 }
 
 .sale-preview p {
@@ -375,4 +376,75 @@
 .btn-success:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.btn-cancel {
+    color: #dc2626 !important;
+    border-color: #fca5a5 !important;
+}
+
+.btn-cancel:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .facturacion-page {
+        padding: 12px;
+    }
+
+    .facturacion-container {
+        padding: 14px;
+    }
+
+    .facturacion-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .facturacion-toolbar .toolbar-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .facturacion-filters {
+        flex-direction: column;
+    }
+
+    .facturacion-filters input,
+    .facturacion-filters select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .facturacion-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .generate-modal {
+        width: min(550px, 95vw);
+    }
+
+    .validation-modal {
+        width: min(550px, 95vw);
+    }
+}
+
+@media (max-width: 480px) {
+    .facturacion-page {
+        padding: 8px;
+    }
+
+    .facturacion-table th,
+    .facturacion-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
 }

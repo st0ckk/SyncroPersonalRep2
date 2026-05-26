@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 import { getDistributorLookup } from "../../../api/distributors.api";
 import { searchCabys } from "../../../api/stock.api";
 
@@ -101,26 +103,26 @@ export default function StockForm({
         setSelectedCabys(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!form.distributorId || Number.isNaN(form.distributorId)) {
-            alert("Debe seleccionar un distribuidor válido");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar un proveedor válido" });
             return;
         }
 
         if (!form.productName.trim()) {
-            alert("El nombre del producto es obligatorio");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "El nombre del producto es obligatorio" });
             return;
         }
 
         if (Number(form.productPrice) <= 0) {
-            alert("El precio debe ser mayor a 0");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "El precio debe ser mayor a 0" });
             return;
         }
 
         if (Number(form.productQuantity) < 0) {
-            alert("La cantidad no puede ser negativa");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "La cantidad no puede ser negativa" });
             return;
         }
 
@@ -143,7 +145,7 @@ export default function StockForm({
     return (
         <form className="stock-form" onSubmit={handleSubmit}>
             <div className="form-group full-width">
-                <label>Distribuidor</label>
+                <label>Proveedor</label>
                 <select
                     name="distributorId"
                     value={form.distributorId ?? ""}
@@ -158,7 +160,7 @@ export default function StockForm({
                     }
                     required
                 >
-                    <option value="">Seleccione distribuidor</option>
+                    <option value="">Seleccione proveedor</option>
                     {[...distributors]
                         .sort((a, b) => a.name.localeCompare(b.name))
                         .map((d) => (
@@ -242,10 +244,10 @@ export default function StockForm({
                     required
                 />
             </div>
-
+            
             {/* ── Facturación electrónica ── */}
             <div className="form-group full-width" style={{ marginTop: 4 }}>
-                <strong style={{ fontSize: 14, color: "#374151" }}>Facturación electrónica</strong>
+                <strong style={{ fontSize: 14, color: "#e2e8f0" }}>Facturación electrónica</strong>
             </div>
 
             <div className="form-group full-width">
@@ -281,7 +283,7 @@ export default function StockForm({
                         <div style={{ flex: 1 }}>
                             <strong>{form.cabysCode}</strong>
                             {selectedCabys && (
-                                <span style={{ marginLeft: 8, color: "#374151" }}>
+                                <span style={{ marginLeft: 8, color: "#e2e8f0" }}>
                                     — {selectedCabys.descripcion}
                                     <span style={{ marginLeft: 8, color: "#15803d", fontWeight: 500 }}>
                                         (IVA {selectedCabys.impuesto}%)
@@ -323,26 +325,26 @@ export default function StockForm({
                         }
                     }}
                     placeholder="Buscar por descripción del producto..."
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #dcdcdc", fontSize: 14, color: "#111", background: "#fff" }}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", fontSize: 14, color: "#e2e8f0", background: "#0a1228" }}
                 />
-                <button
+                <Button
                     type="button"
-                    className="btn btn-primary"
+                    variant="primary"
                     onClick={handleCabysSearch}
                     disabled={cabysLoading || cabysQuery.trim().length < 3}
                     style={{ marginTop: 8, padding: "10px 0", fontSize: 13, width: "100%" }}
                 >
                     {cabysLoading ? "Buscando..." : "Buscar CABYS"}
-                </button>
+                </Button>
 
                 {showCabys && cabysResults.length > 0 && (
                     <div style={{
                         marginTop: 8,
-                        border: "1px solid #dcdcdc",
+                        border: "1px solid rgba(255,255,255,0.1)",
                         borderRadius: 8,
                         maxHeight: 250,
                         overflowY: "auto",
-                        background: "#fff",
+                        background: "#0f172a",
                         zIndex: 10,
                     }}>
                         {cabysResults.map((item, i) => (
@@ -351,12 +353,12 @@ export default function StockForm({
                                 onClick={() => selectCabys(item)}
                                 style={{
                                     padding: "10px 14px",
-                                    borderBottom: "1px solid #f0f0f0",
+                                    borderBottom: "1px solid rgba(255,255,255,0.1)",
                                     cursor: "pointer",
                                     fontSize: 13,
                                 }}
-                                onMouseOver={(e) => e.currentTarget.style.background = "#f5f6fa"}
-                                onMouseOut={(e) => e.currentTarget.style.background = "#fff"}
+                                onMouseOver={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.08)"}
+                                onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
                             >
                                 <strong>{item.codigo}</strong>
                                 <span style={{ marginLeft: 8, color: "#6b7280" }}>
@@ -376,24 +378,23 @@ export default function StockForm({
                     </span>
                 )}
             </div>
-
             <div className="form-actions">
-                <button
+                <Button
                     type="submit"
-                    className="btn btn-primary"
+                    variant="primary"
                     disabled={submitting}
                 >
                     {submitting ? "Guardando..." : "Guardar"}
-                </button>
+                </Button>
 
-                <button
+                <Button
                     type="button"
-                    className="btn btn-outline"
+                    variant="outline"
                     onClick={onCancel}
                     disabled={submitting}
                 >
                     Cancelar
-                </button>
+                </Button>
             </div>
         </form>
     );

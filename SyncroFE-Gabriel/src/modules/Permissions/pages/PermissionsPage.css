@@ -1,0 +1,230 @@
+.perm-page {
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.perm-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 6px 0;
+}
+
+.perm-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 24px 0;
+}
+
+/* Tabs */
+.perm-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+}
+
+.perm-tab {
+    padding: 8px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+}
+
+.perm-tab:hover {
+    color: var(--text-main);
+}
+
+.perm-tab-active {
+    color: #6366f1;
+    border-bottom-color: #6366f1;
+}
+
+/* Panel */
+.perm-panel {
+    background: var(--bg-card);
+    border: var(--card-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.perm-selector-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.perm-selector-row label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.perm-select {
+    flex: 1;
+    max-width: 420px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.perm-select:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+
+.perm-hint {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.perm-loading {
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 12px 0;
+}
+
+/* Screen groups */
+.perm-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.perm-group {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.perm-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin: 0 0 12px 0;
+}
+
+.perm-screen-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.perm-screen-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-main);
+    transition: background 0.12s;
+    user-select: none;
+}
+
+.perm-screen-item:hover:not(.perm-default) {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.perm-screen-item input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: #6366f1;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.perm-default {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.perm-default input[type="checkbox"] {
+    cursor: default;
+}
+
+.perm-badge-default {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+@media (max-width: 600px) {
+    .perm-page {
+        padding: 12px;
+    }
+
+    .perm-panel {
+        padding: 16px 12px;
+    }
+
+    .perm-selector-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .perm-select {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .perm-screen-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Actions */
+.perm-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.perm-actions .btn {
+    padding: 9px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, opacity 0.15s;
+}
+
+.perm-actions .btn-primary {
+    background: #6366f1;
+    color: #fff;
+}
+
+.perm-actions .btn-primary:hover:not(:disabled) {
+    background: #4f46e5;
+}
+
+.perm-actions .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

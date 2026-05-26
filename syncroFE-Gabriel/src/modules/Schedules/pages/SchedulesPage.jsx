@@ -1,5 +1,6 @@
-import "./schedules.css";
 import { useEffect, useRef, useState } from "react";
+import "./schedules.css";
+import Swal from "sweetalert2";
 import { getUsers } from "../../../api/users.api";
 import {
   getSchedules,
@@ -198,7 +199,15 @@ export default function SchedulesPage() {
 
   const handleToggleStatus = async (item) => {
     const action = item.isActive ? "desactivar" : "activar";
-    if (!window.confirm(`¿Deseas ${action} este horario?`)) return;
+    const result = await Swal.fire({
+      title: "¿Está seguro?",
+      text: `¿Deseas ${action} este horario?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "Cancelar",
+    });
+    if (!result.isConfirmed) return;
 
     try {
       if (item.isActive) await deactivateSchedule(item.scheduleId);

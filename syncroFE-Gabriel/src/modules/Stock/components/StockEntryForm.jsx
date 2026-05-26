@@ -1,5 +1,7 @@
 ﻿import { useState } from "react";
+import Button from "../../../components/Button";
 import ProductAutoComplete from "./ProductAutoComplete";
+import Swal from "sweetalert2";
 
 export default function StockEntryForm({
     submitting,
@@ -9,16 +11,16 @@ export default function StockEntryForm({
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(0);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!product) {
-            alert("Debe seleccionar un producto");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar un producto" });
             return;
         }
 
         if (quantity <= 0) {
-            alert("La cantidad debe ser mayor a 0");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "La cantidad debe ser mayor a 0" });
             return;
         }
 
@@ -52,22 +54,22 @@ export default function StockEntryForm({
             </div>
 
             <div className="form-actions">
-                <button
+                <Button
                     type="submit"
-                    className="btn btn-primary"
+                    variant="primary"
                     disabled={submitting}
                 >
                     {submitting ? "Guardando..." : "Agregar"}
-                </button>
+                </Button>
 
-                <button
+                <Button
                     type="button"
-                    className="btn btn-outline"
+                    variant="outline"
                     onClick={onCancel}
                     disabled={submitting}
                 >
                     Cancelar
-                </button>
+                </Button>
             </div>
         </form>
     );

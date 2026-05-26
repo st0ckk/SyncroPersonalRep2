@@ -1,5 +1,6 @@
-import "./FacturacionPage.css";
 import { useEffect, useState } from "react";
+import "./FacturacionPage.css";
+import Swal from "sweetalert2";
 import {
     getInvoices,
     generateInvoice,
@@ -98,7 +99,7 @@ export default function FacturacionPage() {
             if (response.data) {
                 setShowGenerateModal(false);
                 loadInvoices();
-                alert(`Factura generada exitosamente. Clave: ${response.data.clave}`);
+                Swal.fire({ icon: "success", title: "Éxito", text: `Factura generada exitosamente. Clave: ${response.data.clave}`, timer: 2000, showConfirmButton: false });
             }
         } catch (err) {
             const errorData = err.response?.data;
@@ -110,9 +111,7 @@ export default function FacturacionPage() {
                 });
                 setShowValidation(true);
             } else {
-                alert(
-                    `Error al generar factura: ${errorData?.error || errorData?.detail || err.message}`
-                );
+                Swal.fire({ icon: "error", title: "Error", text: `Error al generar factura: ${errorData?.error || errorData?.detail || err.message}` });
             }
         } finally {
             setGenerating(false);
@@ -125,11 +124,9 @@ export default function FacturacionPage() {
             const response = await checkInvoiceStatus(invoiceId);
             loadInvoices();
             const status = response.data;
-            alert(
-                `Estado: ${formatHaciendaStatus(status.haciendaStatus)}\n${status.haciendaMessage || ""}`
-            );
+            Swal.fire({ icon: "success", title: "Éxito", text: `Estado: ${formatHaciendaStatus(status.haciendaStatus)}\n${status.haciendaMessage || ""}`, timer: 2000, showConfirmButton: false });
         } catch (err) {
-            alert(`Error al consultar estado: ${err.message}`);
+            Swal.fire({ icon: "error", title: "Error", text: `Error al consultar estado: ${err.message}` });
         }
     };
 

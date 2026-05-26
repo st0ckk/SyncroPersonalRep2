@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import Button from "../../../components/Button";
 import { generateQuoteCopy } from "../../../api/quote.api";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginationControls from "../../../components/PaginationControls";
@@ -96,6 +97,7 @@ export default function QuoteTable({
 
     return (
         <>
+        <div className="table-scroll">
         <table className="quote-table">
             <thead>
                 <tr>
@@ -124,28 +126,28 @@ export default function QuoteTable({
                         <td>{formatDate(q.quoteDate)}</td>
                         <td className="actions">
 
-                            <button
-                                className="btn btn-outline"
+                            <Button
+                                variant="outline"
                                 onClick={() => toggleMoreInfo(q.quoteId)}
                             >
                                     {expandedQuoteId === q.quoteId ? "Ocultar" : "Detalle"}
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
                                     type="button"
-                                    className="btn btn-outline"
+                                    variant="outline"
                                     onClick={() => onEdit(q)}
                             >
                                 Editar
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
-                                    className="btn btn-outline"
+                                    variant="outline"
                                     onClick={() => handlePDFDownload(q.quoteId, q.quoteNumber)}
                                     disabled={loadingPdf === q.quoteId ? true : false }
                                 >
                                     {loadingPdf === q.quoteId ? 'Generando...' : 'Descargar copia'}
-                                </button>
+                                </Button>
                         </td>
                         </tr>
 
@@ -218,6 +220,7 @@ export default function QuoteTable({
                 ))}
             </tbody>
         </table>
+        </div>
         <PaginationControls {...pagination} />
         </>
     );

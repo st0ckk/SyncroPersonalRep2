@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from "react";
+import Button from "../../../components/Button";
 
 export default function AssetsForm({
     initialValues,
@@ -115,22 +116,22 @@ export default function AssetsForm({
             </div>
 
             <div className="form-actions">
-                <button
+                <Button
                     type="submit"
-                    className="btn btn-primary"
+                    variant="primary"
                     disabled={submitting}
                 >
                     {submitting ? "Guardando..." : "Guardar"}
-                </button>
+                </Button>
 
-                <button
+                <Button
                     type="button"
-                    className="btn btn-outline"
+                    variant="outline"
                     onClick={onCancel}
                     disabled={submitting}
                 >
                     Cancelar
-                </button>
+                </Button>
             </div>
         </form>
     );

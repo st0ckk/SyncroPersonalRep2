@@ -1,5 +1,7 @@
 // src/modules/Routes/components/MyRoutesDriverView.jsx
 import { Fragment, useEffect, useMemo, useState } from "react";
+import Swal from "sweetalert2";
+import Button from "../../../components/Button";
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
@@ -12,8 +14,11 @@ import {
   updateMyStopStatus,
   uploadMyStopPhoto,
 } from "../../../api/routes.api";
+import { createIncident } from "../../../api/incidents.api";
 
 import PendingStopsMap from "./PendingStopsMap";
+import { useAuth } from "../../../auth/AuthContext";
+import { useShareLocation } from "../../../hooks/useShareLocation";
 
 // Helpers fecha
 function toISODate(d) {
@@ -54,6 +59,16 @@ function buildWazeUrl(lat, lng) {
 }
 
 export default function MyRoutesDriverView() {
+  const auth = useAuth();
+  const driverName = auth?.user
+    ? `${auth.user.userName ?? ""} ${auth.user.userLastname ?? ""}`.trim()
+    : "Chofer";
+
+  // Compartir ubicación GPS mientras la app está abierta
+  const hasActiveRoutes = true; // siempre activo cuando el chofer ve esta pantalla
+  const { active: sharingLocation, status: locationStatus, toggle: toggleLocation } =
+    useShareLocation(driverName, hasActiveRoutes);
+
   const [routes, setRoutes] = useState([]);
   const [loadingRoutes, setLoadingRoutes] = useState(true);
 
@@ -79,6 +94,47 @@ export default function MyRoutesDriverView() {
 
   // Estado de subida de foto
   const [uploadingPhotoStopId, setUploadingPhotoStopId] = useState(null);
+
+  // Incidentes
+  const [showIncidentModal, setShowIncidentModal] = useState(false);
+  const [incidentRouteId, setIncidentRouteId] = useState(null);
+  const [incidentType, setIncidentType] = useState("Llanta ponchada");
+  const [incidentDesc, setIncidentDesc] = useState("");
+  const [savingIncident, setSavingIncident] = useState(false);
+
+  const INCIDENT_TYPES = [
+    "Llanta ponchada",
+    "Tiempo de almuerzo",
+    "Choque",
+    "Congestión vial",
+    "Problemas mecánicos",
+    "Otros",
+  ];
+
+  const openIncidentModal = (routeId = null) => {
+    setIncidentRouteId(routeId);
+    setIncidentType("Llanta ponchada");
+    setIncidentDesc("");
+    setShowIncidentModal(true);
+  };
+
+  const saveIncident = async () => {
+    setSavingIncident(true);
+    try {
+      await createIncident({
+        routeId: incidentRouteId,
+        incidentType,
+        description: incidentDesc || null,
+      });
+      setShowIncidentModal(false);
+      Swal.fire({ icon: "success", title: "Incidente reportado", timer: 1500, showConfirmButton: false });
+    } catch (err) {
+      const detail = err?.response?.data?.detail || err?.response?.data?.message || "No se pudo guardar el incidente.";
+      Swal.fire({ icon: "error", title: "Error", text: detail });
+    } finally {
+      setSavingIncident(false);
+    }
+  };
 
   // Formateo de fechas
   const formatSaleDate = (dateStr) => {
@@ -132,19 +188,28 @@ export default function MyRoutesDriverView() {
       await loadMyRoutes(routeDate);
     } catch (err) {
       console.error("Error actualizando estado", err);
-      alert(err?.response?.data || "No se pudo actualizar el estado.");
+      Swal.fire({ icon: "error", title: "Error", text: err?.response?.data || "No se pudo actualizar el estado." });
     } finally {
       setUpdating({ routeId: null, stopId: null, status: null });
     }
   };
 
   const confirmCancel = async (routeId, stopId) => {
-    const note = prompt("Motivo de cancelación (obligatorio):");
-    if (!note || !note.trim()) {
-      alert("Debes escribir un motivo para cancelar.");
+    const { value, isConfirmed } = await Swal.fire({
+      title: "Motivo de cancelación (obligatorio):",
+      input: "text",
+      inputPlaceholder: "...",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!isConfirmed || !value) {
+      if (isConfirmed && !value) {
+        await Swal.fire({ icon: "warning", title: "Atención", text: "Debes escribir un motivo para cancelar." });
+      }
       return;
     }
-    await setStopStatus(routeId, stopId, "Cancelled", note.trim());
+    await setStopStatus(routeId, stopId, "Cancelled", value.trim());
   };
 
   const handlePhotoChange = async (routeId, stopId, event) => {
@@ -159,7 +224,7 @@ export default function MyRoutesDriverView() {
       await loadMyRoutes(routeDate);
     } catch (err) {
       console.error("Error subiendo foto de entrega", err);
-      alert(err?.response?.data || "No se pudo guardar la foto de la entrega.");
+      Swal.fire({ icon: "error", title: "Error", text: err?.response?.data || "No se pudo guardar la foto de la entrega." });
     } finally {
       setUploadingPhotoStopId(null);
     }
@@ -193,8 +258,47 @@ export default function MyRoutesDriverView() {
       <div className="routes-card">
         <div className="routes-toolbar">
           <h2>Mis rutas asignadas</h2>
-          <div style={{ color: "var(--text-secondary)" }}>
-            {formatDate(routeDate)}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ color: "var(--text-secondary)" }}>
+              {formatDate(routeDate)}
+            </div>
+
+            {/* Indicador / control de compartir ubicación */}
+            <button
+              onClick={toggleLocation}
+              title={sharingLocation ? "Pausar compartir ubicación" : "Compartir mi ubicación"}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "4px 10px",
+                borderRadius: 999,
+                border: "1.5px solid",
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: "pointer",
+                background: "transparent",
+                borderColor: sharingLocation ? "#22c55e" : "#9ca3af",
+                color: sharingLocation ? "#15803d" : "#6b7280",
+              }}
+            >
+              <span style={{
+                width: 8, height: 8, borderRadius: "50%",
+                background: sharingLocation ? "#22c55e" : "#9ca3af",
+                display: "inline-block",
+                ...(sharingLocation ? {
+                  boxShadow: "0 0 0 2px rgba(34,197,94,0.3)",
+                  animation: "pulse-ring 1.4s ease-out infinite",
+                } : {}),
+              }} />
+              {locationStatus === "requesting"
+                ? "Obteniendo GPS..."
+                : locationStatus === "error"
+                ? "Sin GPS"
+                : sharingLocation
+                ? "Compartiendo ubicación"
+                : "Ubicación pausada"}
+            </button>
           </div>
         </div>
 
@@ -243,7 +347,7 @@ export default function MyRoutesDriverView() {
             {routes.map((route) => (
               <div key={route.routeId} className="driver-route-card">
                 <div className="driver-route-header">
-                  <div>
+                  <div style={{ flex: 1 }}>
                     <h3>{route.routeName}</h3>
                     <p>
                       <strong>Fecha:</strong> {formatDate(route.routeDate)}
@@ -258,6 +362,14 @@ export default function MyRoutesDriverView() {
                     <p>
                       <strong>Paradas:</strong> {route.stopCount}
                     </p>
+                  </div>
+                  <div>
+                    <Button
+                      variant="danger"
+                      onClick={() => openIncidentModal(route.routeId)}
+                    >
+                      ⚠ Reportar incidente
+                    </Button>
                   </div>
                 </div>
 
@@ -314,6 +426,18 @@ export default function MyRoutesDriverView() {
                               </p>
                             )}
 
+                            {stop.clientPhone && (
+                              <p>
+                                <strong>Teléfono:</strong>{" "}
+                                <a
+                                  href={`tel:${stop.clientPhone}`}
+                                  className="driver-stop-phone-link"
+                                >
+                                  {stop.clientPhone}
+                                </a>
+                              </p>
+                            )}
+
                             {stop.notes && (
                               <p>
                                 <strong>Notas:</strong> {stop.notes}
@@ -344,6 +468,15 @@ export default function MyRoutesDriverView() {
                           </div>
 
                           <div className="driver-stop-actions">
+                            {stop.clientPhone && (
+                              <a
+                                href={`tel:${stop.clientPhone}`}
+                                className="btn btn-success"
+                              >
+                                📞 Llamar
+                              </a>
+                            )}
+
                             <label
                               className={`btn btn-outline file-upload-btn ${
                                 isUploadingPhoto ? "is-disabled" : ""
@@ -371,8 +504,8 @@ export default function MyRoutesDriverView() {
                               />
                             </label>
 
-                            <button
-                              className="btn btn-outline"
+                            <Button
+                              variant="outline"
                               disabled={isUpdating || isUploadingPhoto}
                               onClick={() =>
                                 setStopStatus(
@@ -386,10 +519,10 @@ export default function MyRoutesDriverView() {
                               {isUpdating && updating.status === "EnRoute"
                                 ? "Actualizando..."
                                 : "En ruta"}
-                            </button>
+                            </Button>
 
-                            <button
-                              className="btn btn-success"
+                            <Button
+                              variant="success"
                               disabled={isUpdating || isUploadingPhoto}
                               onClick={() =>
                                 setStopStatus(
@@ -403,10 +536,10 @@ export default function MyRoutesDriverView() {
                               {isUpdating && updating.status === "Delivered"
                                 ? "Actualizando..."
                                 : "Entregado"}
-                            </button>
+                            </Button>
 
-                            <button
-                              className="btn btn-danger"
+                            <Button
+                              variant="danger"
                               disabled={isUpdating || isUploadingPhoto}
                               onClick={() =>
                                 confirmCancel(route.routeId, stop.routeStopId)
@@ -416,7 +549,7 @@ export default function MyRoutesDriverView() {
                               {isUpdating && updating.status === "Cancelled"
                                 ? "Actualizando..."
                                 : "Cancelado"}
-                            </button>
+                            </Button>
 
                             <a
                               href={googleMapsUrl}
@@ -441,6 +574,7 @@ export default function MyRoutesDriverView() {
                     })}
                 </div>
 
+                <div className="ventas-table-scroll">
                 <table className="ventas-table">
                   <thead>
                     <tr>
@@ -467,8 +601,9 @@ export default function MyRoutesDriverView() {
                             <td>{s.userName}</td>
                             <td>{formatSaleDate(s.purchaseDate)}</td>
                             <td className="actions">
-                              <button
-                                className="btn btn-outline btn-sm"
+                              <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() =>
                                   setExpandedSaleId(
                                     expandedSaleId === s.purchaseId
@@ -480,7 +615,7 @@ export default function MyRoutesDriverView() {
                                 {expandedSaleId === s.purchaseId
                                   ? "Ocultar"
                                   : "Detalle"}
-                              </button>
+                              </Button>
                             </td>
                           </tr>
 
@@ -523,11 +658,62 @@ export default function MyRoutesDriverView() {
                     )}
                   </tbody>
                 </table>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Modal de incidente */}
+      {showIncidentModal && (
+        <div className="modal-backdrop">
+          <div className="modal route-modal" style={{ width: "min(480px, 95vw)" }}>
+            <h3 style={{ marginBottom: 16 }}>Reportar incidente</h3>
+
+            <div className="route-form" style={{ gridTemplateColumns: "1fr", gap: 14 }}>
+              <div className="form-group">
+                <label>Tipo de incidente</label>
+                <select
+                  value={incidentType}
+                  onChange={(e) => setIncidentType(e.target.value)}
+                >
+                  {INCIDENT_TYPES.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Descripción (opcional)</label>
+                <textarea
+                  rows={4}
+                  placeholder="Detalles adicionales del incidente..."
+                  value={incidentDesc}
+                  onChange={(e) => setIncidentDesc(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="route-form-actions" style={{ marginTop: 20 }}>
+              <button
+                className="btn btn-outline"
+                onClick={() => setShowIncidentModal(false)}
+                disabled={savingIncident}
+              >
+                Cancelar
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={saveIncident}
+                disabled={savingIncident}
+              >
+                {savingIncident ? "Guardando..." : "Reportar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

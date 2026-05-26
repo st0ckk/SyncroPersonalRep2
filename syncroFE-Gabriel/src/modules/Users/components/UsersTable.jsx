@@ -1,4 +1,5 @@
 import { usePagination } from "../../../hooks/usePagination";
+import Button from "../../../components/Button";
 import PaginationControls from "../../../components/PaginationControls";
 
 export default function UsersTable({
@@ -63,16 +64,16 @@ export default function UsersTable({
             </td>
 
             <td className="actions">
-              <button className="btn btn-outline" onClick={() => onEdit(u)}>
+              <Button variant="outline" onClick={() => onEdit(u)}>
                 Editar
-              </button>
+              </Button>
 
-              <button
-                className="btn btn-danger"
+              <Button
+                variant="danger"
                 onClick={() => onResetPassword(u)}
               >
                 Restablecer contraseña
-              </button>
+              </Button>
             </td>
           </tr>
         ))}

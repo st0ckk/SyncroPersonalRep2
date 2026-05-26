@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Login.css";
 
 export default function Login() {
@@ -9,12 +10,12 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     // ── HU1: Estado de bloqueo ──
     const [lockoutEnd, setLockoutEnd] = useState(null);
     const [countdown, setCountdown] = useState(0);
 
-    // Countdown timer
     useEffect(() => {
         if (!lockoutEnd) return;
 
@@ -44,7 +45,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const res = await fetch("https://localhost:7053/api/auth/login", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -66,10 +67,17 @@ export default function Login() {
 
             const data = await res.json();
 
+            // ── 2FA: redirigir a verificación TOTP ──
+            if (data.requiresTwoFactor) {
+                navigate("/verify-totp", { state: { tempToken: data.tempToken }, replace: true });
+                return;
+            }
+
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("role", data.user.userRole);
             localStorage.setItem("mustChangePassword", data.mustChangePassword);
+            localStorage.setItem("twoFactorEnabled", data.twoFactorEnabled ?? false);
 
             if (data.mustChangePassword) {
                 navigate("/change-password", { replace: true });
@@ -88,13 +96,18 @@ export default function Login() {
     return (
         <div className="login-page">
             <div className="login-card">
-                <h1 className="login-logo">SyncroCR</h1>
+                <div className="login-logo-wrapper">
+                    <span className="login-logo-flake">❄</span>
+                    <h1 className="login-logo">SyncroCR</h1>
+                    <span className="login-logo-flake" style={{ animationDirection: "reverse" }}>❄</span>
+                </div>
                 <p className="login-subtitle">Gestión inteligente</p>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
+                    <div className="login-form-group">
                         <label>Correo</label>
                         <input
+                            className="login-input"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -104,16 +117,28 @@ export default function Login() {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className="login-form-group">
                         <label>Contraseña</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            required
-                            disabled={isLocked}
-                        />
+                        <div className="login-input-wrapper">
+                            <input
+                                className="login-input"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                required
+                                disabled={isLocked}
+                            />
+                            <button
+                                type="button"
+                                className="login-eye-btn"
+                                onClick={() => setShowPassword((v) => !v)}
+                                tabIndex={-1}
+                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
+                        </div>
                     </div>
 
                     {error && (
@@ -127,22 +152,19 @@ export default function Login() {
                         </div>
                     )}
 
-                    <button type="submit" disabled={loading || isLocked}>
+                    <button className="login-btn" type="submit" disabled={loading || isLocked}>
                         {isLocked
                             ? `Bloqueado (${formatTime(countdown)})`
                             : loading
                                 ? "Ingresando..."
                                 : "Ingresar"}
                     </button>
-                </form>
 
-                {/* SOLO DEV */}
-                <div className="login-dev-box">
-                    <strong>Usuario de prueba</strong>
-                    <p>📧 super@syncro.local</p>
-                    <p>🔑 Admin123*</p>
-                </div>
+                    <div className="login-forgot">
+                        <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
+                    </div>
+                </form>
             </div>
         </div>
     );
-} 
+}

@@ -81,13 +81,13 @@
 }
 
 .route-status.active {
-    background: rgba(34, 197, 94, 0.15);
-    color: #15803d;
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
 }
 
 .route-status.inactive {
-    background: rgba(239, 68, 68, 0.15);
-    color: #b91c1c;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
 }
 
 .route-extra td {
@@ -148,7 +148,7 @@
 }
 
 .btn-outline:hover {
-    background: rgba(0,0,0,0.05);
+    background: rgba(255,255,255,0.1);
 }
 
 .btn-danger {
@@ -245,7 +245,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 14px;
-    background: rgba(0,0,0,0.02);
+    background: rgba(255,255,255,0.04);
 }
 
 .route-stop-card-header {
@@ -294,6 +294,56 @@
         flex-wrap: wrap;
     }
 }
+/* ===========================
+   DRIVER TOP LAYOUT â€” calendar + map
+=========================== */
+.driver-top-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 24px;
+}
+
+.driver-calendar-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.driver-calendar-hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 6px;
+    padding: 0 4px;
+}
+
+.driver-map-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.driver-map-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+/* ===========================
+   DRIVER ROUTES LIST
+=========================== */
 .driver-routes-list {
     display: grid;
     gap: 16px;
@@ -328,7 +378,7 @@
     justify-content: space-between;
     gap: 16px;
     align-items: flex-start;
-    background: rgba(0,0,0,0.02);
+    background: rgba(255,255,255,0.04);
 }
 
 .driver-stop-card p {
@@ -462,7 +512,7 @@
         }
 
 /* =========================
-   MÁS INFORMACIÓN
+   Mï¿½S INFORMACIï¿½N
 ========================= */
 
 .ventas-extra td {
@@ -475,4 +525,95 @@
 
 .ventas-details td {
     width:500px
+}
+
+.driver-stop-phone-link {
+    color: var(--primary, #6366f1);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.driver-stop-phone-link:hover {
+    text-decoration: underline;
+}
+
+/* horizontal scroll wrappers for tables on mobile */
+.ventas-table-scroll,
+.routes-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+/* ===========================
+   MOBILE â€” Rutas del chofer
+=========================== */
+@media (max-width: 768px) {
+
+    /* Page padding */
+    .routes-page {
+        padding: 12px;
+    }
+
+    .routes-card {
+        padding: 14px 12px;
+    }
+
+    /* Toolbar: stack vertically */
+    .routes-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .routes-toolbar > div:last-child {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Calendar + map: stack vertically */
+    .driver-top-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Reduce DayPicker cell size so numbers don't overflow */
+    .driver-calendar-card .rdp,
+    .driver-calendar-card :global(.rdp) {
+        --rdp-cell-size: 36px !important;
+        --rdp-caption-font-size: 14px !important;
+        margin: 0;
+    }
+
+    /* Map: shorter height on mobile */
+    .driver-map-card iframe,
+    .driver-map-card .leaflet-container {
+        height: 220px !important;
+    }
+
+    /* Stop cards: already stack via existing rule, just tighten spacing */
+    .driver-stop-card {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .driver-stop-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .driver-stop-actions .btn,
+    .driver-stop-actions a {
+        flex: 1 1 auto;
+        text-align: center;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    /* Route card padding */
+    .driver-route-card {
+        padding: 12px;
+    }
 }

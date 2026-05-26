@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 import Login from "../pages/Login";
+import VerifyTotp from "../pages/VerifyTotp";
+import RecoverPasswordPage from "../pages/RecoverPasswordPage";
 import Unauthorized from "../pages/Unauthorized";
 import NotFound from "../pages/NotFound";
 
@@ -32,12 +34,20 @@ import FacturacionPage from "../modules/Invoices/pages/FacturacionPage";
 
 import ClientAccountsPage from "../modules/ClientAccounts/pages/ClientAccountsPage";
 
+import RegistersPage from "../modules/CashRegisters/pages/CashRegistersPage";
+import DashboardPage from "../modules/Dashboard/pages/DashboardPage";
+import AuditLogsPage from "../modules/AuditLogs/pages/AuditLogsPage";
+import ReportsPage from "../modules/Reports/pages/ReportsPage";
+import SellerReportsPage from "../modules/SellerReports/pages/SellerReportsPage";
+import PermissionsPage from "../modules/Permissions/pages/PermissionsPage";
 
 export default function AppRoutes() {
     return (
         <Routes>
             {/* Públicas */}
             <Route path="/login" element={<Login />} />
+            <Route path="/verify-totp" element={<VerifyTotp />} />
+            <Route path="/recuperar-contrasena" element={<RecoverPasswordPage />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
 
             {/* Cambio contraseña forzado */}
@@ -53,7 +63,8 @@ export default function AppRoutes() {
                     </ProtectedRoute>
                 }
             >
-                <Route index element={<div>Home</div>} />
+                {/* Dashboard por rol */}
+                <Route index element={<DashboardPage />} />
 
                 {/* Perfil: todos logueados */}
                 <Route
@@ -69,7 +80,7 @@ export default function AppRoutes() {
                 <Route
                     path="/usuarios"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="usuarios">
                             <UsersPage />
                         </ProtectedRoute>
                     }
@@ -79,7 +90,7 @@ export default function AppRoutes() {
                 <Route
                     path="/clientes"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]} screenKey="clientes">
                             <ClientsPage />
                         </ProtectedRoute>
                     }
@@ -87,7 +98,7 @@ export default function AppRoutes() {
                 <Route
                     path="/clientes/nuevo"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="clientes">
                             <ClientForm />
                         </ProtectedRoute>
                     }
@@ -95,23 +106,15 @@ export default function AppRoutes() {
                 <Route
                     path="/clientes/editar/:id"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="clientes">
                             <ClientForm />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/rutas"
-                    element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Chofer"]}>
-                            <RoutesPage />
                         </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/clientes/:id"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]} screenKey="clientes">
                             <ClientDetailPage />
                         </ProtectedRoute>
                     }
@@ -121,7 +124,7 @@ export default function AppRoutes() {
                 <Route
                     path="/mapa-clientes"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor", "Chofer"]} screenKey="mapa-clientes">
                             <ClientsMapPage />
                         </ProtectedRoute>
                     }
@@ -131,7 +134,7 @@ export default function AppRoutes() {
                 <Route
                     path="/activos"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="activos">
                             <AssetsPage />
                         </ProtectedRoute>
                     }
@@ -141,7 +144,7 @@ export default function AppRoutes() {
                 <Route
                     path="/horarios"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="horarios">
                             <SchedulesPage />
                         </ProtectedRoute>
                     }
@@ -151,7 +154,7 @@ export default function AppRoutes() {
                 <Route
                     path="/facturacion"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="facturacion">
                             <FacturacionPage />
                         </ProtectedRoute>
                     }
@@ -161,7 +164,7 @@ export default function AppRoutes() {
                 <Route
                     path="/stock"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="stock">
                             <StockPage />
                         </ProtectedRoute>
                     }
@@ -171,18 +174,8 @@ export default function AppRoutes() {
                 <Route
                     path="/distributors"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="distributors">
                             <DistributorPage />
-                        </ProtectedRoute>
-                    }
-                />
-
-                {/* Reportes */}
-                <Route
-                    path="/reportes"
-                    element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
-                            <div>Reportes</div>
                         </ProtectedRoute>
                     }
                 />
@@ -191,15 +184,15 @@ export default function AppRoutes() {
                 <Route
                     path="/rutas"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Chofer"]}>
-                            <div>Rutas</div>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Chofer"]} screenKey="rutas">
+                            <RoutesPage />
                         </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/rutas/monitoreo"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="rutas-monitoreo">
                             <RoutesMonitoringPage />
                         </ProtectedRoute>
                     }
@@ -207,7 +200,7 @@ export default function AppRoutes() {
                 <Route
                     path="/plantillas-rutas"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="plantillas-rutas">
                             <RouteTemplatesPage />
                         </ProtectedRoute>
                     }
@@ -217,7 +210,7 @@ export default function AppRoutes() {
                 <Route
                     path="/cotizaciones"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Chofer"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="cotizaciones">
                             <QuotesPage />
                         </ProtectedRoute>
                     }
@@ -227,22 +220,73 @@ export default function AppRoutes() {
                 <Route
                     path="/ventas"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="ventas">
                             <VentasPage />
                         </ProtectedRoute>
                     }
                 />
 
-                {/* Cuentas de credito */}
+                {/* Cajas */}
+                <Route
+                    path="/cajas"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="cajas">
+                            <RegistersPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Cuentas de crédito */}
                 <Route
                     path="/cuentas-credito"
                     element={
-                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]}>
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="cuentas-credito">
                             <ClientAccountsPage />
                         </ProtectedRoute>
                     }
                 />
+
+                {/* Reportes globales (admin) */}
+                <Route
+                    path="/reportes"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="reportes">
+                            <ReportsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Mis Reportes (vendedor) */}
+                <Route
+                    path="/mis-reportes"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador", "Vendedor"]} screenKey="mis-reportes">
+                            <SellerReportsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Logs del sistema */}
+                <Route
+                    path="/logs"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]} screenKey="logs">
+                            <AuditLogsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Configuración de permisos (admin) */}
+                <Route
+                    path="/configuracion/permisos"
+                    element={
+                        <ProtectedRoute allowedRoles={["SuperUsuario", "Administrador"]}>
+                            <PermissionsPage />
+                        </ProtectedRoute>
+                    }
+                />
             </Route>
+
             {/* 404 - catch-all */}
             <Route path="*" element={<NotFound />} />
         </Routes>

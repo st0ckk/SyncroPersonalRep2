@@ -7,6 +7,7 @@ export default function VacationsTable({ data }) {
 
   return (
     <>
+    <div className="table-scroll">
     <table className="schedules-table" style={{ marginTop: 16 }}>
       <thead>
         <tr>
@@ -56,6 +57,7 @@ export default function VacationsTable({ data }) {
         )}
       </tbody>
     </table>
+    </div>
     <PaginationControls {...pagination} />
     </>
   );

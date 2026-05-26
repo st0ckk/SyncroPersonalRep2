@@ -1,3 +1,5 @@
+import Button from "../../../components/Button";
+
 export default function UsersToolbar({
   showInactive,
   onToggle,
@@ -34,19 +36,21 @@ export default function UsersToolbar({
 
       {/* Acciones */}
       <div className="toolbar-actions">
-        <button
-          className="btn btn-outline btn-sm"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onToggle}
         >
           {showInactive ? "Ver activos" : "Ver inactivos"}
-        </button>
+        </Button>
 
-        <button
-          className="btn btn-primary btn-sm"
+        <Button
+          variant="primary"
+          size="sm"
           onClick={onNew}
         >
           + Nuevo empleado
-        </button>
+        </Button>
       </div>
     </div>
   );

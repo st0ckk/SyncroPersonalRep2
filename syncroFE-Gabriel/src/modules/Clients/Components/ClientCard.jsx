@@ -26,4 +26,5 @@ const ClientCard = ({ client, onDeactivate, onActivate }) => {
     );
 };
 
+
 export default ClientCard;

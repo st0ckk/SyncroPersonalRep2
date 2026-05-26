@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+import "./Profile.css";
+import Swal from "sweetalert2";
 
 import { updatePassword } from "../../../api/users.api";
 import { getMyProfile } from "../../../api/account.api";
+import TwoFactorCard from "../components/TwoFactorCard";
 import { getAssetsByUser } from "../../../api/assets.api";
 import { getMySchedules } from "../../../api/schedules.api";
 import { getUserVacations } from "../../../api/vacations.api";
@@ -10,7 +13,7 @@ import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 
-import "./Profile.css";
+import Button from "../../../components/Button";
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -58,6 +61,7 @@ const coversScheduleDay = (schedule, day) =>
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
   const userId =
     profile?.userId ?? profile?.id ?? profile?.UserId ?? profile?.Id;
@@ -86,6 +90,7 @@ export default function ProfilePage() {
         setLoadingProfile(true);
         const res = await getMyProfile();
         setProfile(res.data ?? null);
+        setTwoFactorEnabled(res.data?.twoFactorEnabled ?? false);
       } catch (err) {
         console.error("Error cargando perfil:", err);
         console.error("STATUS:", err.response?.status);
@@ -294,7 +299,7 @@ export default function ProfilePage() {
       });
 
       resetPasswordModal();
-      alert("Contraseña actualizada correctamente");
+      Swal.fire({ icon: "success", title: "Éxito", text: "Contraseña actualizada correctamente", timer: 2000, showConfirmButton: false });
     } catch (err) {
       setError(err?.response?.data || "No se pudo cambiar la contraseña");
     } finally {
@@ -305,6 +310,16 @@ export default function ProfilePage() {
   return (
     <div className="profile-page">
       <h1 className="page-title">Mi perfil</h1>
+
+      {!twoFactorEnabled && (
+        <div className="profile-2fa-warning">
+          <span>⚠️</span>
+          <span>
+            <strong>Acceso restringido:</strong> Debe activar la autenticación en dos pasos (2FA)
+            para acceder al sistema. Configure su 2FA en la sección de abajo.
+          </span>
+        </div>
+      )}
 
       <div className="profile-header-grid">
         <div className="profile-card">
@@ -484,12 +499,17 @@ export default function ProfilePage() {
         )}
       </div>
 
+      <TwoFactorCard
+        twoFactorEnabled={twoFactorEnabled}
+        onStatusChange={setTwoFactorEnabled}
+      />
+
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-card">
             <h3>Cambiar contraseña</h3>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <p className="modal-error">{error}</p>}
 
             <div className="form-group">
               <label>Contraseña actual</label>
@@ -519,21 +539,21 @@ export default function ProfilePage() {
             </div>
 
             <div className="modal-actions">
-              <button
-                className="btn btn-outline"
+              <Button
+                variant="outline"
                 onClick={resetPasswordModal}
                 disabled={loading}
               >
                 Cancelar
-              </button>
+              </Button>
 
-              <button
-                className="btn btn-primary"
+              <Button
+                variant="primary"
                 onClick={handleChangePassword}
                 disabled={loading}
               >
                 {loading ? "Guardando..." : "Guardar"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -1,3 +1,5 @@
+import Button from "../../../components/Button";
+
 export default function StockToolbar({
     showInactive,
     onToggle,
@@ -9,17 +11,17 @@ export default function StockToolbar({
             <h2>Stock</h2>
 
             <div className="toolbar-actions">
-                <button className="btn-outline" onClick={onToggle}>
+                <Button variant="outline" onClick={onToggle}>
                     {showInactive ? "Ver Activos" : "Ver Inactivos"}
-                </button>
+                </Button>
 
-                <button className="btn-secondary" onClick={onAddStock}>
-                    + Agregar mercadería
-                </button>
+                <Button variant="secondary" onClick={onAddStock}>
+                    + Agregar mercaderÃ­a
+                </Button>
 
-                <button className="btn-primary" onClick={onNewProduct}>
+                <Button variant="primary" onClick={onNewProduct}>
                     + Nuevo producto
-                </button>
+                </Button>
             </div>
         </div>
     );

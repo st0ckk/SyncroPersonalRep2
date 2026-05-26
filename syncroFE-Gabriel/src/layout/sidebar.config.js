@@ -25,7 +25,7 @@ export const SIDEBAR_ITEMS = [
     roles: ["SuperUsuario", "Administrador"],
   },
   {
-    label: "Distribuidores",
+    label: "Proveedores",
     path: "/distributors",
     roles: ["SuperUsuario", "Administrador"],
   },

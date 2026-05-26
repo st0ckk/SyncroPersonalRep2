@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
@@ -93,12 +95,21 @@ export default function SchedulesForm({
     setForm((p) => ({ ...p, [name]: type === "checkbox" ? checked : value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.userId) return alert("Seleccione empleado");
-    if (!range?.from) return alert("Seleccione fecha de inicio (y final si aplica)");
-    if (!form.startTime || !form.endTime) return alert("Complete horas inicio y fin");
+    if (!form.userId) {
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Seleccione empleado" });
+      return;
+    }
+    if (!range?.from) {
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Seleccione fecha de inicio (y final si aplica)" });
+      return;
+    }
+    if (!form.startTime || !form.endTime) {
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Complete horas inicio y fin" });
+      return;
+    }
 
     const startDate = range.from;
     let endDate = range.to ?? range.from;
@@ -198,12 +209,12 @@ export default function SchedulesForm({
       </div>
 
       <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 12 }}>
-        <button type="button" className="btn btn-outline" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancelar
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={submitting}>
+        </Button>
+        <Button type="submit" variant="primary" disabled={submitting}>
           {submitting ? "Guardando..." : "Guardar"}
-        </button>
+        </Button>
       </div>
     </form>
   );

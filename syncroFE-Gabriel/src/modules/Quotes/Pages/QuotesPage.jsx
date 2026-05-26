@@ -1,5 +1,5 @@
-﻿import "./QuotesPage.css";
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
+import "./QuotesPage.css";
 import {
     filterQuote,
     getQuotes,
@@ -11,6 +11,9 @@ import QuoteToolbar from "../components/QuoteToolbar";
 import QuoteTable from "../components/QuoteTable";
 import QuoteFilters from "../components/QuoteFilters";
 import QuoteForm from "../components/QuoteForm";
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 export default function QuotesPage() {
 
@@ -30,6 +33,9 @@ export default function QuotesPage() {
     const [showForm, setShowForm] = useState(false);
     const [editingQuote, setEditingQuote] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+
+    // Sweet alert
+    const SwalAlert = withReactContent(Swal);
 
     //Cargar datos de quotes
     const loadData = async () => {
@@ -85,7 +91,11 @@ export default function QuotesPage() {
             loadData();
         } catch (err) {
             console.error("Error guardando cotizacion", err);
-            alert("Error guardando producto");
+            SwalAlert.fire({
+                icon: "error",
+                title: "Error...",
+                text: "Error guardando cotización."
+            });
         } finally {
             setSubmitting(false);
         }

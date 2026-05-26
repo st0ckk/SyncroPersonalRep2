@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
 import { getClientLookup } from "../../../api/clients.api";
 import { getProducts } from "../../../api/stock.api";
 import { createPortal } from "react-dom";
 import SearchSelect from "react-select";
+import Swal from "sweetalert2";
 
 const emptyQuote = {
     clientId: null,
@@ -129,11 +131,35 @@ function QuoteForm({
             borderRadius: "8px",
             boxShadow: "none",
             textAlign: "left",
+            backgroundColor: "#0a1228",
+            borderColor: "rgba(255, 255, 255, 0.1)",
+            color: "#e2e8f0",
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: "#e2e8f0",
+        }),
+        input: (provided) => ({
+            ...provided,
+            color: "#e2e8f0",
+        }),
+        menu: (provided) => ({
+            ...provided,
+            backgroundColor: "#0f172a",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
         }),
         option: (provided, state) => ({
             ...provided,
-            color: "black",
-            backgroundColor: state.isSelected ? "lightgrey" : "white",
+            color: "#e2e8f0",
+            backgroundColor: state.isSelected
+                ? "rgba(99, 102, 241, 0.4)"
+                : state.isFocused
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "transparent",
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: "#94a3b8",
         }),
     };
 
@@ -158,7 +184,7 @@ function QuoteForm({
     /* ══════════════════════════════
        SUBMIT
     ══════════════════════════════ */
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         var client = clients.find(c => c.clientId === form.clientId);
@@ -167,22 +193,22 @@ function QuoteForm({
         var expirationDate = new Date(form.quoteValidTil);
 
         if (!form.clientId || Number.isNaN(form.clientId)) {
-            alert("Debe seleccionar a un cliente válido");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar a un cliente válido" });
             return;
         }
 
         if (!client) {
-            alert("El cliente seleccionado no existe o no esta activado. Intente con otro cliente");
+            await Swal.fire({ icon: "error", title: "Error", text: "El cliente seleccionado no existe o no esta activado. Intente con otro cliente" });
             return;
         }
 
         if (!form.quoteValidTil || (expirationDate <= currentDate || expirationDate < mininumDays)) {
-            alert("Debe seleccionar una fecha valida de expiracion. Minimo 15 dias de vigencia");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar una fecha valida de expiracion. Minimo 15 dias de vigencia" });
             return;
         }
 
         if (details.length === 0) {
-            alert("Debe tener almenos un producto agregado");
+            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe tener almenos un producto agregado" });
             return;
         }
 
@@ -270,7 +296,7 @@ function QuoteForm({
                                 ))}
                         </datalist>
                         {selectedClient && (
-                            <span style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
+                            <span style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
                                 {selectedClient.clientName} — Tipo: <strong style={{ textTransform: "capitalize" }}>{selectedClient.clientType || "pulpero"}</strong>
                             </span>
                         )}
@@ -327,9 +353,9 @@ function QuoteForm({
                     <div className="form-group full-width">
                         <label>Productos</label>
                         <div className="section-header">
-                            <button type="button" className="btn btn-outline btn-sm" onClick={addLine}>
+                            <Button type="button" variant="outline" size="sm" onClick={addLine}>
                                 + Agregar producto
-                            </button>
+                            </Button>
                         </div>
 
                         {details.length === 0 && (
@@ -345,11 +371,11 @@ function QuoteForm({
 
                             return (
                                 <div key={i} style={{
-                                    border: "1px solid #e5e7eb",
+                                    border: "1px solid rgba(255,255,255,0.1)",
                                     borderRadius: 8,
                                     padding: "10px 12px",
                                     marginBottom: 8,
-                                    background: "#fafafa",
+                                    background: "rgba(255,255,255,0.04)",
                                 }}>
                                     {/* Row 1: Product selector + remove */}
                                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
@@ -387,7 +413,7 @@ function QuoteForm({
                                     {/* Row 2: Quantity, discount, info */}
                                     <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Cant:</label>
+                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Cant:</label>
                                             <input
                                                 type="number"
                                                 min="1"
@@ -395,11 +421,11 @@ function QuoteForm({
                                                 value={line.quantity}
                                                 onChange={(e) => updateLine(i, "quantity", parseInt(e.target.value) || 0)}
                                                 required
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #ccc", fontSize: 13 }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
                                             />
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>Desc %:</label>
+                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Desc %:</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -408,15 +434,15 @@ function QuoteForm({
                                                 value={line.discount}
                                                 onChange={(e) => updateLine(i, "discount", e.target.value)}
                                                 placeholder="0"
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #ccc", fontSize: 13 }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
                                             />
                                         </div>
-                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#6b7280" }}>
-                                            <span>Precio: <strong style={{ color: "#111" }}>{formatCurrency(unitPrice)}</strong></span>
+                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#94a3b8" }}>
+                                            <span>Precio: <strong style={{ color: "#e2e8f0" }}>{formatCurrency(unitPrice)}</strong></span>
                                             {lineDiscAmt > 0 && (
-                                                <span style={{ color: "#b91c1c" }}>-{formatCurrency(lineDiscAmt)}</span>
+                                                <span style={{ color: "#fca5a5" }}>-{formatCurrency(lineDiscAmt)}</span>
                                             )}
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>
                                                 {formatCurrency(lineTotal)}
                                             </span>
                                         </div>
@@ -444,13 +470,13 @@ function QuoteForm({
                     {/* ── Totals ── */}
                     {details.length > 0 && (
                         <div className="form-group full-width" style={{
-                            background: "#f9fafb",
-                            border: "1px solid #e5e7eb",
+                            background: "#0a1228",
+                            border: "1px solid rgba(255,255,255,0.1)",
                             borderRadius: 8,
                             padding: "14px 16px",
                         }}>
                             {selectedClient && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#6b7280" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#94a3b8" }}>
                                     <span>Tipo cliente: <strong style={{ textTransform: "capitalize" }}>{selectedClient.clientType || "pulpero"}</strong></span>
                                 </div>
                             )}
@@ -459,7 +485,7 @@ function QuoteForm({
                                 <strong>{formatCurrency(subTotal)}</strong>
                             </div>
                             {hasAnyDiscount && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#b91c1c" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#fca5a5" }}>
                                     <span>Descuento:</span>
                                     <strong>- {formatCurrency(totalDiscount)}</strong>
                                 </div>
@@ -468,7 +494,7 @@ function QuoteForm({
                                 display: "flex",
                                 justifyContent: "space-between",
                                 paddingTop: 8,
-                                borderTop: "2px solid #e5e7eb",
+                                borderTop: "2px solid rgba(255,255,255,0.1)",
                                 fontSize: "1.1rem",
                             }}>
                                 <span>Total:</span>
@@ -478,21 +504,21 @@ function QuoteForm({
                     )}
 
                     <div className="form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="primary"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

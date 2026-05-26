@@ -1,8 +1,7 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getClients } from "../../../api/clients.api";
 import ClientsMap from "../components/ClientsMap";
-import "./clients.css"; 
-
+import "./clients.css";
 
 const ClientsMapPage = () => {
     const [clients, setClients] = useState([]);

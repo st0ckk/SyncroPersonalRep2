@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Button from "../../../components/Button";
 import {
     filterAccountMovements,
     generateAccountStatement,
@@ -123,13 +124,13 @@ function ClientAccountMovementHistory({
                     <div className="empty-state">Esta cuenta no tiene movimientos</div>;
 
                     <div className="caccount-movement-options">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                         >
                             Cerrar
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>,
@@ -186,20 +187,20 @@ function ClientAccountMovementHistory({
                     </table>
                 </div>
                 <div className="caccount-movement-options">
-                <button
+                <Button
                     type="button"
-                    className="btn btn-outline"
+                    variant="outline"
                     onClick={onCancel}
                 >
                     Cerrar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
-                        className="btn btn-outline"
+                        variant="outline"
                         onClick={() => handlePDFDownload(account.clientAccountId, search, type, startDate, endDate)}
                     >
                         {loadingPdf === account.clientAccountId ? 'Generando...' : 'Descargar estado de cuenta'}
-                    </button>
+                    </Button>
                 </div>
 
             </div>

@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
+import Button from "../../../components/Button";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
     createClient,
     updateClient,
     getClientById,
-    lookupHacienda
+    lookupHacienda,
+    resolveMapsUrl,
 } from "../../../api/clients.api";
 
 import {
@@ -35,6 +37,30 @@ const emptyClient = {
     exonerationPercentage: ""
 };
 
+// Extrae lat/lng de un enlace de Google Maps o texto de coordenadas
+function parseGoogleMapsInput(input) {
+    const text = input.trim();
+    if (!text) return null;
+
+    // Coordenadas directas: "9.9281, -84.0907" o "9.9281,-84.0907"
+    const direct = text.match(/^(-?\d{1,3}\.\d+)[,\s]+(-?\d{1,3}\.\d+)$/);
+    if (direct) return { lat: parseFloat(direct[1]), lng: parseFloat(direct[2]) };
+
+    // Patrón @lat,lng (el más común en links de compartir Google Maps)
+    const atSign = text.match(/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/);
+    if (atSign) return { lat: parseFloat(atSign[1]), lng: parseFloat(atSign[2]) };
+
+    // ?q=lat,lng
+    const qParam = text.match(/[?&]q=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/);
+    if (qParam) return { lat: parseFloat(qParam[1]), lng: parseFloat(qParam[2]) };
+
+    // ll=lat,lng (algunos formatos antiguos)
+    const llParam = text.match(/[?&]ll=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/);
+    if (llParam) return { lat: parseFloat(llParam[1]), lng: parseFloat(llParam[2]) };
+
+    return null;
+}
+
 const ClientForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -45,6 +71,14 @@ const ClientForm = () => {
     const [cantons, setCantons] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [showExoneration, setShowExoneration] = useState(false);
+
+    // Ubicación GPS
+    const [locationInput, setLocationInput] = useState("");
+    const [latitude, setLatitude] = useState("");
+    const [longitude, setLongitude] = useState("");
+    const [locationError, setLocationError] = useState("");
+    const [locationLoading, setLocationLoading] = useState(false);
+    const [showLocationHelp, setShowLocationHelp] = useState(false);
 
     // Hacienda lookup state
     const [lookupLoading, setLookupLoading] = useState(false);
@@ -88,6 +122,10 @@ const ClientForm = () => {
                 exonerationDate: d.exonerationDate ? d.exonerationDate.substring(0, 10) : "",
                 exonerationPercentage: d.exonerationPercentage ?? ""
             });
+            if (d.location) {
+                setLatitude(String(d.location.latitude));
+                setLongitude(String(d.location.longitude));
+            }
         });
     }, [id, isEdit]);
 
@@ -118,6 +156,48 @@ const ClientForm = () => {
             setDistricts(res.data);
         });
     }, [client.cantonCode]);
+
+    /* ======================
+       UBICACIÓN GPS
+    ====================== */
+    const handleParseLocation = useCallback(async () => {
+        setLocationError("");
+        const text = locationInput.trim();
+        if (!text) return;
+
+        // Intentar extraer coordenadas directamente primero
+        const direct = parseGoogleMapsInput(text);
+        if (direct) {
+            setLatitude(String(direct.lat));
+            setLongitude(String(direct.lng));
+            setLocationInput("");
+            return;
+        }
+
+        // Si es un enlace corto de Google Maps, resolverlo en el backend
+        if (text.includes("goo.gl") || text.includes("maps.app")) {
+            setLocationLoading(true);
+            try {
+                const res = await resolveMapsUrl(text);
+                const fullUrl = res.data.finalUrl;
+                const resolved = parseGoogleMapsInput(fullUrl);
+                if (resolved) {
+                    setLatitude(String(resolved.lat));
+                    setLongitude(String(resolved.lng));
+                    setLocationInput("");
+                } else {
+                    setLocationError("Se resolvió el enlace pero no se encontraron coordenadas. Intentá copiar la URL desde la barra del navegador.");
+                }
+            } catch {
+                setLocationError("No se pudo resolver el enlace. Intentá copiar la URL desde la barra de dirección del navegador.");
+            } finally {
+                setLocationLoading(false);
+            }
+            return;
+        }
+
+        setLocationError("No se pudieron extraer coordenadas. Pegá el enlace de Google Maps o las coordenadas directas (ej: 9.9281, -84.0907).");
+    }, [locationInput]);
 
     /* ======================
        HACIENDA LOOKUP
@@ -195,6 +275,11 @@ const ClientForm = () => {
             cantonCode: Number(client.cantonCode),
             districtCode: Number(client.districtCode),
             exactAddress: client.exactAddress,
+            location: latitude && longitude ? {
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude),
+                address: client.exactAddress || null
+            } : null,
             exonerationDocType: showExoneration ? (client.exonerationDocType || null) : null,
             exonerationDocNumber: showExoneration ? (client.exonerationDocNumber || null) : null,
             exonerationInstitutionCode: showExoneration ? (client.exonerationInstitutionCode || null) : null,
@@ -252,15 +337,16 @@ const ClientForm = () => {
                                 onChange={handleChange}
                                 required
                             />
-                            <button
+
+                            <Button
                                 type="button"
-                                className="btn-primary"
+                                variant="primary"
                                 onClick={handleHaciendaLookup}
                                 disabled={lookupLoading || client.clientId.trim().length < 9}
                                 style={{ marginTop: 6, padding: "8px 0", fontSize: 13, width: "100%" }}
                             >
                                 {lookupLoading ? "Buscando..." : "Buscar en Hacienda"}
-                            </button>
+                            </Button>
                             {lookupError && (
                                 <span style={{ color: "#b91c1c", fontSize: 12, marginTop: 4 }}>
                                     {lookupError}
@@ -453,6 +539,172 @@ const ClientForm = () => {
                         />
                     </div>
 
+                    {/* ── Ubicación GPS ── */}
+                    <div className="form-group full" style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                        <strong style={{ fontSize: 14, color: "#374151" }}>Ubicación GPS</strong>
+                        <button
+                            type="button"
+                            onClick={() => setShowLocationHelp(true)}
+                            title="¿Cómo obtener las coordenadas?"
+                            style={{
+                                background: "#e0e7ff",
+                                border: "none",
+                                borderRadius: "50%",
+                                width: 22,
+                                height: 22,
+                                cursor: "pointer",
+                                fontSize: 13,
+                                fontWeight: 700,
+                                color: "#4338ca",
+                                lineHeight: "22px",
+                                padding: 0,
+                            }}
+                        >
+                            ?
+                        </button>
+                    </div>
+
+                    <div className="form-group full">
+                        <label>Pegar enlace de Google Maps</label>
+                        <input
+                            type="text"
+                            value={locationInput}
+                            onChange={(e) => { setLocationInput(e.target.value); setLocationError(""); }}
+                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleParseLocation())}
+                            placeholder="Pegá aquí el enlace de Google Maps o las coordenadas..."
+                            style={{ width: "100%", boxSizing: "border-box" }}
+                        />
+                        <Button
+                            type="button"
+                            variant="primary"
+                            onClick={handleParseLocation}
+                            disabled={!locationInput.trim() || locationLoading}
+                            style={{ marginTop: 8, width: "100%" }}
+                        >
+                            {locationLoading ? "Resolviendo enlace..." : "Extraer coordenadas"}
+                        </Button>
+                        {locationError && (
+                            <span style={{ color: "#b91c1c", fontSize: 12, marginTop: 4, display: "block" }}>
+                                {locationError}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <label>Latitud</label>
+                        <input
+                            type="number"
+                            step="any"
+                            value={latitude}
+                            onChange={(e) => setLatitude(e.target.value)}
+                            placeholder="Ej: 9.9281"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Longitud</label>
+                        <input
+                            type="number"
+                            step="any"
+                            value={longitude}
+                            onChange={(e) => setLongitude(e.target.value)}
+                            placeholder="Ej: -84.0907"
+                        />
+                    </div>
+
+                    {latitude && longitude && (
+                        <div className="form-group full">
+                            <div style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 12,
+                                padding: "10px 14px",
+                                background: "rgba(34,197,94,0.08)",
+                                border: "1px solid rgba(34,197,94,0.3)",
+                                borderRadius: 8,
+                                fontSize: 13,
+                            }}>
+                                <span style={{ color: "#15803d" }}>
+                                    📍 <strong>{parseFloat(latitude).toFixed(6)}, {parseFloat(longitude).toFixed(6)}</strong>
+                                </span>
+                                <a
+                                    href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ color: "#2563eb", fontSize: 12, marginLeft: "auto" }}
+                                >
+                                    Ver en Google Maps ↗
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={() => { setLatitude(""); setLongitude(""); }}
+                                    style={{ background: "none", border: "none", color: "#b91c1c", cursor: "pointer", fontWeight: 600 }}
+                                    title="Quitar ubicación"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Modal de ayuda de ubicación */}
+                    {showLocationHelp && (
+                        <div className="modal-backdrop" onClick={() => setShowLocationHelp(false)}>
+                            <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 480 }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                                    <h3 style={{ margin: 0 }}>¿Cómo obtener las coordenadas?</h3>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowLocationHelp(false)}
+                                        style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6b7280" }}
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+
+                                <div style={{ fontSize: 14, color: "#374151", lineHeight: 1.7 }}>
+                                    <p style={{ marginTop: 0 }}><strong>Opción 1 — Desde Google Maps (enlace):</strong></p>
+                                    <ol style={{ margin: "0 0 16px 16px", padding: 0 }}>
+                                        <li>Abrí <strong>Google Maps</strong> en el computador.</li>
+                                        <li>Buscá la dirección o movete al lugar exacto.</li>
+                                        <li>Hacé clic derecho sobre el punto en el mapa.</li>
+                                        <li>Seleccioná <strong>"Compartir o insertar mapa"</strong> → <strong>"Copiar enlace"</strong>.</li>
+                                        <li>Pegá ese enlace en el campo de arriba y presioná <strong>Extraer</strong>.</li>
+                                    </ol>
+
+                                    <p><strong>Opción 2 — Coordenadas directas desde Google Maps:</strong></p>
+                                    <ol style={{ margin: "0 0 16px 16px", padding: 0 }}>
+                                        <li>Abrí <strong>Google Maps</strong> en el computador.</li>
+                                        <li>Hacé clic derecho sobre el punto exacto.</li>
+                                        <li>Aparecen las coordenadas en la parte superior del menú (ej: <strong>9.928140, -84.090732</strong>).</li>
+                                        <li>Hacé clic en ese número y se copian automáticamente.</li>
+                                        <li>Pegálas en el campo de enlace y presioná <strong>Extraer</strong>.</li>
+                                    </ol>
+
+                                    <p><strong>Opción 3 — Ingreso manual:</strong></p>
+                                    <p style={{ margin: "0 0 8px" }}>Escribí directamente la latitud y longitud en los campos correspondientes.</p>
+
+                                    <div style={{
+                                        background: "#fef3c7",
+                                        border: "1px solid #fcd34d",
+                                        borderRadius: 8,
+                                        padding: "10px 14px",
+                                        fontSize: 13,
+                                        color: "#92400e"
+                                    }}>
+                                        ⚠️ Los enlaces cortos de celular (<strong>maps.app.goo.gl/...</strong>) no funcionan. Usá el enlace largo desde el computador o las coordenadas directas.
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: 20, textAlign: "right" }}>
+                                    <Button variant="primary" type="button" onClick={() => setShowLocationHelp(false)}>
+                                        Entendido
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* ── Exoneración ── */}
                     <div className="form-group full" style={{ marginTop: 8 }}>
                         <label style={{ display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", margin: 0 }}>
@@ -552,16 +804,16 @@ const ClientForm = () => {
                     )}
 
                     <div className="form-actions full">
-                        <button type="submit" className="btn-primary">
+                        <Button type="submit" variant="primary">
                             Guardar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
-                            className="btn-secondary"
+                            variant="secondary"
                             onClick={() => navigate("/clientes")}
                         >
                             Cancelar
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

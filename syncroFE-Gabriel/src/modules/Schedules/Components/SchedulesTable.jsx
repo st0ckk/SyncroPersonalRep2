@@ -1,4 +1,5 @@
 import { usePagination } from "../../../hooks/usePagination";
+import Button from "../../../components/Button";
 import PaginationControls from "../../../components/PaginationControls";
 
 export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
@@ -17,6 +18,7 @@ export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
 
   return (
     <>
+    <div className="table-scroll">
     <table className="schedules-table">
       <thead>
         <tr>
@@ -62,22 +64,24 @@ export default function SchedulesTable({ data, onEdit, onToggleStatus }) {
                 </span>
               </td>
 
-              <td>
-                <button className="btn btn-sm btn-outline" onClick={() => onEdit(s)}>
+              <td className="actions">
+                <Button variant="outline" size="sm" onClick={() => onEdit(s)}>
                   Editar
-                </button>{" "}
-                <button
-                  className={`btn btn-sm ${s.isActive ? "btn-danger" : "btn-success"}`}
+                </Button>
+                <Button
+                  variant={s.isActive ? "danger" : "success"}
+                  size="sm"
                   onClick={() => onToggleStatus(s)}
                 >
                   {s.isActive ? "Desactivar" : "Activar"}
-                </button>
+                </Button>
               </td>
             </tr>
           ))
         )}
       </tbody>
     </table>
+    </div>
     <PaginationControls {...pagination} />
     </>
   );

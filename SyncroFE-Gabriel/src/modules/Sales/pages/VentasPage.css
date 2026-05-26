@@ -3,10 +3,11 @@
 }
 
 .ventas-container {
-    background: #fff;
+    background: var(--bg-card);
+    border: var(--card-border);
     border-radius: 8px;
     padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--card-shadow);
 }
 
 .ventas-header {
@@ -36,11 +37,13 @@
 }
 
 .modal {
-    background: #fff;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 24px;
     max-height: 90vh;
     overflow-y: auto;
+    color: var(--text-main);
 }
 
 .modal-lg {
@@ -60,7 +63,7 @@
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 /* ── Boton eliminar en tabla ── */
@@ -235,8 +238,8 @@
 ========================= */
 
 .Inactiva-status {
-    background: rgba(183, 177, 177, 0.15);
-    color: #8C8383;
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -244,8 +247,8 @@
 }
 
 .Activa-status {
-    background: rgba(47, 107, 166, 0.15);
-    color: #1E3F5F;
+    background: rgba(56, 189, 248, 0.15);
+    color: #7dd3fc;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -336,4 +339,83 @@
 
 #ventas-items-select {
     width: 60%;
+}
+
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .ventas-page {
+        padding: 12px;
+    }
+
+    .ventas-container {
+        padding: 14px;
+    }
+
+    .ventas-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .ventas-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .toolbar-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .ventas-filters {
+        flex-direction: column;
+    }
+
+    .ventas-filters input,
+    .ventas-filters select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .ventas-form {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-lg {
+        width: min(750px, 95vw);
+    }
+
+    .modal {
+        max-width: 95vw;
+        width: 95vw;
+    }
+
+    .ventas-details-flex {
+        flex-direction: column;
+    }
+
+    .ventas-details-remarks,
+    .ventas-details-discount {
+        margin-left: 0;
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ventas-page {
+        padding: 8px;
+    }
+
+    .ventas-table th,
+    .ventas-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
 }

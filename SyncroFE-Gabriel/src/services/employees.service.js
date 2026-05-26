@@ -24,7 +24,7 @@ export async function createEmployee(data) {
 
 export async function changeEmployeeRole(userId, role) {
   const res = await fetch(
-    `http://localhost:5000/api/employees/${userId}/role`,
+    `${BASE_URL}/${userId}/role`,
     {
       method: "PUT",
       headers: {

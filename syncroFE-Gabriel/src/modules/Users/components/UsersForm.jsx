@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
 
 export default function UsersForm({
   initialValues,
@@ -120,22 +121,22 @@ export default function UsersForm({
       </div>
 
       <div className="modal-actions">
-        <button
+        <Button
           type="button"
-          className="btn btn-outline"
+          variant="outline"
           onClick={onCancel}
           disabled={submitting}
         >
           Cancelar
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="submit"
-          className="btn btn-primary"
+          variant="primary"
           disabled={submitting}
         >
           Guardar
-        </button>
+        </Button>
       </div>
     </form>
   );

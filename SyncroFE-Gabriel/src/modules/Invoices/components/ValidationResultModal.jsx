@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import Button from "../../../components/Button";
 
 export default function ValidationResultModal({ result, onClose }) {
     const hasErrors = result.errors?.length > 0;
@@ -63,9 +64,9 @@ export default function ValidationResultModal({ result, onClose }) {
                 )}
 
                 <div className="form-actions">
-                    <button className="btn btn-outline" onClick={onClose}>
+                    <Button variant="outline" onClick={onClose}>
                         Cerrar
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import EmployeeTable from "../components/EmployeeTable";
 import EmployeeForm from "../components/EmployeeForm";
 import { getEmployees } from "../services/employees.service";
+import Swal from "sweetalert2";
 
 
 
@@ -23,7 +24,7 @@ if (!roles.includes("SuperUsuario") && !roles.includes("Administrador")) {
       setEmployees(data);
     } catch (err) {
       console.error(err);
-      alert("Error cargando empleados");
+      Swal.fire({ icon: "error", title: "Error", text: "Error cargando empleados" });
     } finally {
       setLoading(false);
     }

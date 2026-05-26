@@ -130,16 +130,18 @@
     justify-content: center;
     align-items: flex-start;
     padding: 40px 16px;
-    background: #f5f6fa;
+    background: transparent;
 }
 
 .client-form-card {
-    background: #ffffff;
+    background: var(--bg-card);
+    border: var(--card-border);
     width: 100%;
     max-width: 720px;
     border-radius: 12px;
     padding: 24px 28px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: var(--card-shadow);
+    color: var(--text-main);
 }
 
     .client-form-card h2 {
@@ -164,7 +166,7 @@
     .form-group label {
         font-size: 13px;
         margin-bottom: 6px;
-        color: #444;
+        color: var(--text-secondary);
     }
 
     .form-group input,
@@ -172,8 +174,10 @@
     .form-group textarea {
         padding: 10px 12px;
         border-radius: 8px;
-        border: 1px solid #dcdcdc;
+        border: 1px solid var(--border);
         font-size: 14px;
+        background: var(--bg-input);
+        color: var(--text-main);
     }
 
     .form-group textarea {
@@ -199,15 +203,15 @@
 
 .btn-secondary {
     background: transparent;
-    color: #374151; /* gris oscuro */
-    border: 1px solid #d1d5db; /* borde visible */
+    color: var(--text-main);
+    border: 1px solid var(--border);
     padding: 10px 18px;
     border-radius: 8px;
     cursor: pointer;
 }
 
     .btn-secondary:hover {
-        background: #f3f4f6; /* gris claro */
+        background: rgba(255, 255, 255, 0.06);
     }
 
 /* =========================

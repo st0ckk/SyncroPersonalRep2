@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import Button from "../../../components/Button";
+import Swal from "sweetalert2";
 import { getUsers } from "../../../api/users.api";
 import { getClients } from "../../../api/clients.api";
 import RouteMapPreview from "./RouteMapPreview";
@@ -126,7 +128,7 @@ export default function RouteForm({ initialValues, submitting, onSubmit, onCance
           longitude: client.location?.longitude,
           stopOrder: prev.stops.length + 1,
           plannedArrival: "",
-          notes: "",
+          notes: "Llamar antes de llegar",
         },
       ],
     }));
@@ -173,26 +175,26 @@ export default function RouteForm({ initialValues, submitting, onSubmit, onCance
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.routeName.trim()) {
-      alert("Debes ingresar el nombre de la ruta.");
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Debes ingresar el nombre de la ruta." });
       return;
     }
 
     if (!form.routeDate) {
-      alert("Debes seleccionar la fecha.");
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Debes seleccionar la fecha." });
       return;
     }
 
     if (!form.driverUserId) {
-      alert("Debes seleccionar un chofer.");
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Debes seleccionar un chofer." });
       return;
     }
 
     if (!form.stops.length) {
-      alert("Debes agregar al menos una parada.");
+      await Swal.fire({ icon: "warning", title: "Atención", text: "Debes agregar al menos una parada." });
       return;
     }
 
@@ -301,9 +303,9 @@ export default function RouteForm({ initialValues, submitting, onSubmit, onCance
                 ))}
               </select>
 
-              <button type="button" className="btn btn-primary" onClick={addStop}>
+              <Button type="button" variant="primary" onClick={addStop}>
                 Agregar parada
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -319,29 +321,29 @@ export default function RouteForm({ initialValues, submitting, onSubmit, onCance
                     <div className="route-stop-card-header">
                       <strong>Parada #{index + 1}</strong>
                       <div className="route-stop-actions">
-                        <button
+                        <Button
                           type="button"
-                          className="btn btn-outline"
+                          variant="outline"
                           onClick={() => moveStop(index, "up")}
                           disabled={index === 0}
                         >
                           ↑
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           type="button"
-                          className="btn btn-outline"
+                          variant="outline"
                           onClick={() => moveStop(index, "down")}
                           disabled={index === form.stops.length - 1}
                         >
                           ↓
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           type="button"
-                          className="btn btn-danger"
+                          variant="danger"
                           onClick={() => removeStop(index)}
                         >
                           Quitar
-                        </button>
+                        </Button>
                       </div>
                     </div>
 
@@ -388,13 +390,13 @@ export default function RouteForm({ initialValues, submitting, onSubmit, onCance
           </div>
 
           <div className="form-group full-width route-form-actions">
-            <button type="button" className="btn btn-outline" onClick={onCancel} disabled={submitting}>
+            <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>
               Cancelar
-            </button>
+            </Button>
 
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
+            <Button type="submit" variant="primary" disabled={submitting}>
               {submitting ? "Guardando..." : "Guardar ruta"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

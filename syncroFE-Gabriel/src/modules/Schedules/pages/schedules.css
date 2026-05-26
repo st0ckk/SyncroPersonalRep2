@@ -3,10 +3,12 @@
 }
 
 .schedules-container {
-  background: #fff;
+  background: var(--bg-card);
+  border: var(--card-border);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  box-shadow: var(--card-shadow);
   padding: 1.5rem;
+  color: var(--text-main);
 }
 
 .schedules-toolbar {
@@ -42,23 +44,12 @@
 
 .form-group input, .form-group select, .form-group textarea {
   padding: 8px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text-main);
 }
 
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: .9rem;
-}
-
-.btn-primary { background: #007bff; color: #fff; }
-.btn-outline { background: transparent; border: 1px solid #ccc; }
-.btn-sm { padding: .25rem .5rem; font-size: .8rem; }
-.btn-danger { background: #dc3545; color: #fff; }
-.btn-success { background: #28a745; color: #fff; }
 
 .schedules-table {
   width: 100%;
@@ -67,16 +58,30 @@
 
 .schedules-table th, .schedules-table td {
   padding: .75rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   text-align: left;
+  color: var(--text-main);
 }
 
 .schedules-table th {
-  background: #f5f5f5;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
 }
 
-.status-active { color: #1b7a2a; font-weight: 700; }
-.status-inactive { color: #b02a37; font-weight: 700; }
+.schedules-table td.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.schedules-table td.actions .btn {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.status-active { color: #86efac; font-weight: 700; }
+.status-inactive { color: #fca5a5; font-weight: 700; }
 
 .modal-backdrop {
   position: fixed;
@@ -89,11 +94,13 @@
 }
 
 .modal {
-  background: white;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
   max-width: 520px;
   border-radius: 10px;
   padding: 16px;
+  color: var(--text-main);
 }
 .toast{
   position: fixed;
@@ -157,8 +164,8 @@
 }
 
 .vacation-balance-box {
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 12px;
@@ -183,4 +190,140 @@
   color: #dc2626;
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+/* ===== Panel admin: Ajustar saldo ===== */
+.vacation-admin-panel {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.vacation-admin-panel strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vacation-admin-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.vacation-admin-row label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.vacation-admin-row label input[type="radio"] {
+  accent-color: #6366f1;
+  cursor: pointer;
+}
+
+.vacation-admin-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.vacation-admin-input-row input[type="number"] {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-size: 14px;
+}
+
+.vacation-admin-input-row input[type="number"]::placeholder {
+  color: var(--text-secondary);
+}
+
+.vacation-admin-input-row input[type="number"]:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+/* Saldo insuficiente */
+.vacation-balance-warning {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .schedules-page {
+    padding: 12px;
+  }
+
+  .schedules-container {
+    padding: 14px;
+  }
+
+  .schedules-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .filters {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vacation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    max-width: 95vw;
+    width: 95vw;
+  }
+
+  .modal-lg {
+    max-width: 95vw;
+    width: 95vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedules-page {
+    padding: 8px;
+  }
+
+  .schedules-table th,
+  .schedules-table td {
+    font-size: 12px;
+    padding: 0.5rem;
+  }
 }

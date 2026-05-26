@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Button from "../../../components/Button";
 import {
   createVacation,
   getVacationBalance,
@@ -169,24 +170,16 @@ export default function VacationModal({ users, selectedUserId, onClose, onToast,
           </div>
 
           {/* ===== PANEL ADMIN ===== */}
-          <div
-            style={{
-              border: "1px dashed #ccc",
-              borderRadius: 8,
-              padding: 10,
-              marginBottom: 12,
-              background: "#fafafa",
-            }}
-          >
+          <div className="vacation-admin-panel">
             <strong>Administrador: Ajustar saldo</strong>
 
-            <div style={{ display: "flex", gap: 8, marginTop: 8, marginBottom: 8 }}>
+            <div className="vacation-admin-row">
               <label>
                 <input
                   type="radio"
                   checked={adminMode === "add"}
                   onChange={() => setAdminMode("add")}
-                />{" "}
+                />
                 Sumar días
               </label>
               <label>
@@ -194,12 +187,12 @@ export default function VacationModal({ users, selectedUserId, onClose, onToast,
                   type="radio"
                   checked={adminMode === "set"}
                   onChange={() => setAdminMode("set")}
-                />{" "}
+                />
                 Fijar saldo
               </label>
             </div>
 
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="vacation-admin-input-row">
               <input
                 type="number"
                 step="0.5"
@@ -207,14 +200,14 @@ export default function VacationModal({ users, selectedUserId, onClose, onToast,
                 value={adminDays}
                 onChange={(e) => setAdminDays(e.target.value)}
               />
-              <button
+              <Button
                 type="button"
-                className="btn btn-outline"
+                variant="outline"
                 onClick={handleAdminSave}
                 disabled={savingAdmin || !form.userId}
               >
                 {savingAdmin ? "Guardando..." : "Aplicar"}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -251,7 +244,7 @@ export default function VacationModal({ users, selectedUserId, onClose, onToast,
           </div>
 
           {insufficientBalance && (
-            <div style={{ color: "red", marginBottom: 8 }}>Saldo insuficiente.</div>
+            <div className="vacation-balance-warning">Saldo insuficiente.</div>
           )}
 
           <div className="form-group">
@@ -260,16 +253,16 @@ export default function VacationModal({ users, selectedUserId, onClose, onToast,
           </div>
 
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="btn btn-outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="btn btn-primary"
+              variant="primary"
               disabled={submitting || insufficientBalance || calculatingDays}
             >
               {submitting ? "Guardando..." : "Guardar vacaciones"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

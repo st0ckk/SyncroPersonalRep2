@@ -6,7 +6,9 @@ import {
     TileLayer,
     useMap,
 } from "react-leaflet";
+import L from "leaflet";
 import { stopStatusToEs } from "../../../utils/routeStatus";
+import RouteLayer from "./RouteLayer";
 
 const DEFAULT_CENTER = [9.9281, -84.0907];
 
@@ -21,6 +23,29 @@ const navLinkStyle = (color) => ({
     fontWeight: 600,
     textAlign: "center",
 });
+
+function makeStopIcon(order) {
+    return L.divIcon({
+        className: "",
+        html: `<div style="
+            width: 28px;
+            height: 28px;
+            background: #6366f1;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+        ">${order}</div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -16],
+    });
+}
 
 function FitStops({ stops }) {
     const map = useMap();
@@ -63,6 +88,11 @@ export default function RouteMapPreview({ stops, height = "280px" }) {
             !Number.isNaN(Number(s.longitude))
     );
 
+    const routePoints = validStops.map((s) => ({
+        lat: Number(s.latitude),
+        lng: Number(s.longitude),
+    }));
+
     return (
         <MapContainer
             center={DEFAULT_CENTER}
@@ -83,6 +113,8 @@ export default function RouteMapPreview({ stops, height = "280px" }) {
                 attribution='&copy; OpenStreetMap contributors'
             />
 
+            <RouteLayer points={routePoints} color="#6366f1" />
+
             {validStops.map((stop) => {
                 const lat = Number(stop.latitude);
                 const lng = Number(stop.longitude);
@@ -97,6 +129,7 @@ export default function RouteMapPreview({ stops, height = "280px" }) {
                     <Marker
                         key={`${stop.clientId}-${stop.stopOrder}`}
                         position={[lat, lng]}
+                        icon={makeStopIcon(stop.stopOrder)}
                     >
                         <Popup>
                             <div style={{ minWidth: "200px", fontFamily: "inherit" }}>

@@ -86,3 +86,24 @@ export const getInvoicePdfHtml = async (invoiceId) => {
     });
     return response.data;
 };
+
+// Descargar PDF de factura
+export const downloadInvoicePdf = async (invoiceId, consecutiveNumber) => {
+    const response = await api.get(
+        `/electronic-invoice/${invoiceId}/download-pdf`,
+        { responseType: "blob", timeout: 60000 }
+    );
+    const downloadUrl = window.URL.createObjectURL(response.data);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = `Factura-${consecutiveNumber || invoiceId}.pdf`;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+};
+
+// Anular factura (genera Nota de Crédito)
+export const cancelInvoice = (invoiceId, reason) =>
+    api.post(`/electronic-invoice/${invoiceId}/cancel`, { reason });

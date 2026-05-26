@@ -1,5 +1,5 @@
-import "./distributor.css";
 import { useEffect, useState } from "react";
+import "./distributor.css";
 import {
     getDistributors,
     getInactiveDistributors,
@@ -76,8 +76,8 @@ export default function DistributorPage() {
                     <div className="modal">
                         <h3>
                             {editing
-                                ? "Editar distribuidor"
-                                : "Nuevo distribuidor"}
+                                ? "Editar proveedor"
+                                : "Nuevo proveedor"}
                         </h3>
 
                         <DistributorForm

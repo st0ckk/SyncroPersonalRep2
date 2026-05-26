@@ -1,3 +1,5 @@
+import Button from "../../../components/Button";
+
 export default function SchedulesToolbar({
   users,
   selectedUserId,
@@ -27,22 +29,22 @@ export default function SchedulesToolbar({
           </select>
         </div>
 
-        <button className="btn btn-outline" onClick={onToggleInactive} disabled={!selectedUserId}>
+        <Button variant="outline" onClick={onToggleInactive} disabled={!selectedUserId}>
           {showInactive ? "Ocultar inactivos" : "Ver inactivos"}
-        </button>
+        </Button>
 
-        <button
-          className="btn btn-outline"
+        <Button
+          variant="outline"
           onClick={onOpenVacations}
           disabled={!selectedUserId}
           type="button"
         >
           Vacaciones
-        </button>
+        </Button>
 
-        <button className="btn btn-primary" onClick={onNew} disabled={!selectedUserId}>
+        <Button variant="primary" onClick={onNew} disabled={!selectedUserId}>
           + Nuevo
-        </button>
+        </Button>
       </div>
     </div>
   );

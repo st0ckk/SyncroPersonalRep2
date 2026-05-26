@@ -1,0 +1,517 @@
+﻿﻿ /* =========================
+   PAGE
+========================= */
+.register-page {
+    padding: 24px;
+}
+
+.register-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+.register-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* =========================
+   FILTERS
+========================= */
+.registers-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+    .registers-filters input,
+    .registers-filters select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+    }
+
+
+/* =========================
+   TABLE
+========================= */
+.register-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .register-table th {
+        text-align: left;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .register-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .register-table tbody tr:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    .register-table .number {
+        font-weight: 500;
+    }
+
+    .register-table .price {
+        font-weight: 600;
+    }
+
+    /* =========================
+   TABLE ACTIONS
+========================= */
+
+    .register-table td.actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+        .register-table td.actions .btn {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+/* =========================
+   BUTTON BASE
+========================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+}
+
+/* =========================
+   BUTTON VARIANTS
+========================= */
+
+.btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+.btn-outline {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+    .btn-outline:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+.btn-manual-movement {
+    background: var(--primary);
+    color: #ffffff;
+    margin-top: 0px;
+    width: 25%;
+}
+
+/* Botones SOLO dentro de la tabla */
+.register-table td.actions .btn-danger {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+    .register-table td.actions .btn-danger:hover {
+        background-color: #dc2626;
+    }
+
+.register-table td.actions .btn-success {
+    background-color: #22c55e;
+    color: #ffffff;
+}
+
+    .register-table td.actions .btn-success:hover {
+        background-color: #16a34a;
+    }
+
+/* =========================
+   STATES
+========================= */
+.loading,
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 380px;
+    max-width: 1100px;
+    color: var(--text-main);
+}
+
+.modal-history {
+    background: #0f172a;
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 380px;
+    max-width: 1100px;
+}
+
+/* ── Modal de confirmacion ── */
+.modal-confirm {
+    width: 420px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+    .modal-confirm h3 {
+        margin-bottom: 12px;
+        color: #dc2626;
+    }
+
+    .modal-confirm p {
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .modal-confirm .hint {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .modal-confirm .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+/* =========================
+   register FORM
+========================= */
+.register-form {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 20px;
+    margin-top: 12px;
+}
+
+    .register-form .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .register-form label {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+    }
+
+    .register-form input,
+    .register-form select {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+        background: var(--bg-input);
+        color: var(--text-primary);
+    }
+
+        .register-form input:focus,
+        .register-form select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            outline: none;
+        }
+
+    .register-form .full-width {
+        grid-column: 1 / -1;
+    }
+
+.register-form-details-items {
+    display: flex;
+    gap: 4%;
+}
+
+.register-form .form-group .section-header {
+    margin-bottom: 2%
+}
+
+.register-form-details-items button {
+    position: absolute;
+    right: 0;
+    width: 5%;
+    height: 40px;
+    margin-top: 0%;
+}
+
+#register-items-select {
+    width: 60%;
+}
+
+.register-form-details-items input {
+    width: 10%;
+}
+
+.register-form-details-items span {
+    margin-top: 1%;
+}
+
+
+
+
+/* =========================
+   register STATUSES
+========================= */
+
+.Abierta-status {
+    background: rgba(34,197,94,0.2);
+    color: #86efac;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.Cerrada-status {
+    background: rgba(239,68,68,0.2);
+    color: #fca5a5;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* =========================
+   MÁS INFORMACIÓN
+========================= */
+.register-extra td {
+    background: rgba(0,0,0,0.02);
+    padding: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.register-details-flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.register-details-remarks {
+    margin-left: 5%;
+}
+
+.register-details-discount {
+    margin-left: 5%;
+}
+
+/* =========================
+   MOVEMENT
+========================= */
+
+.register-movement-container {
+    overflow-y: scroll;
+    height: 50vh;
+}
+
+.register-movement-options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+    .register-movement-options button {
+        width: 25%;
+    }
+
+.income-charge {
+    background: rgba(34,197,94,0.2);
+    color: #86efac;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.expense-charge {
+    background: rgba(239,68,68,0.2);
+    color: #fca5a5;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* =========================
+   RESUMEN DE CAJA
+========================= */
+
+.monitor-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 45px;
+    margin-top: 25px;
+    justify-content: center;
+}
+
+.summary-item {
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 12px;
+    padding: 12px;
+    background: var(--bg-card);
+}
+
+.summary-label {
+    font-size: 12px;
+    color: var(--text-secondary, #6b7280);
+}
+
+.summary-value {
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 6px;
+}
+
+.summary-negative-value {
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 6px;
+    color: #fca5a5;
+}
+
+.summary-positive-value {
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 6px;
+    color: #86efac;
+}
+
+/* ===== TABLE SCROLL WRAPPER ===== */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .register-page {
+        padding: 12px;
+    }
+
+    .register-card {
+        padding: 14px;
+    }
+
+    .register-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .toolbar-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .registers-filters {
+        flex-direction: column;
+    }
+
+    .registers-filters input,
+    .registers-filters select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .register-form {
+        grid-template-columns: 1fr;
+    }
+
+    .monitor-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .modal {
+        max-width: 95vw;
+        width: 95vw;
+        min-width: unset;
+    }
+
+    .modal-history {
+        max-width: 95vw;
+        width: 95vw;
+        min-width: unset;
+    }
+
+    .register-movement-options button {
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-page {
+        padding: 8px;
+    }
+
+    .monitor-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-value,
+    .summary-negative-value,
+    .summary-positive-value {
+        font-size: 16px;
+    }
+
+    .register-table th,
+    .register-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
