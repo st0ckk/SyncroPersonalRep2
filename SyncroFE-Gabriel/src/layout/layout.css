@@ -1,0 +1,328 @@
+/* ===========================
+   FONDO GLOBAL
+=========================== */
+.app-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 55%, #0f172a 100%);
+    overflow: hidden;
+}
+
+/* ===========================
+   ESTRUCTURA PRINCIPAL
+=========================== */
+.app-layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.app-content {
+    margin-left: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: calc(100% - var(--sidebar-width));
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.app-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: transparent;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===========================
+   SIDEBAR — GLASSMORPHISM
+=========================== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    background: rgba(10, 18, 38, 0.97);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-right: 1px solid #1e3a5f;
+    color: var(--text-inverted);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+    width: 100%;
+    overflow-y: auto;
+    flex: 1;
+    padding-bottom: 16px;
+}
+
+.sidebar-link {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.sidebar-link-active {
+    background: rgba(99, 102, 241, 0.28);
+    color: #fff;
+    font-weight: 600;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.sidebar-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-group-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+}
+
+.sidebar-group-active {
+    color: #a5b4fc;
+}
+
+.sidebar-chevron {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+    color: #64748b;
+}
+
+.sidebar-chevron-open {
+    transform: rotate(90deg);
+}
+
+/* Título del sidebar */
+.logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: #e2e8f0;
+    letter-spacing: 2px;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+/* Botón cerrar (solo mobile) */
+.sidebar-close-btn {
+    display: none;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #94a3b8;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
+/* Contenedor de items de un grupo colapsable */
+.sidebar-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 10px;
+    margin-top: 2px;
+}
+
+/* Link anidado dentro de un grupo */
+.sidebar-link-nested {
+    font-size: 13.5px;
+    padding: 6px 10px;
+    border-left: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-link-nested:hover {
+    border-left-color: rgba(99, 102, 241, 0.5);
+}
+
+.sidebar-link-nested.sidebar-link-active {
+    border-left-color: #6366f1;
+}
+
+/* ===========================
+   HEADER — GLASSMORPHISM
+=========================== */
+.header {
+    height: 60px;
+    background: rgba(10, 18, 38, 0.97);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #ffffff;
+    position: relative;
+    z-index: 50;
+    flex-shrink: 0;
+}
+
+.header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 16px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    white-space: nowrap;
+}
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.header-btn.logout {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+}
+
+.header-btn.logout:hover {
+    background: rgba(239, 68, 68, 0.22);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #e2e8f0;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+.app-footer {
+    flex-shrink: 0;
+    padding: 10px 24px;
+    text-align: center;
+    background: rgba(10, 18, 38, 0.97);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    font-size: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===========================
+   RESPONSIVE MOBILE
+=========================== */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 200;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        z-index: 199;
+    }
+
+    .hamburger-btn {
+        display: block;
+    }
+
+    .sidebar-close-btn {
+        display: flex;
+    }
+
+    .app-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}

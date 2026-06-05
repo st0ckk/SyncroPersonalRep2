@@ -1,0 +1,42 @@
+import api from "./axios";
+
+// activos
+export const getClients = () =>
+    api.get("/clients");
+
+// inactivos
+export const getInactiveClients = () =>
+    api.get("/clients/inactive");
+
+// obtener uno
+export const getClientById = (id) =>
+    api.get(`/clients/${id}`);
+
+// crear
+export const createClient = (data) =>
+    api.post("/clients", data);
+
+// actualizar
+export const updateClient = (id, data) =>
+    api.put(`/clients/${id}`, data);
+
+// desactivar
+export const deactivateClient = (id) =>
+    api.delete(`/clients/${id}`);
+
+// activar
+export const activateClient = (id) =>
+    api.put(`/clients/${id}/activate`);
+
+// lookup clientes (para filtros)
+export const getClientLookup = () =>
+    api.get("/clients/lookup");
+
+// consultar contribuyente en Hacienda
+export const lookupHacienda = (identificacion) =>
+    api.get(`/clients/hacienda-lookup/${identificacion}`);
+
+// resuelve un enlace corto de Google Maps al URL completo
+export const resolveMapsUrl = (url) =>
+    api.get("/clients/resolve-maps-url", { params: { url } });
+
