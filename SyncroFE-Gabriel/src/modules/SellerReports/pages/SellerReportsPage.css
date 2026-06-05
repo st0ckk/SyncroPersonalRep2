@@ -207,3 +207,9 @@
     .seller-filters { flex-direction: column; }
     .seller-summary { flex-direction: column; }
 }
+
+/* Ventas anuladas en el reporte */
+.seller-table tr.row-inactive td {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
