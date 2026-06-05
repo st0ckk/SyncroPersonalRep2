@@ -3,6 +3,7 @@ import EmployeeTable from "../components/EmployeeTable";
 import EmployeeForm from "../components/EmployeeForm";
 import { getEmployees } from "../services/employees.service";
 import Swal from "sweetalert2";
+import Button from "../components/Button";
 
 
 
@@ -39,9 +40,9 @@ if (!roles.includes("SuperUsuario") && !roles.includes("Administrador")) {
       <div className="employees-header">
         <h2>Empleados</h2>
 
-        <button className="btn-primary" onClick={() => setShowForm(true)}>
+        <Button variant="primary" onClick={() => setShowForm(true)}>
           + Agregar empleado
-        </button>
+        </Button>
       </div>
 
       {showForm && (

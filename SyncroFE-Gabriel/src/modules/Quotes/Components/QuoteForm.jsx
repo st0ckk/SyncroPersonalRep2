@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "../../../components/Button";
-import { getClientLookup } from "../../../api/clients.api";
+import { getAllClients } from "../../../api/clients.api";
 import { getProducts } from "../../../api/stock.api";
 import { createPortal } from "react-dom";
 import SearchSelect from "react-select";
@@ -48,6 +48,19 @@ function QuoteForm({
         };
     });
 
+    // Cancelacion
+    const [confirmRejection, setConfirmRejection] = useState(null);
+    const [rejection, setRejection] = useState(false);
+
+    const handleQuoteRejection = async (e) => {
+        if (form.quoteStatus == "rejected") {
+            setConfirmRejection(true);
+        } else {
+            handleSubmit(e);
+        }
+    }
+
+    //Formateo de fechas
     const formatDateInput = (dateString) => {
         if (!dateString) return null;
         const [date] = dateString.split("T");
@@ -55,10 +68,27 @@ function QuoteForm({
         return `${years}-${months}-${days}`;
     };
 
+    //Formato de moneda
     const formatCurrency = (amount) => {
         var fixedAmount = parseFloat(amount);
         return `₡ ${fixedAmount.toFixed(2)}`;
     };
+
+    //Retorna la fecha resultante con base en la cantidad de semanas elegida
+    const formatExpirationTimeInput = (weeks) => {
+        if (!weeks) return null;
+
+        var expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + (Number(weeks) * 7) + 1)
+        const [months, days, years] = expirationDate.toLocaleDateString().split("/");
+        return `${years}-${months}-${days}`;
+    };
+
+    //Retorna una fecha en formato local de fecha
+    const formatLocalTimeInput = (input) => {
+        var date = new Date(input);
+        return date.toLocaleDateString();
+    }
 
     /* ══════════════════════════════
        LINE MANAGEMENT
@@ -129,37 +159,36 @@ function QuoteForm({
         control: (provided) => ({
             ...provided,
             borderRadius: "8px",
-            boxShadow: "none",
             textAlign: "left",
-            backgroundColor: "#0a1228",
-            borderColor: "rgba(255, 255, 255, 0.1)",
-            color: "#e2e8f0",
+            backgroundColor: "#ffffff",
+            borderColor: "#e2e5ea",
+            color: "#1e293b",
         }),
         singleValue: (provided) => ({
             ...provided,
-            color: "#e2e8f0",
+            color: "#1e293b",
         }),
         input: (provided) => ({
             ...provided,
-            color: "#e2e8f0",
+            color: "#1e293b",
         }),
         menu: (provided) => ({
             ...provided,
-            backgroundColor: "#0f172a",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
+            backgroundColor: "#ffffff",
+            border: "1px solid #e2e5ea",
         }),
         option: (provided, state) => ({
             ...provided,
-            color: "#e2e8f0",
+            color: "#1e293b",
             backgroundColor: state.isSelected
-                ? "rgba(99, 102, 241, 0.4)"
+                ? "rgba(37, 99, 235, 0.12)"
                 : state.isFocused
-                    ? "rgba(255, 255, 255, 0.1)"
+                    ? "#f1f3f6"
                     : "transparent",
         }),
         placeholder: (provided) => ({
             ...provided,
-            color: "#94a3b8",
+            color: "#64748b",
         }),
     };
 
@@ -189,26 +218,40 @@ function QuoteForm({
 
         var client = clients.find(c => c.clientId === form.clientId);
         var currentDate = new Date();
-        var mininumDays = new Date().setDate(currentDate.getDate() + 15);
-        var expirationDate = new Date(form.quoteValidTil);
 
+        currentDate.setHours(0, 0, 0, 0);
+
+        var mininumDays = new Date();
+        mininumDays.setDate(currentDate.getDate() + 7);
+        mininumDays.setHours(0, 0, 0, 0);
+
+        var expirationDate = new Date();
+        initialValues ? expirationDate = new Date(formatDateInput(form.quoteValidTil)) : expirationDate = new Date(formatExpirationTimeInput(form.quoteValidTil));
+        expirationDate.setHours(0, 0, 0, 0);
+
+        //Validaciones
         if (!form.clientId || Number.isNaN(form.clientId)) {
-            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar a un cliente válido" });
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "Debe seleccionar a un cliente válido" });
             return;
         }
 
         if (!client) {
-            await Swal.fire({ icon: "error", title: "Error", text: "El cliente seleccionado no existe o no esta activado. Intente con otro cliente" });
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "El cliente seleccionado no existe" });
             return;
         }
 
-        if (!form.quoteValidTil || (expirationDate <= currentDate || expirationDate < mininumDays)) {
-            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe seleccionar una fecha valida de expiracion. Minimo 15 dias de vigencia" });
+        if (!client.isActive) {
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "El cliente seleccionado se encuentra actualmente deshabilitado" });
+            return;
+        }
+
+        if (!form.quoteValidTil || expirationDate <= currentDate || expirationDate < mininumDays) {
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "Debe seleccionar una fecha con más de una semana de vigencia" });
             return;
         }
 
         if (details.length === 0) {
-            await Swal.fire({ icon: "warning", title: "Atención", text: "Debe tener almenos un producto agregado" });
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "Debe tener almenos un producto agregado" });
             return;
         }
 
@@ -223,7 +266,7 @@ function QuoteForm({
             discountId: null,
             quoteNumber: "",
             quoteCustomer: client.clientName.trim(),
-            quoteValidTil: form.quoteValidTil,
+            quoteValidTil: expirationDate,
             quoteStatus: initialValues ? form.quoteStatus.trim() : "pending",
             quoteRemarks: form.quoteRemarks ? form.quoteRemarks.trim() : "Sin observaciones.",
             quoteConditions: form.quoteConditions ? form.quoteConditions.trim() : "Sin condiciones aplicables.",
@@ -248,8 +291,9 @@ function QuoteForm({
         onSubmit(payload);
     };
 
+
     useEffect(() => {
-        getClientLookup().then((res) => {
+        getAllClients().then((res) => {
             setClients(res.data ?? []);
         });
         getProducts().then((res) => {
@@ -296,22 +340,50 @@ function QuoteForm({
                                 ))}
                         </datalist>
                         {selectedClient && (
-                            <span style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+                            <span style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
                                 {selectedClient.clientName} — Tipo: <strong style={{ textTransform: "capitalize" }}>{selectedClient.clientType || "pulpero"}</strong>
                             </span>
                         )}
                     </div>
 
-                    <div className="form-group">
-                        <label>Fecha de expiración</label>
-                        <input
-                            type="date"
-                            name="quoteValidTil"
-                            value={formatDateInput(form.quoteValidTil) ?? ""}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                    {!initialValues && (
+                        <div className="form-group">
+                            <label>Tiempo de vigencia</label>
+                            <select
+                                value={form.quoteValidTil}
+                                onChange={(e) =>
+                                    setForm({ ...form, quoteValidTil: e.target.value === "" ? "" : e.target.value })
+                                }
+                                required
+                            >
+                                <option value="">Seleccione una opción</option>
+                                <option value="1">1 Semana</option>
+                                <option value="2">2 Semanas</option>
+                                <option value="3">3 Semanas</option>
+                                <option value="4">4 Semanas</option>
+                                <option value="5">5 Semanas</option>
+                            </select>
+
+                            {form.quoteValidTil && (
+                                <span style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
+                                    Fecha de expiración: <strong style={{ textTransform: "capitalize" }}>{formatLocalTimeInput(formatExpirationTimeInput(form.quoteValidTil))} </strong>
+                                </span>
+                            )}
+                        </div>
+                    )}
+
+                    {initialValues && (
+                        <div className="form-group">
+                            <label>Fecha de expiración</label>
+                            <input
+                                type="date"
+                                name="quoteValidTil"
+                                value={formatDateInput(form.quoteValidTil) ?? ""}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    )}
 
                     <div className="form-group">
                         <label>Condiciones</label>
@@ -371,7 +443,7 @@ function QuoteForm({
 
                             return (
                                 <div key={i} style={{
-                                    border: "1px solid rgba(255,255,255,0.1)",
+                                    border: "1px solid #e2e5ea",
                                     borderRadius: 8,
                                     padding: "10px 12px",
                                     marginBottom: 8,
@@ -379,7 +451,7 @@ function QuoteForm({
                                 }}>
                                     {/* Row 1: Product selector + remove */}
                                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
-                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div id="react-select" style={{ flex: 1, minWidth: 0 }}>
                                             <SearchSelect
                                                 value={searchSelectOptions().find(op => op.value === line.productId)}
                                                 onChange={(e) => updateLine(i, "productId", e.value)}
@@ -413,7 +485,7 @@ function QuoteForm({
                                     {/* Row 2: Quantity, discount, info */}
                                     <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Cant:</label>
+                                            <label style={{ fontSize: 12, color: "#64748b", margin: 0 }}>Cant:</label>
                                             <input
                                                 type="number"
                                                 min="1"
@@ -421,11 +493,11 @@ function QuoteForm({
                                                 value={line.quantity}
                                                 onChange={(e) => updateLine(i, "quantity", parseInt(e.target.value) || 0)}
                                                 required
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #e2e5ea", fontSize: 13, background: "#ffffff", color: "#1e293b" }}
                                             />
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Desc %:</label>
+                                            <label style={{ fontSize: 12, color: "#64748b", margin: 0 }}>Desc %:</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -434,15 +506,15 @@ function QuoteForm({
                                                 value={line.discount}
                                                 onChange={(e) => updateLine(i, "discount", e.target.value)}
                                                 placeholder="0"
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #e2e5ea", fontSize: 13, background: "#ffffff", color: "#1e293b" }}
                                             />
                                         </div>
-                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#94a3b8" }}>
-                                            <span>Precio: <strong style={{ color: "#e2e8f0" }}>{formatCurrency(unitPrice)}</strong></span>
+                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#64748b" }}>
+                                            <span>Precio: <strong style={{ color: "#1e293b" }}>{formatCurrency(unitPrice)}</strong></span>
                                             {lineDiscAmt > 0 && (
-                                                <span style={{ color: "#fca5a5" }}>-{formatCurrency(lineDiscAmt)}</span>
+                                                <span><strong>{formatCurrency(lineDiscAmt)}</strong></span>
                                             )}
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>
                                                 {formatCurrency(lineTotal)}
                                             </span>
                                         </div>
@@ -470,13 +542,13 @@ function QuoteForm({
                     {/* ── Totals ── */}
                     {details.length > 0 && (
                         <div className="form-group full-width" style={{
-                            background: "#0a1228",
-                            border: "1px solid rgba(255,255,255,0.1)",
+                            background: "#f8f9fb",
+                            border: "1px solid #e2e5ea",
                             borderRadius: 8,
                             padding: "14px 16px",
                         }}>
                             {selectedClient && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#94a3b8" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#64748b" }}>
                                     <span>Tipo cliente: <strong style={{ textTransform: "capitalize" }}>{selectedClient.clientType || "pulpero"}</strong></span>
                                 </div>
                             )}
@@ -485,7 +557,7 @@ function QuoteForm({
                                 <strong>{formatCurrency(subTotal)}</strong>
                             </div>
                             {hasAnyDiscount && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#fca5a5" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#b91c1c" }}>
                                     <span>Descuento:</span>
                                     <strong>- {formatCurrency(totalDiscount)}</strong>
                                 </div>
@@ -506,21 +578,64 @@ function QuoteForm({
                     <div className="form-actions">
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
                         </Button>
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            disabled={submitting}
-                        >
-                            {submitting ? "Guardando..." : "Guardar"}
-                        </Button>
+                        {!initialValues && (
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                disabled={submitting}
+                            >
+                                {submitting ? "Guardando..." : "Guardar"}
+                            </Button>
+                        )}
+                        {initialValues && (
+                            <Button
+                                type="button"
+                                variant="primary"
+                                disabled={submitting}
+                                onClick={handleQuoteRejection}
+                            >
+                                {submitting ? "Guardando..." : "Guardar"}
+                            </Button>
+                        )}
                     </div>
                 </form>
+
+                {/* Modal de confirmación de aprobación de cotización*/}
+                {confirmRejection && (
+                    <div className="modal-backdrop">
+                        <div className="modal modal-confirm">
+                            <h3>Confirmar rechazo</h3>
+                            <p>
+                                ¿Está seguro que desea rechazar esta cotización?
+                            </p>
+                            <p className="hint">
+                                No se podra editar el registro luego de este cambio.
+                            </p>
+                            <div className="form-actions">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setConfirmRejection(false)}
+                                    disabled={rejection}
+                                >
+                                    Cancelar
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    onClick={handleSubmit}
+                                    disabled={rejection}
+                                >
+                                    {rejection ? "Aplicando cambios..." : "Sí, rechazar"}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>,
         document.getElementById('modal-root')

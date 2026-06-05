@@ -467,7 +467,7 @@ export default function RoutesMonitoringPage() {
                       </div>
 
                       <Button
-                        variant="outline"
+                        variant="info"
                         onClick={() => toggleExpand(r.routeId)}
                       >
                         {expandedRouteId === r.routeId

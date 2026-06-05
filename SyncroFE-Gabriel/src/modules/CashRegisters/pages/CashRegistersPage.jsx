@@ -1,5 +1,5 @@
-﻿import "./CashRegistersPage.css";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import {
     getRegisters,
     filterRegisters,
@@ -8,53 +8,33 @@ import {
     checkOpenRegisters,
 } from "../../../api/cashRegisters";
 
+import { PageCard, Toolbar, FilterBar, Button } from "../../../components";
 import CashRegisterTable from "../components/CashRegisterTable";
-import CashRegisterToolbar from "../components/CashRegisterToolbar";
-import CashRegisterFilters from "../components/CashRegisterFilters";
 import CashRegisterForm from "../components/CashRegisterForm";
 import CashRegisterClosingForm from "../components/CashRegisterClosingForm";
 import CashRegisterMovementHistory from "../components/CashRegisterMovementHistory";
 
-import Swal from "sweetalert2";
-import withReactContent from 'sweetalert2-react-content';
-
 export default function CashRegistersPage() {
-
-    // Datos
     const [registers, setRegisters] = useState([]);
-
-    // Interfaz
     const [loading, setLoading] = useState(false);
-
-    // Filtros
     const [search, setSearch] = useState("");
     const [statusType, setStatusType] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-
-    // Historial
     const [showHistory, setShowHistory] = useState(false);
     const [movementHistory, setMovementHistory] = useState(null);
-
-    // CRUD cajas
     const [showForm, setShowForm] = useState(false);
     const [showClosingForm, setShowClosingForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [closing, setClosing] = useState(false);
     const [closingRegister, setClosingRegister] = useState(null);
 
-    // Sweet alert
-    const SwalAlert = withReactContent(Swal);
-
-
-    //Cargar datos de cajas
     const loadData = async () => {
         try {
             let response;
             if (search || statusType || (startDate && endDate)) {
                 response = await filterRegisters(startDate, endDate, search, statusType);
-            }
-            else {
+            } else {
                 response = await getRegisters();
             }
             setRegisters(response.data ?? []);
@@ -65,152 +45,116 @@ export default function CashRegistersPage() {
         }
     };
 
-    // Nueva cuenta
+    useEffect(() => { loadData(); }, [search, statusType, startDate, endDate]);
+
     const handleNewRegister = async () => {
         try {
             const openRegister = await checkOpenRegisters();
-            openRegister.data == true
-                ? Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Ya existe una caja abierta. Debe cerrarla para poder abrir una nueva"
-                })
+            openRegister.data === true
+                ? Swal.fire({ icon: "error", title: "Error", text: "Ya existe una caja abierta. Debe cerrarla para poder abrir una nueva" })
                 : setShowForm(true);
         } catch (err) {
             Swal.fire({ icon: "error", title: "Error", text: String(err) });
         }
     };
 
-    // Mostrar historial
-    const handleHistory = (register) => {
-        setMovementHistory(register);
-        setShowHistory(true);
-    };
-
-    // Cerrar caja
-    const handleRegisterClosure = async (register) => {
-        setClosingRegister(register);
-        setShowClosingForm(true);
-    };
-
-    //Subir nueva caja
     const handleSubmit = async (values) => {
         try {
             setSubmitting(true);
             await createRegister(values);
             setShowForm(false);
-
-            const response = getRegisters();
-
-            setRegisters(response.data ?? []);
             loadData();
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "�Exito!",
+                text: "Se ha guardado la caja",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
             console.error("Error guardando caja", err);
-            Swal.fire({ icon: "error", title: "Error", text: "Error guardando caja" });
+            Swal.fire({ icon: "error", title: "Error...", text: "Error guardando caja" });
         } finally {
             setSubmitting(false);
         }
     };
 
-    //Cerrar la caja
     const handleClose = async (values) => {
         try {
             setClosing(true);
             await closeRegister(closingRegister.cashRegisterId, values);
             setShowClosingForm(false);
-
-            const response = getRegisters();
             setClosingRegister(null);
-            setRegisters(response.data ?? []);
-
             loadData();
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "�Exito!",
+                text: "Se ha hecho el cierre de la caja",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
             console.error("Error cerrando de caja", err);
-            Swal.fire({ icon: "error", title: "Error", text: "Error cerrando de caja" });
+            Swal.fire({ icon: "error", title: "Error...", text: "Error cerrando de caja" });
         } finally {
-            setSubmitting(false);
+            setClosing(false);
         }
     };
 
-
-    // Carga de cuentas
-    useEffect(() => {
-        loadData();
-    }, [search, statusType, startDate, endDate]);
-
     return (
-        <div className="register-page">
-            <div className="register-card">
+        <PageCard>
+            <Toolbar title="Cajas">
+                <Button variant="primary" onClick={handleNewRegister}>+ Nueva caja</Button>
+            </Toolbar>
 
-                {/*Toolbar*/}
-                <CashRegisterToolbar
-                    onNewRegister={handleNewRegister}
+            <FilterBar>
+                <input type="text" placeholder="Buscar caja..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <select value={statusType} onChange={(e) => setStatusType(e.target.value)}>
+                    <option value="">Todos los estados</option>
+                    <option value="open">Abierta</option>
+                    <option value="closed">Cerrada</option>
+                </select>
+                <span className="filter-label">Desde:</span>
+                <input type="date" value={startDate ?? ""} onChange={(e) => setStartDate(e.target.value || null)} />
+                <span className="filter-label">Hasta:</span>
+                <input type="date" value={endDate ?? ""} onChange={(e) => setEndDate(e.target.value || null)} />
+            </FilterBar>
+
+            {loading && <div className="loading">Cargando registros de cajas...</div>}
+
+            {!loading && (
+                <CashRegisterTable
+                    registers={registers}
+                    onHistory={(r) => { setMovementHistory(r); setShowHistory(true); }}
+                    onClose={(r) => { setClosingRegister(r); setShowClosingForm(true); }}
                 />
+            )}
 
-                {/*Efecto de carga*/}
-                <CashRegisterFilters
-                    search={search}
-                    statusType={statusType}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onSearchChange={setSearch}
-                    onStatusTypeChange={setStatusType}
-                    onStartDateChange={setStartDate}
-                    onEndDateChange={setEndDate}
+            {showForm && (
+                <CashRegisterForm
+                    submitting={submitting}
+                    onSubmit={handleSubmit}
+                    onCancel={() => setShowForm(false)}
                 />
+            )}
 
+            {showClosingForm && (
+                <CashRegisterClosingForm
+                    closingRegister={closingRegister}
+                    closing={closing}
+                    onClose={handleClose}
+                    onCancel={() => setShowClosingForm(false)}
+                />
+            )}
 
-                {/*Efecto de carga*/}
-                {loading && (
-                    <div className="loading">Cargando registros de cajas...</div>
-                )}
-
-
-                {/*Tabla de registros*/}
-                {!loading && (
-                    <CashRegisterTable
-                        registers={registers}
-                        onHistory={handleHistory}
-                        onClose={handleRegisterClosure}
-                    />
-                )}
-
-
-                {/*Formulario de creacion*/}
-                {showForm && (
-                    <CashRegisterForm
-                        submitting={submitting}
-                        onSubmit={handleSubmit}
-                        onCancel={() => {
-                            setShowForm(false);
-                        }}
-                    />
-                )}
-
-                {/*Formulario de cierre*/}
-                {showClosingForm && (
-                    <CashRegisterClosingForm
-                        closingRegister={closingRegister}
-                        closing={closing}
-                        onClose={handleClose}
-                        onCancel={() => {
-                            setShowClosingForm(false);
-                        }}
-                    />
-                )}
-
-
-                {/*Formulario de historial*/}
-                {showHistory && (
-                    <CashRegisterMovementHistory
-                        register={movementHistory}
-                        onCancel={() => {
-                            setShowHistory(false);
-                        }}
-                    />
-                )}
-
-            </div>
-        </div>
+            {showHistory && (
+                <CashRegisterMovementHistory
+                    register={movementHistory}
+                    onCancel={() => setShowHistory(false)}
+                />
+            )}
+        </PageCard>
     );
 }

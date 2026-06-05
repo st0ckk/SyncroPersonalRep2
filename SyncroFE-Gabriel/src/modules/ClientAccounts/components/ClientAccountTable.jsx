@@ -1,9 +1,9 @@
 ﻿import { useState } from "react";
-import { generateAccountStatement } from "../../../api/clientAccount.api";
 import Button from "../../../components/Button";
 import { usePagination } from "../../../hooks/usePagination";
+import { getSalesByAccount } from "../../../api/sales.api"
 import PaginationControls from "../../../components/PaginationControls";
-
+import Swal from "sweetalert2";
 export default function ClientAccountTable({
     clientAccounts,
     onEdit,
@@ -17,8 +17,7 @@ export default function ClientAccountTable({
     // Cancelacion
     const [confirmClosedId, setConfirmClosedId] = useState(null);
     const [closing, setClosing] = useState(false);
-    //PDF
-    const [loadingPdf, setLoadingPdf] = useState(null);
+
     const pagination = usePagination(clientAccounts);
 
     //Formateo de fechas
@@ -29,9 +28,11 @@ export default function ClientAccountTable({
 
     //Formateo para moneda
     const formatCurrency = (amount) => {
-        if (!amount) return "₡ 0.00";
         var fixedAmount = parseFloat(amount);
-        return `₡ ${fixedAmount.toFixed(2)}`;
+        if (amount < 0) {
+            return `- ₡ ${Math.abs(fixedAmount).toFixed(2)}`;
+        }
+        return `₡ ${Math.abs(fixedAmount).toFixed(2)}`;
     }
 
     //Formateo de tipos de estados
@@ -56,39 +57,63 @@ export default function ClientAccountTable({
 
     // Handler para cancelar cuentas
     const handleAccountClosure = async (id) => {
+        var query
+        var purchases;
         try {
+            query = await getSalesByAccount(id);
+            purchases = query.data;
+            if (purchases.length != 0) {
+                await Swal.fire({ icon: "warning", title: "Advertencia", text: "Esta cuenta no se puede cerrar por tener ventas activas" });
+                return;
+            }
             setClosing(true);
             await onClose(id);
             setConfirmClosedId(null);
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "¡Exito!",
+                text: "Se ha cerrado la cuenta de crédito",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error...",
+                text: "No se ha podido cerrar la cuenta",
+                showConfirmButton: false,
+                timer: 1500
+            });
             console.error("Error al cerrar la cuenta", err);
         } finally {
             setClosing(false);
         }
     };
 
-    //Handler de detalles de cuenta
+    //Handler de detalles de cuenta.
     const toggleMoreInfo = (id) => {
         setExpandedAccountId(prev => (prev === id ? null : id));
     };
 
     //Si no hay cuentas
     if (!clientAccounts.length) {
-        return <div className="empty-state">No hay cuentas de credito</div>;
+        return <div className="empty-state">No hay cuentas de crédito</div>;
     }
 
     return (
         <>
         <div className="table-scroll">
-        <table className="caccount-table">
+        <table className="data-table">
             <thead>
                 <tr>
-                    <th>Numero de cuenta</th>
+                    <th>Número de cuenta</th>
                     <th>Estado</th>
                     <th>Cliente</th>
                     <th>Balance actual</th>
                     <th>Tasa de interes</th>
-                    <th>Limite de credito</th>
+                    <th>Límite de crédito</th>
                     <th>Apertura</th>
                     <th>Acciones</th>
                 </tr>
@@ -110,7 +135,7 @@ export default function ClientAccountTable({
 
                                 
                             <Button
-                                    variant="outline"
+                                    variant="info"
                                     onClick={() => toggleMoreInfo(ca.clientAccountId)}
                             >
                                     {expandedAccountId === ca.clientAccountId ? "Ocultar" : "Detalles"}
@@ -118,7 +143,7 @@ export default function ClientAccountTable({
 
                                 <Button
                                     type="button"
-                                    variant="outline"
+                                    variant="warning"
                                     onClick={() => onEdit(ca)}
                                     disabled={ca.clientAccountStatus == "closed"}
                                 >
@@ -126,7 +151,7 @@ export default function ClientAccountTable({
                                 </Button>
                                 <Button
                                     type="button"
-                                    variant="outline"
+                                    variant="info"
                                     onClick={() => onHistory(ca)}
                                 >
                                     Ver historial de movimientos
@@ -146,7 +171,7 @@ export default function ClientAccountTable({
                                 <td colSpan={9}>
                                     <section className="caccounts-details-flex">
                                         <span class="caccounts-details-remarks">
-                                            <strong>Terminos y condiciones: </strong>
+                                            <strong>Términos y condiciones: </strong>
                                             <br />
                                             {ca.clientAccountConditions}
                                             <br />
@@ -172,7 +197,7 @@ export default function ClientAccountTable({
                             ¿Está seguro que desea cerrar esta cuenta?
                         </p>
                         <p className="hint">
-                            La cuenta de credito no se podra utilizar en futuras compras.
+                            La cuenta de crédito no se podra utilizar en futuras compras.
                         </p>
                         <div className="form-actions">
                             <Button

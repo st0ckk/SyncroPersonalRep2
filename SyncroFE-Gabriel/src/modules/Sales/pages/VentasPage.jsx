@@ -1,5 +1,4 @@
-﻿import { useEffect, useState } from "react";
-import "./VentasPage.css";
+import { useEffect, useState } from "react";
 import {
     getSales,
     filterSale,
@@ -8,46 +7,33 @@ import {
     updateSale,
 } from "../../../api/sales.api";
 
-import VentasToolbar from "../components/VentasToolbar";
+import { PageCard, Toolbar, FilterBar, Button } from "../../../components";
 import VentasTable from "../components/VentasTable";
-import VentasFilters from "../components/VentasFilters";
 import VentasForm from "../components/VentasForm";
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 export default function VentasPage() {
-
-    // Datos
     const [sales, setSales] = useState([]);
-
-    // Interfaz
     const [loading, setLoading] = useState(true);
-
-    // Filtros
     const [search, setSearch] = useState("");
     const [statusType, setStatusType] = useState("");
     const [paidStatusType, setPaidStatusType] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-
-    //CRUD Ventas
     const [showForm, setShowForm] = useState(false);
     const [editingSale, setEditingSale] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
-    // Sweet alert
     const SwalAlert = withReactContent(Swal);
 
-    //Cargar datos de ventas
     const loadData = async () => {
         try {
             let response;
-
             if (search || statusType || paidStatusType || (startDate && endDate)) {
                 response = await filterSale(startDate, endDate, search, statusType, paidStatusType);
-            }
-            else {
+            } else {
                 response = await getSales();
             }
             setSales(response.data ?? []);
@@ -58,50 +44,22 @@ export default function VentasPage() {
         }
     };
 
-    useEffect(() => {
-        loadData();
-    }, [search, statusType, paidStatusType, startDate, endDate]);
+    useEffect(() => { loadData(); }, [search, statusType, paidStatusType, startDate, endDate]);
 
-    // Nueva venta
-    const handleSaleCreated = () => {
-        setEditingSale(null);
-        setShowForm(true);
-    };
-
-    // Editar Venta
-    const handleEdit = (sale) => {
-        setEditingSale(sale);
-        setShowForm(true);
-    };
-
-    //Subir nueva VENTA
     const handleSubmit = async (values) => {
         try {
             setSubmitting(true);
-
             if (editingSale) {
-                await updateSale(editingSale.purchaseId, {
-                    ...values,
-                    purchaseId: editingSale.purchaseId,
-                });
+                await updateSale(editingSale.purchaseId, { ...values, purchaseId: editingSale.purchaseId });
             } else {
                 await createSale(values);
             }
-
             setShowForm(false);
             setEditingSale(null);
-
-            const response = getSales();
-
-            setSales(response.data ?? []);
             loadData();
         } catch (err) {
             console.error("Error guardando la venta", err);
-            SwalAlert.fire({
-                icon: "error",
-                title: "Error...",
-                text: "Error guardando venta"
-            });
+            SwalAlert.fire({ icon: "error", title: "Error...", text: "Error guardando venta" });
         } finally {
             setSubmitting(false);
         }
@@ -113,49 +71,45 @@ export default function VentasPage() {
     };
 
     return (
-        <div className="ventas-page">
-            <div className="ventas-container">
+        <PageCard>
+            <Toolbar title="Ventas">
+                <Button variant="primary" onClick={() => { setEditingSale(null); setShowForm(true); }}>
+                    + Nueva venta
+                </Button>
+            </Toolbar>
 
-                {/*Barra de acciones*/}
-                <VentasToolbar
-                    onNewSale={handleSaleCreated}
-                />
+            <FilterBar>
+                <input type="text" placeholder="Buscar una venta..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <select value={statusType} onChange={(e) => setStatusType(e.target.value)}>
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activa</option>
+                    <option value="inactive">Cancelada</option>
+                </select>
+                <select value={paidStatusType} onChange={(e) => setPaidStatusType(e.target.value)}>
+                    <option value="">Pago: Todos</option>
+                    <option value="paid">Pagada</option>
+                    <option value="notPaid">No pagada</option>
+                </select>
+                <span className="filter-label">Desde:</span>
+                <input type="date" value={startDate ?? ""} onChange={(e) => setStartDate(e.target.value || null)} />
+                <span className="filter-label">Hasta:</span>
+                <input type="date" value={endDate ?? ""} onChange={(e) => setEndDate(e.target.value || null)} />
+            </FilterBar>
 
-                {/* Filtros */}
-                <VentasFilters
-                    search={search}
-                    statusType={statusType}
-                    paidStatusType={paidStatusType}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onSearchChange={setSearch}
-                    onStatusTypeChange={setStatusType}
-                    onPaidStatusTypeChange={setPaidStatusType}
-                    onStartDateChange={setStartDate}
-                    onEndDateChange={setEndDate}
-                />
+            {loading && <div className="loading">Cargando ventas...</div>}
 
-                {loading && <div className="loading">Cargando ventas...</div>}
+            {!loading && (
+                <VentasTable sales={sales} onDelete={handleDelete} onEdit={(s) => { setEditingSale(s); setShowForm(true); }} />
+            )}
 
-                {!loading && <VentasTable
-                    sales={sales}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                />}
-            </div>
-
-            {/* Formulario de creacion */}
             {showForm && (
                 <VentasForm
                     initialValues={editingSale}
                     submitting={submitting}
                     onSubmit={handleSubmit}
-                    onCancel={() => {
-                        setShowForm(false);
-                        setEditingSale(null);
-                    }}
+                    onCancel={() => { setShowForm(false); setEditingSale(null); }}
                 />
             )}
-        </div>
+        </PageCard>
     );
 }

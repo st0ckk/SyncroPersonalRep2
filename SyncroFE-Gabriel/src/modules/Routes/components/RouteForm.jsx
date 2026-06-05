@@ -390,11 +390,11 @@ export default function RouteForm({ initialValues, submitting, onSubmit, onCance
           </div>
 
           <div className="form-group full-width route-form-actions">
-            <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>
+            <Button type="button" variant="danger" onClick={onCancel} disabled={submitting}>
               Cancelar
             </Button>
 
-            <Button type="submit" variant="primary" disabled={submitting}>
+            <Button type="submit" variant="success" disabled={submitting}>
               {submitting ? "Guardando..." : "Guardar ruta"}
             </Button>
           </div>

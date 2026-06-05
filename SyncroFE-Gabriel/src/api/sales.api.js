@@ -8,6 +8,14 @@ export const getSales = () =>
 export const getSaleById = (id) =>
     api.get(`/sales/${id}`);
 
+//Intenta conseguir ventas en base a la cuenta de credito
+export const getSalesByAccount = (clientId) =>
+    api.get("/sales/account", {
+        params: {
+            clientId,
+        }
+    });
+
 // Filtrar la venta
 export const filterSale = (startDate, endDate, searchTerm, status, paidStatus) =>
     api.get("/sales/filter", {

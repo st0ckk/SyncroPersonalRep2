@@ -7,6 +7,7 @@ import {
 } from "../../../api/clientAccount.api";
 
 import ClientAccountMovementFilters from "../components/ClientAccountMovementFilters";
+import Swal from 'sweetalert2';
 function ClientAccountMovementHistory({
     account,
     onCancel,
@@ -31,9 +32,14 @@ function ClientAccountMovementHistory({
 
     //Formateo para moneda
     const formatCurrency = (amount) => {
+        if (!amount) return "₡ 0.00";
         var fixedAmount = parseFloat(amount);
-        return `₡ ${fixedAmount.toFixed(2)}`;
+        if (amount < 0) {
+            return `- ₡ ${Math.abs(fixedAmount).toFixed(2)}`;
+        }
+        return `₡ ${Math.abs(fixedAmount).toFixed(2)}`;
     }
+
 
     //Formateo de tipos de estados
     const formatType = (statusString) => {
@@ -60,6 +66,7 @@ function ClientAccountMovementHistory({
         try {
             console.log(`${id} ${startDate} ${endDate} ${search} ${type}`)
             const blob = await generateAccountStatement(id, startDate, endDate, search, type);
+            await waitBeforeNextLine(5000);
 
             //Aqui creamos un url para el pdf con el fin de descargarlo y quitarlo
             const downloadUrl = window.URL.createObjectURL(blob);
@@ -73,12 +80,32 @@ function ClientAccountMovementHistory({
 
             document.body.removeChild(link);
             window.URL.revokeObjectURL(downloadUrl);
-
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "¡Exito!",
+                text: "Se ha descargado el historial",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error...",
+                text: "No se ha podido descargar el historial",
+                showConfirmButton: false,
+                timer: 1500
+            });
             console.error('Error al descargar PDF:', err);
         } finally {
             setLoadingPdf(null)
         }
+    }
+
+    //Espera antes de ejecutar la siguiente linea
+    function waitBeforeNextLine(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     //Cargar datos de movimientos
@@ -107,20 +134,6 @@ function ClientAccountMovementHistory({
         return createPortal(
             <div className="modal-backdrop">
                 <div className="modal">
-
-                    <h3>Historial de movimientos - Cuenta #{account.clientAccountNumber}</h3>
-
-                    <ClientAccountMovementFilters
-                        search={search}
-                        type={type}
-                        startDate={startDate}
-                        endDate={endDate}
-                        onSearchChange={setSearch}
-                        onTypeChange={setType}
-                        onStartDateChange={setStartDate}
-                        onEndDateChange={setEndDate}
-                    />
-
                     <div className="empty-state">Esta cuenta no tiene movimientos</div>;
 
                     <div className="caccount-movement-options">
@@ -141,7 +154,7 @@ function ClientAccountMovementHistory({
 
     return createPortal(
         <div className="modal-backdrop">
-            <div className="modal">
+            <div className="modal-history">
 
                 <h3>Historial de movimientos - Cuenta #{account.clientAccountNumber}</h3>
 
@@ -157,7 +170,8 @@ function ClientAccountMovementHistory({
                 />
 
                 <div className="caccount-movement-container">
-                <table className="caccount-table">
+                <div className="table-scroll">
+                <table className="data-table">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -184,19 +198,20 @@ function ClientAccountMovementHistory({
                             </>
                         ))}
                     </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
-                <div className="caccount-movement-options">
+                <div className="form-actions">
                 <Button
                     type="button"
-                    variant="outline"
+                    variant="danger"
                     onClick={onCancel}
                 >
                     Cerrar
                     </Button>
                     <Button
                         type="button"
-                        variant="outline"
+                        variant="primary"
                         onClick={() => handlePDFDownload(account.clientAccountId, search, type, startDate, endDate)}
                     >
                         {loadingPdf === account.clientAccountId ? 'Generando...' : 'Descargar estado de cuenta'}

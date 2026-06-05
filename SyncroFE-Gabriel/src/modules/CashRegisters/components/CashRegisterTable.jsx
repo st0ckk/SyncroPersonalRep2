@@ -2,6 +2,7 @@
 //import { generateAccountStatement } from "../../../api/clientAccount.api";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginationControls from "../../../components/PaginationControls";
+import Button from "../../../components/Button";
 
 export default function CashRegisterTable({
     registers,
@@ -60,10 +61,10 @@ export default function CashRegisterTable({
     return (
         <>
         <div className="table-scroll">
-        <table className="caccount-table">
+        <table className="data-table">
             <thead>
                 <tr>
-                    <th>Numero de caja</th>
+                    <th>Número de caja</th>
                     <th>Estado</th>
                     <th>Creador</th>
                     <th>Tiempo de apertura</th>
@@ -95,21 +96,21 @@ export default function CashRegisterTable({
                                 </button>
                                 */}
 
-                                <button
+                                <Button
                                     type="button"
-                                    className="btn btn-outline"
+                                    variant="info"
                                     onClick={() => onHistory(cr)}
                                 >
                                     Ver reporte de movimientos
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
-                                    className="btn btn-danger"
+                                    variant="danger"
                                     onClick={() => onClose(cr)}
                                     disabled={cr.cashRegisterStatus != "closed" ? false : true}
                                 >
                                     Cerrar caja
-                                </button>
+                                </Button>
                             </td>
                         </tr>
 

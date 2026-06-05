@@ -2,6 +2,7 @@ import "./AuditLogsPage.css";
 import { useEffect, useState, useCallback } from "react";
 import { getAuditLogs, getAuditLogFilters, exportAuditLogsCsv } from "../../../api/dashboard.api";
 import Swal from "sweetalert2";
+import { PageCard, Button } from "../../../components";
 
 export default function AuditLogsPage() {
     // Data
@@ -123,7 +124,7 @@ export default function AuditLogsPage() {
     };
 
     return (
-        <div className="audit-logs-page">
+        <PageCard className="audit-logs-page">
             <h1 className="page-title">Logs del Sistema</h1>
             <p className="page-subtitle">
                 Registro de auditoría — {totalCount.toLocaleString()} registros encontrados
@@ -180,15 +181,15 @@ export default function AuditLogsPage() {
                 </div>
 
                 <div className="filter-actions">
-                    <button className="btn-filter" onClick={handleFilter}>Filtrar</button>
-                    <button className="btn-filter" onClick={handleClearFilters}>Limpiar</button>
-                    <button
-                        className="btn-export"
+                    <Button variant="primary" onClick={handleFilter}>Filtrar</Button>
+                    <Button variant="outline" onClick={handleClearFilters}>Limpiar</Button>
+                    <Button
+                        variant="outline"
                         onClick={handleExport}
                         disabled={exporting || totalCount === 0}
                     >
                         {exporting ? "Exportando..." : "Exportar CSV"}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -198,8 +199,8 @@ export default function AuditLogsPage() {
             ) : logs.length === 0 ? (
                 <div className="audit-empty">No se encontraron registros con los filtros aplicados.</div>
             ) : (
-                <div className="audit-table-wrapper">
-                    <table className="audit-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -266,6 +267,6 @@ export default function AuditLogsPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </PageCard>
     );
 }

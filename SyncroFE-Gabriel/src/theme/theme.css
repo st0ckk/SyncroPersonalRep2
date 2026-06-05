@@ -1,0 +1,34 @@
+/* =========================
+   Corporate — Blue / Gold / Gray (Light)
+========================= */
+:root {
+    /* Backgrounds */
+    --bg-main:    #f1f3f6;
+    --bg-header:  #ffffff;
+    --bg-footer:  #ffffff;
+    --bg-card:    #fefdfb;
+    --bg-sidebar: #0f1a2e;
+
+    /* Textos */
+    --text-main:      #1e293b;
+    --text-secondary: #64748b;
+    --text-inverted:  #ffffff;
+    --text-primary:   var(--text-main);
+
+    /* Inputs */
+    --bg-input: #ffffff;
+
+    /* UI — corporate blue + gold accent */
+    --primary:       #2563eb;
+    --primary-hover: #1d4ed8;
+    --accent:        #c8952e;
+    --accent-hover:  #b8872a;
+    --border:        #e2e5ea;
+
+    /* Layout */
+    --sidebar-width: 240px;
+
+    /* Card */
+    --card-border: 1px solid #e2e5ea;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}

@@ -1,3 +1,5 @@
+import Button from "../../../components/Button";
+
 export default function CashRegisterMovementFilters({
     onNewMovement,
     registerState,
@@ -30,29 +32,26 @@ export default function CashRegisterMovementFilters({
                 <option value="">Todos los tipos</option>
                 <option value="income">Ingresos</option>
                 <option value="expense">Gastos</option>
-
             </select>
 
-            {/*Fecha inicial*/}
-            <p>Desde:</p>
+            <span className="filter-label">Desde:</span>
             <input
                 type="date"
                 value={startDate ?? ""}
                 onChange={(e) => onStartDateChange(e.target.value)}
             />
-            {/*Fecha final*/}
-            <p>Hasta:</p>
+
+            <span className="filter-label">Hasta:</span>
             <input
                 type="date"
                 value={endDate ?? ""}
                 onChange={(e) => onEndDateChange(e.target.value)}
             />
 
-            {/*Movimientos manuales*/}
-            <button className="btn-manual-movement"
+            <Button variant="primary"
                 disabled={registerState != "open"} onClick={onNewMovement}>
                 + Agregar movimiento manual
-            </button>
+            </Button>
         </div>
     );
 }

@@ -163,35 +163,35 @@ function VentasForm({
             borderRadius: "8px",
             boxShadow: "none",
             textAlign: "left",
-            backgroundColor: "#0a1228",
-            borderColor: "rgba(255, 255, 255, 0.1)",
-            color: "#e2e8f0",
+            backgroundColor: "#ffffff",
+            borderColor: "#e2e5ea",
+            color: "#1e293b",
         }),
         singleValue: (provided) => ({
             ...provided,
-            color: "#e2e8f0",
+            color: "#1e293b",
         }),
         input: (provided) => ({
             ...provided,
-            color: "#e2e8f0",
+            color: "#1e293b",
         }),
         menu: (provided) => ({
             ...provided,
-            backgroundColor: "#0f172a",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
+            backgroundColor: "#ffffff",
+            border: "1px solid #e2e5ea",
         }),
         option: (provided, state) => ({
             ...provided,
-            color: "#e2e8f0",
+            color: "#1e293b",
             backgroundColor: state.isSelected
-                ? "rgba(99, 102, 241, 0.4)"
+                ? "rgba(37, 99, 235, 0.12)"
                 : state.isFocused
-                    ? "rgba(255, 255, 255, 0.1)"
+                    ? "#f1f3f6"
                     : "transparent",
         }),
         placeholder: (provided) => ({
             ...provided,
-            color: "#94a3b8",
+            color: "#64748b",
         }),
     };
 
@@ -373,7 +373,7 @@ function VentasForm({
                                 ))}
                         </datalist>
                         {selectedClient && (
-                            <span style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+                            <span style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
                                 {selectedClient.clientName} — Tipo: <strong>{selectedClient.clientType || "pulpero"}</strong>
                             </span>
                         )}
@@ -393,6 +393,7 @@ function VentasForm({
                             options={routeSelectOptions()}
                             styles={searchSelectStyle}
                             isClearable
+                            isDisabled={initialValues !== null}
                         />
                     </div>
 
@@ -451,6 +452,7 @@ function VentasForm({
                                 checked={requiresInvoice}
                                 onChange={(e) => setRequiresInvoice(e.target.checked)}
                                 style={{ margin: 0 }}
+                                disabled={(initialValues && initialValues.purchasePaid)}
                             />
                         </label>
                         <span style={{ fontSize: 12, color: requiresInvoice ? "#15803d" : "#6b7280" }}>
@@ -465,7 +467,7 @@ function VentasForm({
                                 type="checkbox"
                                 checked={orderPaid}
                                 onChange={(e) => setOrderPaid(e.target.checked)}
-                                disabled={!initialValues && form.clientAccountId}
+                                disabled={(!initialValues && form.clientAccountId) || (initialValues && initialValues.purchasePaid)}
                                 style={{ margin: 0 }}
                             />
                         </label>
@@ -495,7 +497,7 @@ function VentasForm({
 
                             return (
                                 <div key={i} style={{
-                                    border: "1px solid rgba(255,255,255,0.1)",
+                                    border: "1px solid #e2e5ea",
                                     borderRadius: 8,
                                     padding: "10px 12px",
                                     marginBottom: 8,
@@ -539,7 +541,7 @@ function VentasForm({
                                     {/* Row 2: Quantity, discount, info */}
                                     <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Cant:</label>
+                                            <label style={{ fontSize: 12, color: "#64748b", margin: 0 }}>Cant:</label>
                                             <input
                                                 type="number"
                                                 min="1"
@@ -548,11 +550,11 @@ function VentasForm({
                                                 onChange={(e) => updateLine(i, "quantity", parseInt(e.target.value) || 0)}
                                                 required
                                                 disabled={initialValues !== null}
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #e2e5ea", fontSize: 13, background: "#ffffff", color: "#1e293b" }}
                                             />
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                            <label style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Desc %:</label>
+                                            <label style={{ fontSize: 12, color: "#64748b", margin: 0 }}>Desc %:</label>
                                             <input
                                                 type="number"
                                                 min="0"
@@ -562,18 +564,18 @@ function VentasForm({
                                                 onChange={(e) => updateLine(i, "discount", e.target.value)}
                                                 placeholder="0"
                                                 disabled={initialValues !== null}
-                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)", fontSize: 13, background: "#0a1228", color: "#e2e8f0" }}
+                                                style={{ width: 60, textAlign: "center", padding: "6px", borderRadius: 4, border: "1px solid #e2e5ea", fontSize: 13, background: "#ffffff", color: "#1e293b" }}
                                             />
                                         </div>
-                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#94a3b8" }}>
-                                            <span>Precio: <strong style={{ color: "#e2e8f0" }}>{formatCurrency(unitPrice)}</strong></span>
+                                        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 12, fontSize: 12, color: "#64748b" }}>
+                                            <span>Precio: <strong style={{ color: "#1e293b" }}>{formatCurrency(unitPrice)}</strong></span>
                                             {lineDiscAmt > 0 && (
-                                                <span style={{ color: "#fca5a5" }}>-{formatCurrency(lineDiscAmt)}</span>
+                                                <span style={{ color: "#b91c1c" }}>-{formatCurrency(lineDiscAmt)}</span>
                                             )}
                                             {requiresInvoice && (
                                                 <span>IVA: <strong style={{ color: "#15803d" }}>{formatCurrency(lineTax)}</strong></span>
                                             )}
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>
                                                 {formatCurrency(lineTotal)}
                                             </span>
                                         </div>
@@ -601,13 +603,13 @@ function VentasForm({
                     {/* ── Totals ── */}
                     {details.length > 0 && (
                         <div className="form-group full-width" style={{
-                            background: "#0a1228",
-                            border: "1px solid rgba(255,255,255,0.1)",
+                            background: "#f8f9fb",
+                            border: "1px solid #e2e5ea",
                             borderRadius: 8,
                             padding: "14px 16px",
                         }}>
                             {selectedClient && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#94a3b8" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, color: "#64748b" }}>
                                     <span>Tipo cliente: <strong style={{ textTransform: "capitalize" }}>{selectedClient.clientType || "pulpero"}</strong></span>
                                     <span>Impuesto: <strong>{requiresInvoice ? "IVA 13%" : "Sin impuesto"}</strong></span>
                                 </div>
@@ -617,13 +619,13 @@ function VentasForm({
                                 <strong>{formatCurrency(subTotal)}</strong>
                             </div>
                             {hasAnyDiscount && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#fca5a5" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#b91c1c" }}>
                                     <span>Descuento:</span>
                                     <strong>- {formatCurrency(totalDiscount)}</strong>
                                 </div>
                             )}
                             {requiresInvoice && (
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#94a3b8" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "#64748b" }}>
                                     <span>IVA (13%):</span>
                                     <strong>{formatCurrency(taxAmount)}</strong>
                                 </div>
@@ -644,7 +646,7 @@ function VentasForm({
                     <div className="form-actions">
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={submitting}
                         >
@@ -652,7 +654,7 @@ function VentasForm({
                         </Button>
                         <Button
                             type="submit"
-                            variant="primary"
+                            variant="success"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar"}

@@ -72,7 +72,7 @@ export default function AdminDashboard({ data }) {
                 <div className="dash-panel">
                     <h3 className="panel-title">Top Clientes — Este mes</h3>
                     {data.topClients?.length > 0 ? (
-                        <table className="dash-table">
+                        <table className="data-table">
                             <thead>
                                 <tr>
                                     <th>Cliente</th>
@@ -101,7 +101,7 @@ export default function AdminDashboard({ data }) {
                 <div className="dash-panel">
                     <h3 className="panel-title">Productos más vendidos — Este mes</h3>
                     {data.topProducts?.length > 0 ? (
-                        <table className="dash-table">
+                        <table className="data-table">
                             <thead>
                                 <tr>
                                     <th>Producto</th>
@@ -127,7 +127,7 @@ export default function AdminDashboard({ data }) {
                 <div className="dash-panel">
                     <h3 className="panel-title">Productos con stock bajo</h3>
                     {data.lowStockList?.length > 0 ? (
-                        <table className="dash-table">
+                        <table className="data-table">
                             <thead>
                                 <tr>
                                     <th>Producto</th>

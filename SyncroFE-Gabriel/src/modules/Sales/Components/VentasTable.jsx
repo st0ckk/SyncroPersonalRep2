@@ -92,6 +92,8 @@ export default function VentasTable(
         return status;
     }
 
+    //Gestiona el estado de la opción para facturación
+
     const pagination = usePagination(sales);
 
     if (!sales.length) {
@@ -101,7 +103,7 @@ export default function VentasTable(
     return (
         <>
             <div className="table-scroll">
-            <table className="ventas-table">
+            <table className="data-table">
                 <thead>
                     <tr>
                         <th>Numero de orden</th>
@@ -129,7 +131,7 @@ export default function VentasTable(
                                 <td>{formatDate(s.purchaseDate)}</td>
                                 <td className="actions">
                                     <Button
-                                        variant="outline"
+                                        variant="info"
                                         size="sm"
                                         onClick={() => setExpandedSaleId(expandedSaleId === s.purchaseId ? null : s.purchaseId)}
                                     >
@@ -137,9 +139,9 @@ export default function VentasTable(
                                     </Button>
                                     <Button
                                         type="button"
-                                        variant="outline"
+                                        variant="warning"
                                         onClick={() => onEdit(s)}
-                                        disabled={s.isActive && !s.purchasePaid ? false : true}
+                                        disabled={!s.isActive && !s.purchasePaid  ? true : false}
                                     >
                                         Editar
                                     </Button>
@@ -147,16 +149,16 @@ export default function VentasTable(
                                         variant="danger"
                                         size="sm"
                                         onClick={() => setConfirmDeleteId(s.purchaseId)}
-                                        disabled={s.isActive && !s.purchasePaid ? false : true}
+                                        disabled={(!s.isActive && !s.purchasePaid) || (!s.isActive && s.purchasePaid) ? true : false}
                                     >
                                         {!s.isActive && !s.purchasePaid ? "Cancelada" : "Cancelar"}
                                     </Button>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        style={{ backgroundColor: "#6366f1", color: "#fff", border: "none", borderRadius: "6px" }}
+                                        style={{ backgroundColor: "var(--primary, #2563eb)", color: "#fff", border: "none", borderRadius: "6px" }}
                                         onClick={() => setConfirmFacturarId(s.purchaseId)}
-                                        disabled={!s.isActive || facturando === s.purchaseId}
+                                        disabled={(!s.isActive && !s.purchasePaid) || facturando === s.purchaseId}
                                     >
                                         {facturando === s.purchaseId ? "Facturando..." : "Facturar"}
                                     </Button>

@@ -108,7 +108,7 @@ export default function TwoFactorCard({ twoFactorEnabled, onStatusChange }) {
 
                     <div className="tf-qr-wrapper">
                         <div className="tf-qr-box">
-                            <QRCodeSVG value={qrUri} size={180} bgColor="transparent" fgColor="#e2e8f0" />
+                            <QRCodeSVG value={qrUri} size={180} bgColor="transparent" fgColor="#1e293b" />
                         </div>
 
                         <div className="tf-setup-side">

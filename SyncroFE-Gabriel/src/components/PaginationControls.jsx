@@ -1,9 +1,3 @@
-import "./PaginationControls.css";
-
-/**
- * Controles de paginación reutilizables.
- * Props vienen directamente del hook usePagination.
- */
 export default function PaginationControls({
   page,
   pageSize,

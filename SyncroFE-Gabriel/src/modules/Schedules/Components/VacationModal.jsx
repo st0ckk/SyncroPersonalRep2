@@ -253,12 +253,12 @@ export default function VacationModal({ users, selectedUserId, onClose, onToast,
           </div>
 
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="danger" onClick={onClose}>
               Cancelar
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant="success"
               disabled={submitting || insufficientBalance || calculatingDays}
             >
               {submitting ? "Guardando..." : "Guardar vacaciones"}

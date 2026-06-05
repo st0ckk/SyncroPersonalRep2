@@ -7,12 +7,12 @@ const DEFAULT_CENTER = [9.9281, -84.0907];
 
 /** Paleta de colores — uno por ruta */
 export const ROUTE_COLORS = [
-  "#6366f1", // indigo
+  "#2563eb", // corporate blue
   "#f59e0b", // ámbar
   "#ec4899", // rosa
   "#14b8a6", // teal
   "#f97316", // naranja
-  "#8b5cf6", // violeta
+  "#3b82f6", // blue
   "#06b6d4", // cian
   "#84cc16", // lima
   "#ef4444", // rojo

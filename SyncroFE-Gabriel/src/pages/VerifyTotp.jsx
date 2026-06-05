@@ -107,21 +107,21 @@ export default function VerifyTotp() {
                                     textAlign: "center",
                                     fontSize: "1.4rem",
                                     fontWeight: "700",
-                                    border: "1px solid rgba(255,255,255,0.12)",
+                                    border: "1px solid #e2e5ea",
                                     borderRadius: "10px",
-                                    background: "rgba(255,255,255,0.07)",
-                                    color: "#f1f5f9",
+                                    background: "#ffffff",
+                                    color: "#1e293b",
                                     outline: "none",
                                     caretColor: "transparent",
-                                    transition: "border-color 0.2s, background 0.2s",
+                                    transition: "border-color 0.2s, box-shadow 0.2s",
                                 }}
                                 onFocus={(e) => {
-                                    e.target.style.borderColor = "#38bdf8";
-                                    e.target.style.background = "rgba(56,189,248,0.08)";
+                                    e.target.style.borderColor = "#2563eb";
+                                    e.target.style.boxShadow = "0 0 0 2px rgba(37,99,235,0.15)";
                                 }}
                                 onBlur={(e) => {
-                                    e.target.style.borderColor = "rgba(255,255,255,0.12)";
-                                    e.target.style.background = "rgba(255,255,255,0.07)";
+                                    e.target.style.borderColor = "#e2e5ea";
+                                    e.target.style.boxShadow = "none";
                                 }}
                             />
                         ))}
@@ -136,8 +136,7 @@ export default function VerifyTotp() {
                     <button
                         type="button"
                         onClick={() => navigate("/login", { replace: true })}
-                        className="login-btn"
-                        style={{ marginTop: "10px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
+                        className="login-btn-back"
                     >
                         ← Volver al inicio de sesión
                     </button>

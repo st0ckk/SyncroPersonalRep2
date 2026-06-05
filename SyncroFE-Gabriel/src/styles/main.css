@@ -1,49 +1,27 @@
 /* ================================================
-   1. TEMA Y VARIABLES CSS
+   1. TEMA Y VARIABLES CSS — Corporate Blue / Gold / Gray (Light)
 ================================================ */
-/* =========================
-   Tema claro (default)
-========================= */
 :root {
     /* Backgrounds */
-    --bg-main: #f4f6f8;
-    --bg-header: #ffffff;
-    --bg-footer: #ffffff;
-    --bg-card: #ffffff;
-    --bg-sidebar: linear-gradient(180deg, #0f172a, #020617);
+    --bg-main:    #f1f3f6;
+    --bg-header:  #ffffff;
+    --bg-footer:  #ffffff;
+    --bg-card:    #fefdfb;
+    --bg-sidebar: #0f1a2e;
     /* Textos */
-    --text-main: #1f2937;
-    --text-secondary: #6b7280;
-    --text-inverted: #ffffff;
-    /* Compatibility variables (used by component CSS) */
-    --text-primary: var(--text-main);
-    --bg-input: #ffffff;
-    /* UI */
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --border: #e5e7eb;
+    --text-main:      #1e293b;
+    --text-secondary: #64748b;
+    --text-inverted:  #ffffff;
+    --text-primary:   var(--text-main);
+    --bg-input:       #ffffff;
+    /* UI — corporate blue + gold accent */
+    --primary:       #2563eb;
+    --primary-hover: #1d4ed8;
+    --accent:        #c8952e;
+    --accent-hover:  #b8872a;
+    --border:        #e2e5ea;
     /* Layout */
     --sidebar-width: 240px;
-}
-
-/* =========================
-   Tema oscuro
-========================= */
-[data-theme="dark"] {
-    --bg-main: #020617;
-    --bg-header: #020617;
-    --bg-footer: #020617;
-    --bg-card: #020617;
-    --bg-sidebar: linear-gradient(180deg, #020617, #020617);
-    --text-main: #e5e7eb;
-    --text-secondary: #9ca3af;
-    --text-inverted: #ffffff;
-    /* Compatibility variables (used by component CSS) */
-    --text-primary: var(--text-main);
-    --bg-input: #061021;
-    --primary: #818cf8;
-    --primary-hover: #6366f1;
-    --border: #334155;
 }
 
 /* ================================================
@@ -200,8 +178,8 @@ body {
 }
 
 .sidebar-link-active {
-  background: rgba(99,102,241,0.25);
-  color: #fff;
+  background: rgba(37,99,235,0.2);
+  color: #d4a843;
   font-weight: 600;
 }
 
@@ -240,7 +218,7 @@ body {
 }
 
 .sidebar-group-active {
-  color: #a5b4fc;
+  color: #d4a843;
 }
 
 .sidebar-group-items {
@@ -320,9 +298,9 @@ body {
     }
 
 :root {
-    --bg-sidebar: #000000;
-    --bg-header: #000000;
-    --bg-header-border: #000000;
+    --bg-sidebar: #0f1a2e;
+    --bg-header: #ffffff;
+    --bg-header-border: #e2e5ea;
 }
 
 .layout {
@@ -340,9 +318,9 @@ body {
   width: 90px;
   height: 38px;
 
-  background-color: #080e1f;
-  color: #ffffff;
-  border: none;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
@@ -351,7 +329,7 @@ body {
 }
 
 .header-btn:hover {
-  background-color: #0f1a3a;
+  background-color: #f1f3f6;
   transform: translateY(-1px);
 }
 
@@ -508,23 +486,34 @@ body {
 
 /* --- Variantes --- */
 .btn-primary {
-  background: var(--primary, #6366f1);
+  background: var(--primary, #2563eb);
   color: #ffffff;
   border: 1px solid transparent;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover, #4f46e5);
+  background: var(--primary-hover, #1d4ed8);
 }
 
 .btn-outline {
-  background: var(--bg-card, #ffffff);
-  color: var(--text-primary, #111827);
-  border: 1px solid var(--border, #e5e7eb);
+  background: var(--bg-card, #fefdfb);
+  color: var(--text-primary, #1e293b);
+  border: 1px solid var(--border, #e2e5ea);
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.05);
+  background: #f1f3f6;
+  border-color: #cbd5e1;
+}
+
+.btn-warning {
+  background: #c8952e;
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: #a67b24;
 }
 
 .btn-danger {
@@ -547,14 +536,25 @@ body {
   background: #16a34a;
 }
 
+.btn-info {
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.btn-info:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.18);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
 .btn-secondary {
   background: transparent;
-  color: var(--text-primary, #374151);
-  border: 1px solid var(--border, #d1d5db);
+  color: var(--text-secondary, #64748b);
+  border: 1px solid var(--border, #e2e5ea);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 /* --- Tamaños --- */
@@ -591,10 +591,10 @@ body {
 .pagination-size select {
   padding: 4px 8px;
   border-radius: 8px;
-  border: 1px solid var(--border, #e5e7eb);
+  border: 1px solid var(--border, #e2e5ea);
   font-size: 13px;
-  background: var(--bg-card, #fff);
-  color: var(--text-primary, #111827);
+  background: var(--bg-card, #fefdfb);
+  color: var(--text-primary, #1e293b);
   cursor: pointer;
 }
 
@@ -614,16 +614,16 @@ body {
   height: 30px;
   padding: 0 6px;
   border-radius: 8px;
-  border: 1px solid var(--border, #e5e7eb);
-  background: var(--bg-card, #fff);
-  color: var(--text-primary, #111827);
+  border: 1px solid var(--border, #e2e5ea);
+  background: var(--bg-card, #fefdfb);
+  color: var(--text-primary, #1e293b);
   font-size: 13px;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .pagination-nav button:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.05);
+  background: #f1f3f6;
 }
 
 .pagination-nav button:disabled {
@@ -632,9 +632,9 @@ body {
 }
 
 .pagination-nav button.active {
-  background: #6366f1;
+  background: var(--primary, #2563eb);
   color: #fff;
-  border-color: #6366f1;
+  border-color: var(--primary, #2563eb);
   font-weight: 700;
 }
 
@@ -652,94 +652,8 @@ body {
 
 /* ================================================
    5. PÁGINAS DE AUTENTICACIÓN
+   (Login → Login.css, ChangePassword → changePassword.css)
 ================================================ */
-/* --- Login --- */
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-}
-
-.login-card {
-  width: 100%;
-  max-width: 380px;
-  background: #ffffff;
-  padding: 2.5rem;
-  border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-  text-align: center;
-}
-
-.login-logo {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #4f46e5;
-}
-
-.login-subtitle {
-  margin-bottom: 2rem;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-.form-group {
-  text-align: left;
-  margin-bottom: 1.2rem;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.8rem;
-  color: #475569;
-  margin-bottom: 0.3rem;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.7rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #cbd5f5;
-  outline: none;
-  font-size: 0.9rem;
-}
-
-.form-group input:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 1px #4f46e5;
-}
-
-button {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 8px;
-  border: none;
-  background: #4f46e5;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-button:hover {
-  background: #4338ca;
-}
-
-button:disabled {
-  background: #a5b4fc;
-  cursor: not-allowed;
-}
-
-.login-error {
-  background: #fee2e2;
-  color: #b91c1c;
-  padding: 0.6rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-}
 
 /* ================================================
    6. PÁGINA 404
@@ -753,7 +667,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 60%, #0f172a 100%);
+  background: var(--bg-main, #f1f3f6);
   overflow: hidden;
   z-index: 9999;
 }
@@ -764,7 +678,7 @@ button:disabled {
 .snowflake {
   position: absolute;
   top: -30px;
-  color: #bfdbfe;
+  color: #cbd5e1;
   pointer-events: none;
   user-select: none;
   animation: snowfall linear infinite;
@@ -793,10 +707,9 @@ button:disabled {
   text-align: center;
   padding: 48px 40px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  background: var(--bg-card, #fefdfb);
+  border: 1px solid var(--border, #e2e5ea);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   max-width: 420px;
   width: 90%;
 }
@@ -805,7 +718,7 @@ button:disabled {
   font-size: 96px;
   font-weight: 800;
   line-height: 1;
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  background: linear-gradient(135deg, #2563eb, #c8952e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -816,7 +729,7 @@ button:disabled {
 .notfound-title {
   font-size: 22px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--text-main, #1e293b);
   margin: 0 0 10px 0;
 }
 
@@ -830,7 +743,7 @@ button:disabled {
 .notfound-btn {
   display: inline-block;
   padding: 12px 28px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -908,12 +821,12 @@ button:disabled {
     }
 
     .assets-table th {
-        background: rgba(255, 255, 255, 0.04);
+        background: #f8f9fb;
         font-weight: 600;
     }
 
     .assets-table tr:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(0, 0, 0, 0.02);
     }
 
 .modal-backdrop {
@@ -930,8 +843,8 @@ button:disabled {
 }
 
 .modal {
-    background: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-card, #fefdfb);
+    border: 1px solid var(--border, #e2e5ea);
     padding: 1.5rem;
     border-radius: 8px;
     width: 100%;
@@ -964,7 +877,7 @@ button:disabled {
         border: 1px solid var(--border);
         border-radius: 4px;
         font-size: 0.9rem;
-        background: #0a1228;
+        background: var(--bg-input, #ffffff);
         color: var(--text-main);
     }
 
@@ -981,21 +894,21 @@ button:disabled {
 }
 
 .status-active {
-    color: #28a745;
+    color: #15803d;
     font-weight: 500;
 }
 
 .status-inactive {
-    color: #dc3545;
+    color: #b91c1c;
     font-weight: 500;
 }
 
 .filter-select {
     padding: 0.4rem 0.6rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border, #e2e5ea);
     border-radius: 4px;
     font-size: 0.85rem;
-    background: #0a1228;
+    background: var(--bg-input, #ffffff);
     min-width: 180px;
 }
 
@@ -1042,83 +955,7 @@ button:disabled {
     }
 
 
-/* =========================
-   TABLE
-========================= */
-.caccount-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .caccount-table th {
-        text-align: left;
-        font-size: 14px;
-        color: var(--text-secondary);
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .caccount-table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .caccount-table tbody tr:hover {
-        background-color: rgba(0,0,0,0.03);
-    }
-
-    .caccount-table .number {
-        font-weight: 500;
-    }
-
-    .caccount-table .price {
-        font-weight: 600;
-    }
-
-/* =========================
-   TABLE ACTIONS
-========================= */
-
-    .caccount-table td.actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-    .caccount-table td.actions .btn {
-            padding: 6px 10px;
-            font-size: 13px;
-        }
-
-/* Botones SOLO dentro de la tabla */
-.caccount-table td.actions .btn-danger {
-    background-color: #ef4444;
-    color: #ffffff;
-}
-
-    .caccount-table td.actions .btn-danger:hover {
-        background-color: #dc2626;
-    }
-
-.caccount-table td.actions .btn-success {
-    background-color: #22c55e;
-    color: #ffffff;
-}
-
-    .caccount-table td.actions .btn-success:hover {
-        background-color: #16a34a;
-    }
-
-/* =========================
-   STATES
-========================= */
-.loading,
-.empty-state {
-    padding: 24px;
-    text-align: center;
-    color: var(--text-secondary);
-}
+/* caccount table styles — now uses data-table class */
 
 /* ── Modal de confirmacion ── */
 .modal-confirm {
@@ -1185,7 +1022,7 @@ button:disabled {
         .caccount-form input:focus,
         .caccount-form select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
             outline: none;
         }
 
@@ -1230,30 +1067,41 @@ button:disabled {
 ========================= */
 
 .Suspendida-status {
-    background: rgba(183, 177, 177, 0.15);
-    color: #8C8383;
+    background: rgba(200, 149, 46, 0.12);
+    color: #92710a;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 500;
 }
 
-.Activa-status {
-    background: rgba(34,197,94,0.15);
-    color: #15803D;
-    padding: 2px 8px;
+.Activa-status,
+.Abierta-status {
+    background: rgba(22, 163, 74, 0.1);
+    color: #15803d;
+    padding: 3px 10px;
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
+.Inactiva-status,
 .Cerrada-status {
-    background: rgba(239,68,68,0.15);
-    color: #B91C1C;
-    padding: 2px 8px;
+    background: rgba(220, 38, 38, 0.08);
+    color: #b91c1c;
+    padding: 3px 10px;
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.Suspendida-status {
+    background: rgba(200, 149, 46, 0.12);
+    color: #92710a;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 /* =========================
@@ -1299,21 +1147,21 @@ button:disabled {
     }
 
 .debit-charge {
-    background: rgba(34,197,94,0.15);
-    color: #15803D;
-    padding: 2px 8px;
+    background: rgba(22, 163, 74, 0.1);
+    color: #15803d;
+    padding: 3px 10px;
     border-radius: 999px;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .credit-charge {
-    background: rgba(239,68,68,0.15);
-    color: #B91C1C;
-    padding: 2px 8px;
+    background: rgba(220, 38, 38, 0.08);
+    color: #b91c1c;
+    padding: 3px 10px;
     border-radius: 999px;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 /* --- Clients --- */
@@ -1335,8 +1183,9 @@ button:disabled {
     width: 500px;
     height: 300px;
     border-radius: 12px;
-    background-color: #0f172a;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: var(--bg-card, #fefdfb);
+    border: 1px solid var(--border, #e2e5ea);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     padding: 5px;
@@ -1391,66 +1240,7 @@ button:disabled {
     background-color: crimson;
 }
 
-/* =========================
-   PAGE
-========================= */
-.clients-page {
-    padding: 24px;
-}
-
-/* =========================
-   CARD (igual que stock-card)
-========================= */
-.clients-card {
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-/* =========================
-   TOOLBAR
-========================= */
-.clients-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-    .clients-toolbar .toolbar-actions {
-        display: flex;
-        gap: 12px;
-    }
-
-/* =========================
-   TABLE (clon de stock-table)
-========================= */
-.clients-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .clients-table th {
-        text-align: left;
-        font-size: 14px;
-        color: var(--text-secondary);
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .clients-table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .clients-table tbody tr:hover {
-        background-color: rgba(0,0,0,0.03);
-    }
-
-    .clients-table .name {
-        font-weight: 500;
-    }
+/* clients page/card/toolbar/table — now uses global components */
 
 .clients-expanded-section-flex {
     display: flex;
@@ -1471,51 +1261,7 @@ button:disabled {
 }
 
 
-    /* =========================
-   TABLE ACTIONS
-========================= */
-    .clients-table td.actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-        .clients-table td.actions .btn {
-            padding: 6px 10px;
-            font-size: 13px;
-        }
-
-/* =========================
-   STATUS (badge, sutil)
-========================= */
-.status-active {
-    background: rgba(34,197,94,0.15);
-    color: #15803d;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.status-inactive {
-    background: rgba(239,68,68,0.15);
-    color: #b91c1c;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-/* =========================
-   MÁS INFORMACIÓN
-========================= */
-.client-extra td {
-    background: rgba(0,0,0,0.02);
-    padding: 16px;
-    font-size: 13px;
-    color: var(--text-secondary);
-}
+/* clients table actions / status badges — now uses data-table + StatusBadge */
 
 .client-form-page {
     min-height: calc(100vh - 60px);
@@ -1527,12 +1273,13 @@ button:disabled {
 }
 
 .client-form-card {
-    background: #0f172a;
+    background: var(--bg-card, #fefdfb);
+    border: 1px solid var(--border, #e2e5ea);
     width: 100%;
     max-width: 720px;
     border-radius: 12px;
     padding: 24px 28px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
     .client-form-card h2 {
@@ -1581,65 +1328,14 @@ button:disabled {
     margin-top: 12px;
 }
 
-/* =========================
-   FILTERS
-========================= */
-.clients-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-    .clients-filters input,
-    .clients-filters select {
-        padding: 8px 10px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        font-size: 14px;
-    }
+/* clients-filters — now uses FilterBar */
 .disabled-readonly {
   opacity: 0.7;
   pointer-events: none;
   cursor: default;
 }
 
-/* ===== TABLE SCROLL WRAPPER ===== */
-.table-scroll {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .clients-page {
-    padding: 12px;
-  }
-
-  .clients-card {
-    padding: 14px;
-  }
-
-  .clients-toolbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .clients-toolbar .toolbar-actions {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .clients-filters {
-    flex-direction: column;
-  }
-
-  .clients-filters input,
-  .clients-filters select {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
   .clients-expanded-section-flex {
     flex-direction: column;
   }
@@ -1648,10 +1344,6 @@ button:disabled {
   .clients-expanded-quote {
     margin-left: 0;
     margin-top: 12px;
-  }
-
-  .clients-table td.actions {
-    flex-wrap: wrap;
   }
 
   .client-form-grid {
@@ -1664,55 +1356,7 @@ button:disabled {
 }
 
 /* --- Distributors --- */
-.distributors-page {
-    padding: 24px;
-}
-
-.distributors-card {
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-/* Toolbar */
-.distributors-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-/* Tabla */
-.distributors-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .distributors-table th {
-        text-align: left;
-        font-size: 14px;
-        color: var(--text-secondary);
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .distributors-table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .distributors-table tbody tr:hover {
-        background-color: rgba(0,0,0,0.03);
-    }
-
-.name {
-    font-weight: 500;
-}
-
-.price {
-    font-weight: 600;
-}
+/* removed — uses global components */
 
 /* Estados */
 .distributors-form {
@@ -1758,15 +1402,17 @@ button:disabled {
     .distributors-form select {
         padding: 8px 10px;
         border-radius: 6px;
-        border: 1px solid #d1d5db;
+        border: 1px solid var(--border, #e2e5ea);
         font-size: 14px;
+        background: var(--bg-input, #ffffff);
+        color: var(--text-main, #1e293b);
         outline: none;
     }
 
         .distributors-form input:focus,
         .distributors-form select:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
         }
 
     /* Campos que ocupan toda la fila */
@@ -1784,107 +1430,7 @@ button:disabled {
 }
 
 /* --- Invoices --- */
-.facturacion-page {
-    padding: 20px;
-}
-
-.facturacion-container {
-    background: var(--bg-card, #fff);
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* =========================
-   TOOLBAR
-========================= */
-.facturacion-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.facturacion-toolbar .toolbar-actions {
-    display: flex;
-    gap: 12px;
-}
-
-/* =========================
-   FILTERS
-========================= */
-.facturacion-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.facturacion-filters input,
-.facturacion-filters select {
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    font-size: 14px;
-    background: var(--bg-input, #fff);
-    color: var(--text-main, #1f2937);
-}
-
-/* =========================
-   TABLE
-========================= */
-.facturacion-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.facturacion-table th {
-    text-align: left;
-    font-size: 14px;
-    color: var(--text-secondary);
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-}
-
-.facturacion-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-}
-
-.facturacion-table tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-}
-
-.facturacion-table .clave-cell {
-    font-family: monospace;
-    font-size: 11px;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.facturacion-table .total-cell {
-    font-weight: 600;
-}
-
-/* =========================
-   TABLE ACTIONS
-========================= */
-.facturacion-table td.actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    flex-wrap: wrap;
-}
-
-.facturacion-table td.actions .btn {
-    padding: 4px 8px;
-    font-size: 12px;
-}
+/* removed — uses global components */
 
 /* =========================
    STATUS BADGES
@@ -1945,8 +1491,8 @@ button:disabled {
 }
 
 .doctype-fe {
-    background: rgba(99, 102, 241, 0.15);
-    color: #4338ca;
+    background: rgba(37, 99, 235, 0.15);
+    color: #1e40af;
 }
 
 .doctype-nc {
@@ -2136,7 +1682,7 @@ button:disabled {
 }
 
 .btn-icon:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.04);
 }
 
 .btn-icon:disabled {
@@ -2170,7 +1716,7 @@ button:disabled {
 }
 
 .profile-card {
-  background: #0f172a;
+  background: var(--bg-card, #fefdfb);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 12px;
@@ -2182,7 +1728,7 @@ button:disabled {
   padding: 10px 14px;
   border-radius: 10px;
   border: none;
-  background: #4f46e5;
+  background: #1d4ed8;
   color: #fff;
   cursor: pointer;
   font-weight: 700;
@@ -2207,7 +1753,7 @@ button:disabled {
 }
 
 .assets-table thead th {
-  background: rgba(255, 255, 255, 0.04);
+  background: #f8f9fb;
   border-top: none;
 }
 
@@ -2250,7 +1796,7 @@ button:disabled {
 
 /* ===== Días marcados ===== */
 .day-has-schedule {
-  background: #6366f1 !important;
+  background: #2563eb !important;
   color: #fff !important;
   border-radius: 8px !important;
    width: 30px;
@@ -2286,7 +1832,7 @@ button:disabled {
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-card, #fefdfb);
 }
 
 .schedule-item.compact.vacation {
@@ -2320,10 +1866,11 @@ button:disabled {
 .modal-card {
   width: 520px;
   max-width: 100%;
-  background: #0f172a;
+  background: var(--bg-card, #fefdfb);
   border-radius: 16px;
   padding: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border, #e2e5ea);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .form-group {
@@ -2382,78 +1929,7 @@ button:disabled {
   }
 }
 
-.change-password-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.change-password-card {
-  background: #0f172a;
-  padding: 40px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.change-password-card h1 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin-bottom: 30px;
-}
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-}
-
-button {
-  width: 100%;
-  background: #4f46e5;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:disabled {
-  background: #a5b4fc;
-}
-
-.error-box {
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
+/* Change-password styles → changePassword.css (removed duplicate) */
 
 /* --- Quotes --- */
 /* =========================
@@ -2498,73 +1974,7 @@ button:disabled {
     }
 
 
-/* =========================
-   TABLE
-========================= */
-.quote-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .quote-table th {
-        text-align: left;
-        font-size: 14px;
-        color: var(--text-secondary);
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .quote-table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .quote-table tbody tr:hover {
-        background-color: rgba(0,0,0,0.03);
-    }
-
-    .quote-table .number {
-        font-weight: 500;
-    }
-
-    .quote-table .price {
-        font-weight: 600;
-    }
-
-/* =========================
-   TABLE ACTIONS
-========================= */
-
-    .quote-table td.actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-    .quote-table td.actions .btn {
-            padding: 6px 10px;
-            font-size: 13px;
-        }
-
-/* Botones SOLO dentro de la tabla */
-.quote-table td.actions .btn-danger {
-    background-color: #ef4444;
-    color: #ffffff;
-}
-
-    .quote-table td.actions .btn-danger:hover {
-        background-color: #dc2626;
-    }
-
-.quote-table td.actions .btn-success {
-    background-color: #22c55e;
-    color: #ffffff;
-}
-
-    .quote-table td.actions .btn-success:hover {
-        background-color: #16a34a;
-    }
+/* removed — quote-table uses global data-table component */
 
 /* =========================
    MODAL
@@ -2614,7 +2024,7 @@ button:disabled {
         .quote-form input:focus,
         .quote-form select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
             outline: none;
         }
 
@@ -2659,8 +2069,8 @@ button:disabled {
 ========================= */
 
 .Expirada-status {
-    background: rgba(183, 177, 177, 0.15);
-    color: #8C8383;
+    background: rgba(100, 116, 139, 0.08);
+    color: #64748b;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -2668,8 +2078,8 @@ button:disabled {
 }
 
 .Pendiente-status {
-    background: rgba(47, 107, 166, 0.15);
-    color: #1E3F5F;
+    background: rgba(37, 99, 235, 0.08);
+    color: #1d4ed8;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -2677,8 +2087,8 @@ button:disabled {
 }
 
 .Aprobada-status {
-    background: rgba(34,197,94,0.15);
-    color: #15803D;
+    background: rgba(22, 163, 74, 0.1);
+    color: #15803d;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -2686,8 +2096,8 @@ button:disabled {
 }
 
 .Rechazada-status {
-    background: rgba(239,68,68,0.15);
-    color: #B91C1C;
+    background: rgba(220, 38, 38, 0.08);
+    color: #b91c1c;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -2718,75 +2128,7 @@ button:disabled {
 }
 
 /* --- RouteTemplates --- */
-.route-templates-page {
-    padding: 24px;
-}
-
-.route-templates-card {
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.route-templates-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.route-templates-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-}
-
-.route-templates-filters input,
-.route-templates-filters select {
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    font-size: 14px;
-}
-
-.route-templates-checkbox {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-}
-
-.route-templates-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.route-templates-table th {
-    text-align: left;
-    font-size: 14px;
-    color: var(--text-secondary);
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-}
-
-.route-templates-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-}
-
-.route-templates-table tbody tr:hover {
-    background-color: rgba(0,0,0,0.03);
-}
-
-.route-templates-table td.actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
+/* removed — uses global components (page/card/toolbar/filters/table) */
 
 .template-status {
     padding: 4px 10px;
@@ -2875,7 +2217,7 @@ button:disabled {
 .template-form select:focus,
 .template-form textarea:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+    box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
     outline: none;
 }
 
@@ -2936,75 +2278,7 @@ button:disabled {
 }
 
 /* --- Routes --- */
-.routes-page {
-    padding: 24px;
-}
-
-.routes-card {
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.routes-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.routes-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-}
-
-.routes-filters input,
-.routes-filters select {
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    font-size: 14px;
-}
-
-.routes-checkbox {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-}
-
-.routes-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.routes-table th {
-    text-align: left;
-    font-size: 14px;
-    color: var(--text-secondary);
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-}
-
-.routes-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-}
-
-.routes-table tbody tr:hover {
-    background-color: rgba(0,0,0,0.03);
-}
-
-.routes-table td.actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-}
+/* removed — uses global components (page/card/toolbar/filters/table) */
 
 .route-status {
     padding: 4px 10px;
@@ -3088,7 +2362,7 @@ button:disabled {
 .route-form select:focus,
 .route-form textarea:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+    box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
     outline: none;
 }
 
@@ -3153,10 +2427,6 @@ button:disabled {
 
     .route-stop-adder {
         flex-direction: column;
-    }
-
-    .routes-table td.actions {
-        flex-wrap: wrap;
     }
 }
 .driver-routes-list {
@@ -3228,58 +2498,7 @@ button:disabled {
   justify-content: flex-end;
 }
 
-/* =========================
-   TABLE (ventas in routes)
-========================= */
-.ventas-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .ventas-table th {
-        text-align: left;
-        font-size: 14px;
-        color: var(--text-secondary);
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .ventas-table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .ventas-table tbody tr:hover {
-        background-color: rgba(0,0,0,0.03);
-    }
-
-    .ventas-table .number {
-        font-weight: 500;
-    }
-
-    .ventas-table .price {
-        font-weight: 600;
-    }
-
-    .ventas-table .paidStatus {
-        padding-left: 2%;
-    }
-
-    /* =========================
-   TABLE ACTIONS
-========================= */
-
-    .ventas-table td.actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-        .ventas-table td.actions .btn {
-            padding: 6px 10px;
-            font-size: 13px;
-        }
+/* removed — ventas-table uses global data-table component */
 
 /* =========================
    MÁS INFORMACIÓN
@@ -3710,32 +2929,15 @@ button:disabled {
 }
 
 .form-error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
+    background: rgba(220, 38, 38, 0.06);
+    color: #b91c1c;
     padding: 10px;
     border-radius: 4px;
     font-size: 0.9rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
-.ventas-page {
-    padding: 20px;
-}
-
-.ventas-container {
-    background: var(--bg-card);
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.ventas-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 16px;
-    flex-wrap: wrap;
-}
+/* removed — ventas page/container/toolbar/filters use global components */
 
 .empty-state {
     text-align: center;
@@ -3745,7 +2947,8 @@ button:disabled {
 
 /* ── Modal ── */
 .modal {
-    background: #0f172a;
+    background: var(--bg-card, #fefdfb);
+    border: 1px solid var(--border, #e2e5ea);
     border-radius: 8px;
     padding: 24px;
     color: var(--text-main);
@@ -3774,33 +2977,6 @@ button:disabled {
 }
 
 /* =========================
-   FILTERS
-========================= */
-.ventas-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-    .ventas-filters input,
-    .ventas-filters select {
-        padding: 8px 10px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        font-size: 14px;
-    }
-
-/* =========================
-   TOOLBAR
-========================= */
-.ventas-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-/* =========================
    MÁS INFORMACIÓN
 ========================= */
 .ventas-details-flex {
@@ -3821,8 +2997,8 @@ button:disabled {
 ========================= */
 
 .Inactiva-status {
-    background: rgba(183, 177, 177, 0.15);
-    color: #8C8383;
+    background: rgba(220, 38, 38, 0.08);
+    color: #b91c1c;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -3830,8 +3006,8 @@ button:disabled {
 }
 
 .Activa-status {
-    background: rgba(47, 107, 166, 0.15);
-    color: #1E3F5F;
+    background: rgba(22, 163, 74, 0.1);
+    color: #15803d;
     padding: 2px 8px;
     border-radius: 999px;
     font-size: 12px;
@@ -3874,7 +3050,7 @@ button:disabled {
         .ventas-form input:focus,
         .ventas-form select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
             outline: none;
         }
 
@@ -3969,26 +3145,14 @@ button:disabled {
   border-radius: 6px;
 }
 
-.schedules-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.schedules-table th, .schedules-table td {
-  padding: .75rem;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-}
-
-.schedules-table th {
-  background: rgba(255, 255, 255, 0.04);
-}
+/* removed — schedules-table uses global data-table component */
 
 .status-active { color: #1b7a2a; font-weight: 700; }
 .status-inactive { color: #b02a37; font-weight: 700; }
 
 .modal {
-  background: #0f172a;
+  background: var(--bg-card, #fefdfb);
+  border: 1px solid var(--border, #e2e5ea);
   color: var(--text-main);
   width: 100%;
   max-width: 520px;
@@ -4058,7 +3222,7 @@ button:disabled {
 
 .vacation-balance-box {
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: #f8f9fb;
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 12px;
@@ -4086,126 +3250,7 @@ button:disabled {
 }
 
 /* --- Stock --- */
-/* =========================
-   PAGE
-========================= */
-.stock-page {
-    padding: 24px;
-}
-
-.stock-card {
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-/* =========================
-   TOOLBAR
-========================= */
-.stock-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-/* =========================
-   FILTERS
-========================= */
-.stock-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-    .stock-filters input,
-    .stock-filters select {
-        padding: 6px 10px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        font-size: 13px;
-        background: var(--bg-input);
-        color: var(--text-primary);
-    }
-
-/* =========================
-   TABLE
-========================= */
-.stock-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .stock-table th {
-        text-align: left;
-        font-size: 14px;
-        color: var(--text-secondary);
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .stock-table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .stock-table tbody tr:hover {
-        background-color: rgba(0,0,0,0.03);
-    }
-
-    .stock-table .name {
-        font-weight: 500;
-    }
-
-    .stock-table .price {
-        font-weight: 600;
-    }
-
-    /* =========================
-   TABLE ACTIONS
-========================= */
-    .stock-table td.actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-        .stock-table td.actions .btn {
-            padding: 6px 10px;
-            font-size: 13px;
-        }
-
-/* Botones SOLO dentro de la tabla */
-.stock-table td.actions .btn-danger {
-    background-color: #ef4444;
-    color: #ffffff;
-}
-
-    .stock-table td.actions .btn-danger:hover {
-        background-color: #dc2626;
-    }
-
-.stock-table td.actions .btn-success {
-    background-color: #22c55e;
-    color: #ffffff;
-}
-
-    .stock-table td.actions .btn-success:hover {
-        background-color: #16a34a;
-    }
-
-/* =========================
-   MODAL
-========================= */
-.modal {
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 20px;
-    min-width: 380px;
-    max-width: 520px;
-}
+/* removed — uses global components (page/card/toolbar/filters/table) */
 
 /* =========================
    STOCK FORM
@@ -4242,7 +3287,7 @@ button:disabled {
         .stock-form input:focus,
         .stock-form select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 1px rgba(99,102,241,0.3);
+            box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
             outline: none;
         }
 
@@ -4251,41 +3296,7 @@ button:disabled {
     }
 
 /* --- Users --- */
-.users-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.toolbar-actions .btn {
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 12px;
-}
-
-.users-container {
-  width: 100%;
-  padding: 0 24px;
-}
-
-.users-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.users-table,
-.users-container {
-  max-width: none;
-}
-
-.users-table th,
-.users-table td {
-  padding: 12px 16px;
-  text-align: left;
-}
+/* removed — uses global components (toolbar/table/container) */
 
 .status-btn {
   padding: 6px 14px;
@@ -4336,31 +3347,110 @@ button:disabled {
   border: 1px solid #cbd5e1;
 }
 
-.users-table th:nth-child(4),
-.users-table td:nth-child(4),
-.users-table th:nth-child(5),
-.users-table td:nth-child(5) {
-  text-align: center;
+/* removed — users-table nth-child rules use global data-table component */
+
+/* ================================================
+   CASH REGISTERS — Movement History Modal
+================================================ */
+
+/* Summary cards — 4 cols inside modal-history */
+.modal-history .monitor-summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-/* ===== RESPONSIVE ===== */
+/* Negative difference value */
+.summary-negative-value {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 6px;
+  color: #b91c1c;
+}
+
+/* Positive difference value */
+.summary-positive-value {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 6px;
+  color: #15803d;
+}
+
+/* Filters row inside the modal */
+.registers-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.registers-filters input[type="text"],
+.registers-filters select {
+  flex: 1;
+  min-width: 140px;
+}
+
+.registers-filters input[type="date"] {
+  min-width: 130px;
+}
+
+.registers-filters .filter-label {
+  font-size: 13px;
+  color: var(--text-secondary, #64748b);
+  white-space: nowrap;
+}
+
+.registers-movement-options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Movement type badges */
+.income-charge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(22, 163, 74, 0.1);
+  color: #15803d;
+}
+
+.expense-charge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+}
+
+/* Expanded row detail */
+.registers-details-flex {
+  padding: 6px 0;
+}
+
+.registers-details-flex .registers-details-remarks {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-main, #1e293b);
+}
+
+/* Responsive: stack filters on small screens */
 @media (max-width: 768px) {
-  .users-toolbar {
+  .registers-filters {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: stretch;
   }
 
-  .toolbar-actions {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .users-container {
-    padding: 0 12px;
-  }
-
-  .users-page {
-    padding: 12px;
+  .registers-filters input[type="text"],
+  .registers-filters select,
+  .registers-filters input[type="date"] {
+    width: 100%;
   }
 }

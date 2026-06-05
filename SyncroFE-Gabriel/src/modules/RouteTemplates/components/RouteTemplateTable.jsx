@@ -24,8 +24,8 @@ export default function RouteTemplateTable({
 
     return (
         <>
-        <div className="route-templates-table-scroll">
-        <table className="route-templates-table">
+        <div className="table-scroll">
+        <table className="data-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -52,14 +52,14 @@ export default function RouteTemplateTable({
                             </td>
                             <td className="actions">
                                 <Button
-                                    variant="outline"
+                                    variant="info"
                                     onClick={() => toggleMoreInfo(t.templateId)}
                                 >
                                     Más información
                                 </Button>
 
                                 <Button
-                                    variant="outline"
+                                    variant="warning"
                                     onClick={() => onEdit(t)}
                                 >
                                     Editar

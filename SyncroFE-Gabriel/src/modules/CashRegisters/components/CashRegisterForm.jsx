@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Button from "../../../components/Button";
 function CashRegisterForm({
     submitting,
     onSubmit,
@@ -60,21 +61,21 @@ function CashRegisterForm({
                     </div>
 
                     <div className="form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={submitting}
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="success"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

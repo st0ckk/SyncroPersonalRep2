@@ -326,7 +326,7 @@ export default function RouteTemplateForm({
                     <div className="form-group full-width template-form-actions">
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={submitting}
                         >
@@ -335,7 +335,7 @@ export default function RouteTemplateForm({
 
                         <Button
                             type="submit"
-                            variant="primary"
+                            variant="success"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar plantilla"}

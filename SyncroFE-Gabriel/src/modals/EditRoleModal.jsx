@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { changeEmployeeRole } from "../services/employees.service";
+import Button from "../components/Button";
 
 export default function EditRoleModal({ employee, onClose, onSaved }) {
   const [role, setRole] = useState(employee.roles[0]);
@@ -24,12 +25,12 @@ export default function EditRoleModal({ employee, onClose, onSaved }) {
         </select>
 
         <div className="modal-actions">
-          <button className="btn-secondary" onClick={onClose}>
+          <Button variant="danger" onClick={onClose}>
             Cancelar
-          </button>
-          <button className="btn-primary" onClick={save}>
+          </Button>
+          <Button variant="success" onClick={save}>
             Guardar
-          </button>
+          </Button>
         </div>
       </div>
     </div>

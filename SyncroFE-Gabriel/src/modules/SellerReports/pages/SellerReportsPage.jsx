@@ -1,6 +1,7 @@
 import "./SellerReportsPage.css";
 import { useEffect, useState, useCallback } from "react";
 import Swal from "sweetalert2";
+import { PageCard, Button } from "../../../components";
 import {
     getMySalesReport,
     exportMySalesReport,
@@ -32,16 +33,14 @@ export default function SellerReportsPage() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [paidStatus, setPaidStatus] = useState("");
-    const [status, setStatus] = useState("");
 
     const buildParams = useCallback(() => {
         const p = {};
         if (startDate) p.startDate = startDate;
         if (endDate) p.endDate = endDate;
         if (paidStatus) p.paidStatus = paidStatus;
-        if (status) p.status = status;
         return p;
-    }, [startDate, endDate, paidStatus, status]);
+    }, [startDate, endDate, paidStatus]);
 
     const loadData = useCallback(async () => {
         try {
@@ -70,7 +69,6 @@ export default function SellerReportsPage() {
         setStartDate("");
         setEndDate("");
         setPaidStatus("");
-        setStatus("");
     };
 
     const handleExport = async () => {
@@ -85,7 +83,7 @@ export default function SellerReportsPage() {
     };
 
     return (
-        <div className="seller-reports-page">
+        <PageCard className="seller-reports-page">
             <h1 className="page-title">Mis Reportes</h1>
             <p className="page-subtitle">
                 Consultá tu desempeño de ventas, productos y clientes.
@@ -124,47 +122,34 @@ export default function SellerReportsPage() {
                 </div>
 
                 {tab === "sales" && (
-                    <>
-                        <div className="filter-group">
-                            <label>Pago</label>
-                            <select
-                                value={paidStatus}
-                                onChange={(e) => setPaidStatus(e.target.value)}
-                            >
-                                <option value="">Todos</option>
-                                <option value="paid">Pagado</option>
-                                <option value="unpaid">Pendiente</option>
-                            </select>
-                        </div>
-                        <div className="filter-group">
-                            <label>Estado</label>
-                            <select
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                            >
-                                <option value="">Activas</option>
-                                <option value="all">Todas (incluye anuladas)</option>
-                                <option value="inactive">Solo anuladas</option>
-                            </select>
-                        </div>
-                    </>
+                    <div className="filter-group">
+                        <label>Pago</label>
+                        <select
+                            value={paidStatus}
+                            onChange={(e) => setPaidStatus(e.target.value)}
+                        >
+                            <option value="">Todos</option>
+                            <option value="paid">Pagado</option>
+                            <option value="unpaid">Pendiente</option>
+                        </select>
+                    </div>
                 )}
 
                 <div className="filter-actions">
-                    <button className="btn-filter" onClick={handleGenerate}>
+                    <Button variant="primary" onClick={handleGenerate}>
                         Generar
-                    </button>
-                    <button className="btn-filter" onClick={handleClear}>
+                    </Button>
+                    <Button variant="outline" onClick={handleClear}>
                         Limpiar
-                    </button>
+                    </Button>
                     {tab === "sales" && (
-                        <button
-                            className="btn-export"
+                        <Button
+                            variant="outline"
                             onClick={handleExport}
                             disabled={exporting || !data}
                         >
                             {exporting ? "Exportando..." : "Exportar CSV"}
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>
@@ -175,7 +160,7 @@ export default function SellerReportsPage() {
             {!loading && data && tab === "sales" && data.summary && <MySalesView data={data} />}
             {!loading && data && tab === "products" && data.rows && <MyProductsView data={data} />}
             {!loading && data && tab === "clients" && data.rows && <MyClientsView data={data} />}
-        </div>
+        </PageCard>
     );
 }
 
@@ -218,8 +203,8 @@ function MySalesView({ data }) {
             {rows.length === 0 ? (
                 <div className="seller-empty">No hay ventas en este periodo</div>
             ) : (
-                <div className="seller-table-wrapper">
-                    <table className="seller-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>Orden</th>
@@ -230,12 +215,11 @@ function MySalesView({ data }) {
                                 <th>Total</th>
                                 <th>Método</th>
                                 <th>Pagado</th>
-                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             {rows.map((r) => (
-                                <tr key={`sale-${r.purchaseId}`} className={r.isActive ? "" : "row-inactive"}>
+                                <tr key={`sale-${r.purchaseId}`}>
                                     <td>{r.purchaseOrderNumber}</td>
                                     <td>{fmtDate(r.purchaseDate)}</td>
                                     <td>{r.clientName}</td>
@@ -244,7 +228,6 @@ function MySalesView({ data }) {
                                     <td className="num">{fmt(r.total)}</td>
                                     <td>{r.paymentMethod}</td>
                                     <td>{r.isPaid ? "✅" : "❌"}</td>
-                                    <td>{r.isActive ? "Activa" : "Anulada"}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -290,8 +273,8 @@ function MyProductsView({ data }) {
             {rows.length === 0 ? (
                 <div className="seller-empty">Sin ventas en este periodo</div>
             ) : (
-                <div className="seller-table-wrapper">
-                    <table className="seller-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -356,8 +339,8 @@ function MyClientsView({ data }) {
             {rows.length === 0 ? (
                 <div className="seller-empty">Sin clientes en este periodo</div>
             ) : (
-                <div className="seller-table-wrapper">
-                    <table className="seller-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>#</th>

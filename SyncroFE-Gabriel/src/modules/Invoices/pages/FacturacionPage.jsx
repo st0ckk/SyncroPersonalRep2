@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./FacturacionPage.css";
 import Swal from "sweetalert2";
 import {
     getInvoices,
@@ -9,35 +8,24 @@ import {
 } from "../../../api/electronicInvoice.api";
 import { getSales } from "../../../api/sales.api";
 
-import FacturacionToolbar from "../components/FacturacionToolbar";
-import FacturacionFilters from "../components/FacturacionFilters";
+import { PageCard, Toolbar, FilterBar, Button } from "../../../components";
 import FacturacionTable from "../components/FacturacionTable";
 import GenerateInvoiceModal from "../components/GenerateInvoiceModal";
 import ValidationResultModal from "../components/ValidationResultModal";
 
 export default function FacturacionPage() {
-    // Data
     const [invoices, setInvoices] = useState([]);
     const [sales, setSales] = useState([]);
-
-    // UI
     const [loading, setLoading] = useState(true);
-
-    // Filters
     const [statusFilter, setStatusFilter] = useState("");
     const [docTypeFilter, setDocTypeFilter] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-
-    // Generate modal
     const [showGenerateModal, setShowGenerateModal] = useState(false);
     const [generating, setGenerating] = useState(false);
-
-    // Validation modal
     const [validationResult, setValidationResult] = useState(null);
     const [showValidation, setShowValidation] = useState(false);
 
-    // Load invoices
     const loadInvoices = async () => {
         try {
             const params = {};
@@ -45,40 +33,32 @@ export default function FacturacionPage() {
             if (docTypeFilter) params.documentType = docTypeFilter;
             if (startDate) params.fromDate = startDate;
             if (endDate) params.toDate = endDate;
-
             const response = await getInvoices(params);
             setInvoices(response.data ?? []);
         } catch (err) {
             console.error("Error cargando facturas", err);
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudieron cargar las facturas" });
         } finally {
             setLoading(false);
         }
     };
 
-    // Load sales for the generate modal
     const loadSales = async () => {
         try {
             const response = await getSales();
             setSales(response.data ?? []);
         } catch (err) {
             console.error("Error cargando ventas", err);
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudieron cargar las ventas disponibles" });
         }
     };
 
-    useEffect(() => {
-        loadInvoices();
-    }, [statusFilter, docTypeFilter, startDate, endDate]);
+    useEffect(() => { loadInvoices(); }, [statusFilter, docTypeFilter, startDate, endDate]);
+    useEffect(() => { loadSales(); }, []);
 
-    useEffect(() => {
-        loadSales();
-    }, []);
-
-    // Generate invoice
     const handleGenerate = async (purchaseId, documentType) => {
         try {
             setGenerating(true);
-
-            // Validate first
             const valResponse = await validateInvoice({ purchaseId, documentType });
             const valData = valResponse.data;
 
@@ -88,27 +68,31 @@ export default function FacturacionPage() {
                 return;
             }
 
-            // Show warnings if any, but proceed
             if (valData.warnings?.length > 0) {
                 setValidationResult(valData);
                 setShowValidation(true);
             }
 
-            // Generate
+            const confirm = await Swal.fire({
+                icon: "question",
+                title: "Confirmar generación",
+                text: "La validación fue exitosa. ¿Desea generar la factura electrónica?",
+                showCancelButton: true,
+                confirmButtonText: "Sí, generar",
+                cancelButtonText: "Cancelar",
+            });
+            if (!confirm.isConfirmed) return;
+
             const response = await generateInvoice({ purchaseId, documentType });
             if (response.data) {
                 setShowGenerateModal(false);
                 loadInvoices();
-                Swal.fire({ icon: "success", title: "Éxito", text: `Factura generada exitosamente. Clave: ${response.data.clave}`, timer: 2000, showConfirmButton: false });
+                Swal.fire({ icon: "success", title: "Éxito", text: `Factura generada exitosamente.\nClave: ${response.data.clave}`, timer: 3000, showConfirmButton: false });
             }
         } catch (err) {
             const errorData = err.response?.data;
             if (errorData?.validationErrors) {
-                setValidationResult({
-                    isValid: false,
-                    errors: errorData.validationErrors,
-                    warnings: [],
-                });
+                setValidationResult({ isValid: false, errors: errorData.validationErrors, warnings: [] });
                 setShowValidation(true);
             } else {
                 Swal.fire({ icon: "error", title: "Error", text: `Error al generar factura: ${errorData?.error || errorData?.detail || err.message}` });
@@ -118,7 +102,6 @@ export default function FacturacionPage() {
         }
     };
 
-    // Check status
     const handleCheckStatus = async (invoiceId) => {
         try {
             const response = await checkInvoiceStatus(invoiceId);
@@ -131,34 +114,43 @@ export default function FacturacionPage() {
     };
 
     return (
-        <div className="facturacion-page">
-            <div className="facturacion-container">
-                <FacturacionToolbar
-                    onNewInvoice={() => setShowGenerateModal(true)}
+        <PageCard>
+            <Toolbar title="Facturación Electrónica">
+                <Button variant="outline" onClick={loadInvoices}>Actualizar</Button>
+                <Button variant="primary" onClick={() => setShowGenerateModal(true)}>+ Generar factura</Button>
+            </Toolbar>
+
+            <FilterBar>
+                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                    <option value="">Todos los estados</option>
+                    <option value="pending">Pendiente</option>
+                    <option value="sent">Enviada</option>
+                    <option value="accepted">Aceptada</option>
+                    <option value="rejected">Rechazada</option>
+                    <option value="error">Error</option>
+                </select>
+                <select value={docTypeFilter} onChange={(e) => setDocTypeFilter(e.target.value)}>
+                    <option value="">Todos los tipos</option>
+                    <option value="FE">Factura Electrónica</option>
+                    <option value="NC">Nota de Crédito</option>
+                    <option value="ND">Nota de Débito</option>
+                    <option value="TE">Tiquete Electrónico</option>
+                </select>
+                <span className="filter-label">Desde:</span>
+                <input type="date" value={startDate ?? ""} onChange={(e) => setStartDate(e.target.value || null)} />
+                <span className="filter-label">Hasta:</span>
+                <input type="date" value={endDate ?? ""} onChange={(e) => setEndDate(e.target.value || null)} />
+            </FilterBar>
+
+            {loading && <div className="loading">Cargando facturas...</div>}
+
+            {!loading && (
+                <FacturacionTable
+                    invoices={invoices}
+                    onCheckStatus={handleCheckStatus}
                     onRefresh={loadInvoices}
                 />
-
-                <FacturacionFilters
-                    statusFilter={statusFilter}
-                    docTypeFilter={docTypeFilter}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onStatusChange={setStatusFilter}
-                    onDocTypeChange={setDocTypeFilter}
-                    onStartDateChange={setStartDate}
-                    onEndDateChange={setEndDate}
-                />
-
-                {loading && <div className="loading">Cargando facturas...</div>}
-
-                {!loading && (
-                    <FacturacionTable
-                        invoices={invoices}
-                        onCheckStatus={handleCheckStatus}
-                        onRefresh={loadInvoices}
-                    />
-                )}
-            </div>
+            )}
 
             {showGenerateModal && (
                 <GenerateInvoiceModal
@@ -172,23 +164,14 @@ export default function FacturacionPage() {
             {showValidation && validationResult && (
                 <ValidationResultModal
                     result={validationResult}
-                    onClose={() => {
-                        setShowValidation(false);
-                        setValidationResult(null);
-                    }}
+                    onClose={() => { setShowValidation(false); setValidationResult(null); }}
                 />
             )}
-        </div>
+        </PageCard>
     );
 }
 
 function formatHaciendaStatus(status) {
-    const map = {
-        pending: "Pendiente",
-        sent: "Enviado",
-        accepted: "Aceptado",
-        rejected: "Rechazado",
-        error: "Error",
-    };
+    const map = { pending: "Pendiente", sent: "Enviado", accepted: "Aceptado", rejected: "Rechazado", error: "Error" };
     return map[status] || status || "Desconocido";
 }

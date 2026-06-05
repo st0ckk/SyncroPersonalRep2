@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createEmployee } from "../services/employees.service";
-import "./EmployeeForm.css";
+import Button from "./Button";
 
 export default function EmployeeForm({ onClose, onSaved }) {
   const [form, setForm] = useState({
@@ -56,10 +56,10 @@ export default function EmployeeForm({ onClose, onSaved }) {
           </select>
 
           <div className="modal-actions">
-            <button className="btn-secondary" type="button" onClick={onClose}>
+            <Button variant="danger" type="button" onClick={onClose}>
               Cancelar
-            </button>
-            <button className="btn-primary">Guardar</button>
+            </Button>
+            <Button variant="success" type="submit">Guardar</Button>
           </div>
         </form>
       </div>

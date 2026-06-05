@@ -1,9 +1,9 @@
-import "./EmployeeTable.css";
+import Button from "./Button";
 
 export default function EmployeeTable({ employees, onRefresh }) {
   return (
     <div className="table-scroll">
-    <table className="employee-table">
+    <table className="data-table">
       <thead>
         <tr>
           <th>Nombre</th>
@@ -29,10 +29,10 @@ export default function EmployeeTable({ employees, onRefresh }) {
               </span>
             </td>
             <td>
-              <button className="btn-secondary">Editar</button>
-              <button className="btn-warning">
+              <Button variant="warning">Editar</Button>
+              <Button variant={e.isActive ? "danger" : "success"}>
                 {e.isActive ? "Desactivar" : "Activar"}
-              </button>
+              </Button>
             </td>
           </tr>
         ))}

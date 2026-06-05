@@ -40,7 +40,7 @@ function makeLegIcon(durationMin, distanceKm, color) {
  *
  * @param {{ points: {lat:number, lng:number}[], color?: string }} props
  */
-export default function RouteLayer({ points, color = "#6366f1" }) {
+export default function RouteLayer({ points, color = "#2563eb" }) {
   const [routeData, setRouteData] = useState(null);
   const [loading, setLoading] = useState(false);
 

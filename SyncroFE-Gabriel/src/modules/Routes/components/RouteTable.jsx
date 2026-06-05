@@ -44,8 +44,8 @@ export default function RouteTable({
 
   return (
     <>
-    <div className="routes-table-scroll">
-    <table className="routes-table">
+    <div className="table-scroll">
+    <table className="data-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -79,14 +79,14 @@ export default function RouteTable({
 
               <td className="actions">
                 <Button
-                  variant="outline"
+                  variant="info"
                   onClick={() => toggleMoreInfo(r.routeId)}
                 >
                   Más información
                 </Button>
 
                 <Button
-                  variant="outline"
+                  variant="warning"
                   onClick={() => onEdit(r)}
                 >
                   Editar

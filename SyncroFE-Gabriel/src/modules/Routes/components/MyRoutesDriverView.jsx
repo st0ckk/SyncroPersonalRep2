@@ -574,8 +574,8 @@ export default function MyRoutesDriverView() {
                     })}
                 </div>
 
-                <div className="ventas-table-scroll">
-                <table className="ventas-table">
+                <div className="table-scroll">
+                <table className="data-table">
                   <thead>
                     <tr>
                       <th>Numero de orden</th>
@@ -602,7 +602,7 @@ export default function MyRoutesDriverView() {
                             <td>{formatSaleDate(s.purchaseDate)}</td>
                             <td className="actions">
                               <Button
-                                variant="outline"
+                                variant="info"
                                 size="sm"
                                 onClick={() =>
                                   setExpandedSaleId(
@@ -696,20 +696,20 @@ export default function MyRoutesDriverView() {
             </div>
 
             <div className="route-form-actions" style={{ marginTop: 20 }}>
-              <button
-                className="btn btn-outline"
+              <Button
+                variant="danger"
                 onClick={() => setShowIncidentModal(false)}
                 disabled={savingIncident}
               >
                 Cancelar
-              </button>
-              <button
-                className="btn btn-danger"
+              </Button>
+              <Button
+                variant="success"
                 onClick={saveIncident}
                 disabled={savingIncident}
               >
                 {savingIncident ? "Guardando..." : "Reportar"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

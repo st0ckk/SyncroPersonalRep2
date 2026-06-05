@@ -2,6 +2,7 @@
 import { createPortal } from "react-dom";
 import { getExpectedAmount } from "../../../api/cashRegisters";
 import Swal from "sweetalert2";
+import Button from "../../../components/Button";
 function CashRegisterClosingForm({
     closingRegister,
     closing,
@@ -105,21 +106,21 @@ function CashRegisterClosingForm({
                     </div>
 
                     <div className="form-actions">
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={closing}
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
+                            variant="success"
                             disabled={closing}
                         >
                             {closing ? "Cerrando..." : "Cerrar"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

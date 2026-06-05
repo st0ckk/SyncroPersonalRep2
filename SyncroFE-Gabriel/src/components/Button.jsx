@@ -1,11 +1,3 @@
-import "./Button.css";
-
-/**
- * Botón reutilizable centralizado.
- *
- * @param {"primary"|"outline"|"danger"|"success"|"secondary"} variant
- * @param {"sm"|"lg"|undefined} size
- */
 export default function Button({
   children,
   variant = "outline",

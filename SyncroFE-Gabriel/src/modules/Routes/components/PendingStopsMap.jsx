@@ -110,7 +110,7 @@ export default function PendingStopsMap({ stops, height = "330px" }) {
         />
 
         {/* Ruta trazada con etiquetas de tiempo/distancia por tramo */}
-        <RouteLayer points={routePoints} color="#818cf8" />
+        <RouteLayer points={routePoints} color="#60a5fa" />
 
         {points.map((p) => {
           const coords = `${p.lat},${p.lng}`;

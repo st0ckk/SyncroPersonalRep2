@@ -81,6 +81,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
         try {
             setActionLoading(`xml-${invoice.invoiceId}`);
             await downloadInvoiceXml(invoice.invoiceId, invoice.clave);
+            Swal.fire({ icon: "success", title: "Éxito", text: "XML descargado correctamente", timer: 1500, showConfirmButton: false });
         } catch (err) {
             Swal.fire({ icon: "error", title: "Error", text: "Error al descargar XML: " + (err.response?.data?.error || err.message) });
         } finally {
@@ -92,6 +93,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
         try {
             setActionLoading(`resp-${invoice.invoiceId}`);
             await downloadResponseXml(invoice.invoiceId, invoice.clave);
+            Swal.fire({ icon: "success", title: "Éxito", text: "XML de respuesta descargado", timer: 1500, showConfirmButton: false });
         } catch (err) {
             Swal.fire({ icon: "error", title: "Error", text: "No hay respuesta XML disponible" });
         } finally {
@@ -100,10 +102,20 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
     };
 
     const handleSendEmail = async (invoice) => {
+        const confirm = await Swal.fire({
+            icon: "question",
+            title: "Enviar correo",
+            text: `¿Desea enviar la factura ${invoice.consecutiveNumber || invoice.clave} por correo electrónico?`,
+            showCancelButton: true,
+            confirmButtonText: "Sí, enviar",
+            cancelButtonText: "Cancelar",
+        });
+        if (!confirm.isConfirmed) return;
+
         try {
             setActionLoading(`email-${invoice.invoiceId}`);
             const response = await sendInvoiceEmail(invoice.invoiceId);
-            Swal.fire({ icon: "success", title: "Éxito", text: response.data?.message || "Correo enviado", timer: 2000, showConfirmButton: false });
+            Swal.fire({ icon: "success", title: "Éxito", text: response.data?.message || "Correo enviado exitosamente", timer: 2000, showConfirmButton: false });
         } catch (err) {
             Swal.fire({ icon: "error", title: "Error", text: "Error al enviar correo: " + (err.response?.data?.error || err.message) });
         } finally {
@@ -115,6 +127,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
         try {
             setActionLoading(`pdf-${invoice.invoiceId}`);
             await downloadInvoicePdf(invoice.invoiceId, invoice.consecutiveNumber);
+            Swal.fire({ icon: "success", title: "Éxito", text: "PDF descargado correctamente", timer: 1500, showConfirmButton: false });
         } catch (err) {
             Swal.fire({ icon: "error", title: "Error", text: "Error al descargar PDF: " + (err.response?.data?.error || err.message) });
         } finally {
@@ -135,7 +148,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
 
         const result = await Swal.fire({
             title: "¿Está seguro?",
-            text: `Esta seguro que desea anular la factura ${invoice.consecutiveNumber}? Se generara una Nota de Credito.`,
+            text: `¿Está seguro que desea anular la factura ${invoice.consecutiveNumber}? Se generará una nota de crédito.`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Sí",
@@ -156,10 +169,20 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
     };
 
     const handleResend = async (invoice) => {
+        const confirm = await Swal.fire({
+            icon: "warning",
+            title: "Reenviar a Hacienda",
+            text: `¿Desea reenviar la factura ${invoice.consecutiveNumber || invoice.clave} a Hacienda?`,
+            showCancelButton: true,
+            confirmButtonText: "Sí, reenviar",
+            cancelButtonText: "Cancelar",
+        });
+        if (!confirm.isConfirmed) return;
+
         try {
             setActionLoading(`resend-${invoice.invoiceId}`);
             await resendInvoice(invoice.invoiceId);
-            Swal.fire({ icon: "success", title: "Éxito", text: "Factura reenviada a Hacienda", timer: 2000, showConfirmButton: false });
+            Swal.fire({ icon: "success", title: "Éxito", text: "Factura reenviada a Hacienda exitosamente", timer: 2000, showConfirmButton: false });
             onRefresh();
         } catch (err) {
             Swal.fire({ icon: "error", title: "Error", text: "Error al reenviar: " + (err.response?.data?.error || err.message) });
@@ -171,14 +194,14 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
     if (!invoices.length) {
         return (
             <div className="empty-state">
-                No hay facturas electronicas registradas
+                No hay facturas electrónicas registradas
             </div>
         );
     }
 
     return (
         <div className="table-scroll">
-        <table className="facturacion-table">
+        <table className="data-table">
             <thead>
                 <tr>
                     <th>Tipo</th>
@@ -214,7 +237,7 @@ export default function FacturacionTable({ invoices, onCheckStatus, onRefresh })
                             <td>{formatDate(inv.emissionDate)}</td>
                             <td className="actions">
                                 <Button
-                                    variant="outline"
+                                    variant="info"
                                     size="sm"
                                     onClick={() =>
                                         setExpandedId(

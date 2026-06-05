@@ -61,7 +61,7 @@ export default function SellerDashboard({ data, userName }) {
                 <div className="dash-panel">
                     <h3 className="panel-title">Mis Top Clientes — Este mes</h3>
                     {data.myTopClients?.length > 0 ? (
-                        <table className="dash-table">
+                        <table className="data-table">
                             <thead>
                                 <tr>
                                     <th>Cliente</th>
@@ -90,7 +90,7 @@ export default function SellerDashboard({ data, userName }) {
                 <div className="dash-panel">
                     <h3 className="panel-title">Mis Productos más vendidos — Este mes</h3>
                     {data.myTopProducts?.length > 0 ? (
-                        <table className="dash-table">
+                        <table className="data-table">
                             <thead>
                                 <tr>
                                     <th>Producto</th>

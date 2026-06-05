@@ -1,11 +1,10 @@
 ﻿import { useEffect, useState } from "react";
 import Button from "../../../components/Button";
-import { getClientLookup } from "../../../api/clients.api";
+import { getAllClients } from "../../../api/clients.api";
 import { getActiveCreditAccounts } from "../../../api/clientAccount.api";
 import { createPortal } from "react-dom";
 
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 const emptyAccount = {
     clientId: null,
@@ -37,9 +36,6 @@ function ClientAccountForm({
         };
     })
 
-    // Sweet alert
-    const SwalAlert = withReactContent(Swal);
-
     //Formateo para moneda
     const formatCurrency = (amount) => {
         var fixedAmount = parseFloat(amount);
@@ -63,7 +59,7 @@ function ClientAccountForm({
 
         //Condiciones
         if (!form.clientId || Number.isNaN(form.clientId)) {
-            SwalAlert.fire({
+            Swal.fire({
                 icon: "warning",
                 title: "Advertencia...",
                 text: "Debe seleccionar a un cliente válido"
@@ -72,16 +68,17 @@ function ClientAccountForm({
         }
 
         if (!client) {
-            SwalAlert.fire({
-                icon: "error",
-                title: "Error...",
-                text: "El cliente seleccionado no existe o no esta activado. Intente con otro cliente"
-            });
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "El cliente seleccionado no existe" });
+            return;
+        }
+
+        if (!client.isActive) {
+            await Swal.fire({ icon: "warning", title: "Advertencia", text: "El cliente seleccionado se encuentra actualmente deshabilitado" });
             return;
         }
 
         if (existingAccounts.length > 0 && !initialValues) {
-            SwalAlert.fire({
+            Swal.fire({
                 icon: "warning",
                 title: "Advertencia...",
                 text: "Ya existe una cuenta de credito para este cliente. Por favor seleccione otro cliente."
@@ -102,7 +99,7 @@ function ClientAccountForm({
 
 
     useEffect(() => {
-        getClientLookup().then((res) => {
+        getAllClients().then((res) => {
             setClients(res.data ?? []);
         });
 
@@ -118,7 +115,7 @@ function ClientAccountForm({
                 <h3>
                     {initialValues
                         ? `Cuenta #${initialValues.clientAccountNumber}`
-                        : "Nueva cuenta de credito"}
+                        : "Nueva cuenta de crédito"}
                 </h3>
 
                 <form className="caccount-form" onSubmit={handleSubmit}>
@@ -156,7 +153,7 @@ function ClientAccountForm({
                     </div>
 
                     <div className="form-group">
-                        <label>Limite de credito</label>
+                        <label>Límite de crédito</label>
                         <input
                             type="number"
                             min="1000"
@@ -170,13 +167,13 @@ function ClientAccountForm({
                                             : Number(e.target.value),
                                 })
                             }
-                            placeholder="Limite."
+                            placeholder="Límite."
                             required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Tasa de interes</label>
+                        <label>Tasa de interés</label>
                         <input
                             type="number"
                             min="1"
@@ -199,7 +196,7 @@ function ClientAccountForm({
                     <div className="form-group full-width">
                         <label>Condiciones</label>
                         <textarea
-                            placeholder="Defina condiciones para la creacion de la cuenta"
+                            placeholder="Defina las condiciones para la creación de la cuenta."
                             name="clientAccountConditions"
                             onChange={handleChange}
                             value={form.clientAccountConditions}
@@ -233,7 +230,7 @@ function ClientAccountForm({
                     <div className="form-actions">
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={submitting}
                         >
@@ -241,7 +238,7 @@ function ClientAccountForm({
                         </Button>
                         <Button
                             type="submit"
-                            variant="primary"
+                            variant="success"
                             disabled={submitting}
                         >
                             {submitting ? "Guardando..." : "Guardar"}

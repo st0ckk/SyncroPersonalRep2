@@ -1,6 +1,7 @@
 import "./ReportsPage.css";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { PageCard, Button } from "../../../components";
 import {
     getSalesReport, exportSalesReport,
     getInventoryReport, exportInventoryReport,
@@ -84,7 +85,7 @@ export default function ReportsPage() {
     };
 
     return (
-        <div className="reports-page">
+        <PageCard className="reports-page">
             <h1 className="page-title">Reportes</h1>
 
             {/* Tabs */}
@@ -160,11 +161,11 @@ export default function ReportsPage() {
                 )}
 
                 <div className="filter-actions">
-                    <button className="btn-filter" onClick={loadReport}>Generar</button>
-                    <button className="btn-filter" onClick={handleClear}>Limpiar</button>
-                    <button className="btn-export" onClick={handleExport} disabled={exporting || !data}>
+                    <Button variant="primary" onClick={loadReport}>Generar</Button>
+                    <Button variant="outline" onClick={handleClear}>Limpiar</Button>
+                    <Button variant="outline" onClick={handleExport} disabled={exporting || !data}>
                         {exporting ? "Exportando..." : "Exportar CSV"}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -174,7 +175,7 @@ export default function ReportsPage() {
             {!loading && data && tab === "sales" && data.summary?.totalSales !== undefined && <SalesView data={data} />}
             {!loading && data && tab === "inventory" && data.summary?.totalProducts !== undefined && <InventoryView data={data} />}
             {!loading && data && tab === "invoices" && data.summary?.totalInvoices !== undefined && <InvoiceView data={data} />}
-        </div>
+        </PageCard>
     );
 }
 
@@ -199,8 +200,8 @@ function SalesView({ data }) {
             {rows.length === 0 ? (
                 <div className="report-empty">Sin datos para mostrar</div>
             ) : (
-                <div className="report-table-wrapper">
-                    <table className="report-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>Orden</th>
@@ -252,8 +253,8 @@ function InventoryView({ data }) {
             {rows.length === 0 ? (
                 <div className="report-empty">Sin datos para mostrar</div>
             ) : (
-                <div className="report-table-wrapper">
-                    <table className="report-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>Producto</th>
@@ -311,8 +312,8 @@ function InvoiceView({ data }) {
             {rows.length === 0 ? (
                 <div className="report-empty">Sin datos para mostrar</div>
             ) : (
-                <div className="report-table-wrapper">
-                    <table className="report-table">
+                <div className="table-scroll">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>Consecutivo</th>

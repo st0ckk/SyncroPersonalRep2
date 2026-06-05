@@ -110,12 +110,12 @@
 }
 
 .form-error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
+    background: rgba(220, 38, 38, 0.06);
+    color: #b91c1c;
     padding: 10px;
     border-radius: 4px;
     font-size: 0.9rem;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .form-actions {

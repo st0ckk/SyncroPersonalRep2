@@ -1,5 +1,4 @@
-﻿import { useEffect, useState } from "react";
-import "./ClientAccountsPage.css";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import {
     getCreditAccounts,
@@ -9,166 +8,117 @@ import {
     closeCreditAccount,
 } from "../../../api/clientAccount.api";
 
+import { PageCard, Toolbar, FilterBar, Button } from "../../../components";
 import ClientAccountTable from "../components/ClientAccountTable";
-import ClientAccountToolbar from "../components/ClientAccountToolbar";
-import ClientAccountFilters from "../components/ClientAccountFilters";
 import ClientAccountForm from "../components/ClientAccountForm";
 import ClientAccountMovementHistory from "../components/ClientAccountMovementHistory";
+
 export default function ClientAccountsPage() {
-
-    // Datos
     const [clientAccounts, setClientAccounts] = useState([]);
-
-    // Interfaz
     const [loading, setLoading] = useState(false);
-
-    // Filtros
     const [search, setSearch] = useState("");
     const [statusType, setStatusType] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-
-    // Historial
     const [showHistory, setShowHistory] = useState(false);
     const [accountHistory, setAccountHistory] = useState(null);
-
-    // CRUD cuentas de credito
     const [showForm, setShowForm] = useState(false);
     const [editingClientAccount, setEditingClientAccount] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
-    //Cargar datos de cuentas
     const loadData = async () => {
         try {
             let response;
             if (search || statusType || (startDate && endDate)) {
                 response = await filterCreditAccounts(startDate, endDate, search, statusType);
-            }
-            else {
+            } else {
                 response = await getCreditAccounts();
             }
             setClientAccounts(response.data ?? []);
         } catch (err) {
-            console.error("Error cargando cuentas de credito", err);
+            console.error("Error cargando cuentas de crédito", err);
         } finally {
             setLoading(false);
         }
     };
 
-    // Nueva cuenta
-    const handleNewCreditAccount = () => {
-        setEditingClientAccount(null);
-        setShowForm(true);
-    };
+    useEffect(() => { loadData(); }, [search, statusType, startDate, endDate]);
 
-    // Editar cuenta
-    const handleEdit = (clientAccount) => {
-        setEditingClientAccount(clientAccount);
-        setShowForm(true);
-    };
-
-    // Mostrar historial
-    const handleHistory = (clientAccount) => {
-        setAccountHistory(clientAccount);
-        setShowHistory(true);
-    };
-
-    // Cerrar cuenta
-    const handleAccountClosure = async (id) => {
-        await closeCreditAccount(Number(id));
-        loadData();
-    };
-    
-    //Subir nueva cotizacion
     const handleSubmit = async (values) => {
         try {
             setSubmitting(true);
-
             if (editingClientAccount) {
-                await updateCreditAccount(editingClientAccount.clientAccountId, {
-                    ...values,
-                    clientAccountId: editingClientAccount.clientAccountId,
-                });
+                await updateCreditAccount(editingClientAccount.clientAccountId, { ...values, clientAccountId: editingClientAccount.clientAccountId });
             } else {
                 await createCreditAccount(values);
             }
-
             setShowForm(false);
             setEditingClientAccount(null);
-
-            const response = getCreditAccounts();
-
-            setClientAccounts(response.data ?? []);
             loadData();
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "¡Exito!",
+                text: "Se ha guardado la cuenta de crédito",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
             console.error("Error guardando cuenta de credito", err);
-            Swal.fire({ icon: "error", title: "Error", text: "Error guardando cuenta de credito" });
+            Swal.fire({ icon: "error", title: "Error...", text: "Error guardando cuenta de crédito" });
         } finally {
             setSubmitting(false);
         }
     };
 
-    // Carga de cuentas
-    useEffect(() => {
-        loadData();
-    }, [search, statusType,startDate,endDate]);
-
     return (
-        <div className="caccount-page">
-            <div className="caccount-card">
+        <PageCard>
+            <Toolbar title="Cuentas de Crédito">
+                <Button variant="primary" onClick={() => { setEditingClientAccount(null); setShowForm(true); }}>
+                    + Nueva cuenta
+                </Button>
+            </Toolbar>
 
-                <ClientAccountToolbar
-                    onNewCreditAccount={handleNewCreditAccount}
+            <FilterBar>
+                <input type="text" placeholder="Buscar cuenta..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <select value={statusType} onChange={(e) => setStatusType(e.target.value)}>
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activa</option>
+                    <option value="suspended">Suspendida</option>
+                    <option value="closed">Cerrada</option>
+                </select>
+                <span className="filter-label">Desde:</span>
+                <input type="date" value={startDate ?? ""} onChange={(e) => setStartDate(e.target.value || null)} />
+                <span className="filter-label">Hasta:</span>
+                <input type="date" value={endDate ?? ""} onChange={(e) => setEndDate(e.target.value || null)} />
+            </FilterBar>
+
+            {loading && <div className="loading">Cargando cuentas de crédito...</div>}
+
+            {!loading && (
+                <ClientAccountTable
+                    clientAccounts={clientAccounts}
+                    onEdit={(a) => { setEditingClientAccount(a); setShowForm(true); }}
+                    onHistory={(a) => { setAccountHistory(a); setShowHistory(true); }}
+                    onClose={async (id) => { await closeCreditAccount(Number(id)); loadData(); }}
                 />
-                
-                <ClientAccountFilters
-                    search={search}
-                    statusType={statusType}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onSearchChange={setSearch}
-                    onStatusTypeChange={setStatusType}
-                    onStartDateChange={setStartDate}
-                    onEndDateChange={setEndDate}
+            )}
+
+            {showForm && (
+                <ClientAccountForm
+                    initialValues={editingClientAccount}
+                    submitting={submitting}
+                    onSubmit={handleSubmit}
+                    onCancel={() => { setShowForm(false); setEditingClientAccount(null); }}
                 />
-                
+            )}
 
-                {/*Efecto de carga*/}
-                {loading && (
-                    <div className="loading">Cargando cuentas de credito...</div>
-                )}
-
-                {/*Tabla de registros*/}
-                {!loading && (
-                    <ClientAccountTable
-                        clientAccounts={clientAccounts}
-                        onEdit={handleEdit}
-                        onHistory={handleHistory}
-                        onClose={handleAccountClosure}
-                    />
-                )}
-
-                {showForm && (
-                            <ClientAccountForm
-                                initialValues={editingClientAccount}
-                                submitting={submitting}
-                                onSubmit={handleSubmit}
-                                onCancel={() => {
-                                    setShowForm(false);
-                                    setEditingClientAccount(null);
-                                }}
-                            />
-                )}
-
-                {showHistory && (
-                    <ClientAccountMovementHistory
-                        account={accountHistory}
-                        onCancel={() => {
-                            setShowHistory(false);
-                        }}
-                    />
-                )}
-            </div>
-        </div>
+            {showHistory && (
+                <ClientAccountMovementHistory
+                    account={accountHistory}
+                    onCancel={() => setShowHistory(false)}
+                />
+            )}
+        </PageCard>
     );
 }

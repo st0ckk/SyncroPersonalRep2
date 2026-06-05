@@ -2,7 +2,7 @@
    REPORTS PAGE
 ========================= */
 .reports-page {
-    padding: 24px;
+    /* padding provided by PageCard wrapper */
 }
 
 .reports-page .page-title {
@@ -117,68 +117,30 @@
 }
 
 /* =========================
-   REPORT TABLE
+   TABLE UTILITIES
+   (tables use global .data-table)
 ========================= */
-.report-table-wrapper {
-    overflow-x: auto;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-}
-
-.report-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-
-.report-table th {
-    text-align: left;
-    color: var(--text-secondary);
-    font-weight: 600;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-}
-
-.report-table td {
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-main);
-}
-
-.report-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.report-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.report-table .num {
+.data-table .num {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
 }
 
-.report-table .stock-low {
+.data-table .stock-low {
     color: #ef4444;
     font-weight: 700;
 }
 
-.report-table .stock-zero {
-    color: #fca5a5;
+.data-table .stock-zero {
+    color: #b91c1c;
     font-weight: 800;
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.1);
     padding: 2px 6px;
     border-radius: 4px;
 }
 
-.report-table .status-accepted { color: #86efac; font-weight: 600; }
-.report-table .status-rejected { color: #fca5a5; font-weight: 600; }
-.report-table .status-pending  { color: #fcd34d; font-weight: 600; }
+.data-table .status-accepted { color: #15803d; font-weight: 600; }
+.data-table .status-rejected { color: #b91c1c; font-weight: 600; }
+.data-table .status-pending  { color: #a16207; font-weight: 600; }
 
 /* =========================
    STATES
@@ -194,7 +156,7 @@
    RESPONSIVE
 ========================= */
 @media (max-width: 768px) {
-    .reports-page { padding: 12px; }
+    /* responsive padding from PageCard */
     .report-filters { flex-direction: column; }
     .report-summary { flex-direction: column; }
 }

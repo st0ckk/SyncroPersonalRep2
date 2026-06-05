@@ -30,7 +30,7 @@ function makeStopIcon(order) {
         html: `<div style="
             width: 28px;
             height: 28px;
-            background: #6366f1;
+            background: #2563eb;
             border: 2px solid #fff;
             border-radius: 50%;
             display: flex;
@@ -113,7 +113,7 @@ export default function RouteMapPreview({ stops, height = "280px" }) {
                 attribution='&copy; OpenStreetMap contributors'
             />
 
-            <RouteLayer points={routePoints} color="#6366f1" />
+            <RouteLayer points={routePoints} color="#2563eb" />
 
             {validStops.map((stop) => {
                 const lat = Number(stop.latitude);
@@ -146,7 +146,7 @@ export default function RouteMapPreview({ stops, height = "280px" }) {
                                 {stop.status && (
                                     <div style={{ marginBottom: 10 }}>
                                         <span style={{
-                                            background: "rgba(99,102,241,0.12)",
+                                            background: "rgba(37,99,235,0.12)",
                                             color: "#4338ca",
                                             padding: "2px 8px",
                                             borderRadius: 999,

@@ -145,15 +145,15 @@ export default function GenerateInvoiceModal({
                     >
                         Cancelar
                     </Button>
-                    <button
-                        className="btn-primary"
+                    <Button
+                        variant="success"
                         onClick={handleSubmit}
                         disabled={generating || !selectedPurchaseId}
                     >
                         {generating
                             ? "Generando..."
                             : "Validar y Generar"}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

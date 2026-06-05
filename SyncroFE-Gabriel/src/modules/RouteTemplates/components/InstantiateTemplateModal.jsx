@@ -161,7 +161,7 @@ export default function InstantiateTemplateModal({
                     <div className="form-group full-width template-form-actions">
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="danger"
                             onClick={onCancel}
                             disabled={submitting}
                         >

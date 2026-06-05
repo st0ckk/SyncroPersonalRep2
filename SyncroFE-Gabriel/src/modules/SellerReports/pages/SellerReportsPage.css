@@ -3,7 +3,7 @@
    Reutiliza clases de ReportsPage.css
 ========================= */
 .seller-reports-page {
-    padding: 24px;
+    /* padding provided by PageCard wrapper */
 }
 
 .seller-reports-page .page-title {
@@ -123,52 +123,6 @@
     color: var(--text-main);
 }
 
-/* =========================
-   TABLE
-========================= */
-.seller-table-wrapper {
-    overflow-x: auto;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-}
-
-.seller-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-
-.seller-table th {
-    text-align: left;
-    color: var(--text-secondary);
-    font-weight: 600;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-}
-
-.seller-table td {
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-main);
-}
-
-.seller-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.seller-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.seller-table .num {
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
 
 /* =========================
    RANK BADGE
@@ -184,10 +138,10 @@
     font-weight: 800;
 }
 
-.rank-badge.rank-1 { background: rgba(245, 158, 11, 0.25); color: #fcd34d; }
-.rank-badge.rank-2 { background: rgba(148, 163, 184, 0.2);  color: #cbd5e1; }
-.rank-badge.rank-3 { background: rgba(249, 115, 22, 0.2);   color: #fdba74; }
-.rank-badge.rank-other { background: rgba(255, 255, 255, 0.08); color: #94a3b8; }
+.rank-badge.rank-1 { background: rgba(200, 149, 46, 0.15); color: #92710a; }
+.rank-badge.rank-2 { background: rgba(100, 116, 139, 0.1);  color: #475569; }
+.rank-badge.rank-3 { background: rgba(249, 115, 22, 0.1);   color: #c2410c; }
+.rank-badge.rank-other { background: rgba(100, 116, 139, 0.08); color: #64748b; }
 
 /* =========================
    STATES
@@ -203,13 +157,7 @@
    RESPONSIVE
 ========================= */
 @media (max-width: 768px) {
-    .seller-reports-page { padding: 12px; }
+    /* responsive padding from PageCard */
     .seller-filters { flex-direction: column; }
     .seller-summary { flex-direction: column; }
-}
-
-/* Ventas anuladas en el reporte */
-.seller-table tr.row-inactive td {
-    opacity: 0.6;
-    text-decoration: line-through;
 }

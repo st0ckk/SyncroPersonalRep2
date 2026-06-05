@@ -1,0 +1,97 @@
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary, #64748b);
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border, #e2e5ea);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border, #e2e5ea);
+  font-size: 14px;
+  color: var(--text-main, #1e293b);
+}
+
+.data-table tbody tr:hover {
+  background-color: rgba(37, 99, 235, 0.03);
+}
+
+.data-table td.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-wrap: wrap;
+}
+
+.data-table td.actions .btn {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.data-table .cell-name {
+  font-weight: 500;
+}
+
+.data-table .cell-number,
+.data-table .number {
+  font-weight: 600;
+  font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  color: var(--text-main, #1e293b);
+}
+
+.data-table .cell-price,
+.data-table .total,
+.data-table .total-cell {
+  font-weight: 700;
+  color: #92710a;
+}
+
+.expanded-row td,
+.quote-extra td,
+.ventas-extra td,
+.caccount-extra td,
+.registers-extra td,
+.facturacion-extra td,
+.route-extra td,
+.route-template-extra td {
+  background: #f8f9fb;
+  padding: 16px 12px;
+  font-size: 13px;
+  color: var(--text-secondary, #64748b);
+}
+
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-secondary, #64748b);
+  font-size: 14px;
+}
+
+.loading {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-secondary, #64748b);
+}
+
+@media (max-width: 768px) {
+  .data-table td.actions {
+    flex-wrap: wrap;
+  }
+}

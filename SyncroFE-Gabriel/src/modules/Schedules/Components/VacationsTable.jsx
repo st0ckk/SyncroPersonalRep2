@@ -8,7 +8,7 @@ export default function VacationsTable({ data }) {
   return (
     <>
     <div className="table-scroll">
-    <table className="schedules-table" style={{ marginTop: 16 }}>
+    <table className="data-table" style={{ marginTop: 16 }}>
       <thead>
         <tr>
           <th>Inicio</th>

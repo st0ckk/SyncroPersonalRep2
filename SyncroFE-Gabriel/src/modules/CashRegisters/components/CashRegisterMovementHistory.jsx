@@ -44,11 +44,11 @@ function CashRegisterMovementHistory({
 
     //Formateo para moneda
     const formatCurrency = (amount) => {
+        var fixedAmount = parseFloat(amount);
         if (!amount) {
             return "₡ 0.00";
         }
-        var fixedAmount = parseFloat(amount);
-        return `₡ ${fixedAmount.toFixed(2)}`;
+        return `₡ ${Math.abs(fixedAmount).toFixed(2)}`;
     }
 
     //Formateo para la diferencia entre valores
@@ -107,8 +107,8 @@ function CashRegisterMovementHistory({
         setLoadingPdf(id);
 
         try {
-            console.log(`${id} ${startDate} ${endDate} ${search} ${type}`)
             const blob = await generateRegisterSummary(id, startDate, endDate, search, type);
+            await waitBeforeNextLine(5000);
 
             //Aqui creamos un url para el pdf con el fin de descargarlo y quitarlo
             const downloadUrl = window.URL.createObjectURL(blob);
@@ -122,8 +122,23 @@ function CashRegisterMovementHistory({
 
             document.body.removeChild(link);
             window.URL.revokeObjectURL(downloadUrl);
-
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "¡Exito!",
+                text: "Se ha descargado el historial",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error...",
+                text: "No se ha podido descargar el historial",
+                showConfirmButton: false,
+                timer: 1500
+            });
             console.error('Error al descargar PDF:', err);
         } finally {
             setLoadingPdf(null)
@@ -141,9 +156,17 @@ function CashRegisterMovementHistory({
             setMovements(response.data ?? []);
 
             loadData();
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "¡Exito!",
+                text: "Se ha agregado el movimiento al historial",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (err) {
             console.error("Error guardando movimiento", err);
-            Swal.fire({ icon: "error", title: "Error", text: "Error guardando movimiento" });
+            Swal.fire({ icon: "error", title: "Error...", text: "Error guardando movimiento" });
         } finally {
             setMovementSubmitting(false);
         }
@@ -175,6 +198,11 @@ function CashRegisterMovementHistory({
         }
     };
 
+    //Espera antes de ejecutar la siguiente linea
+    function waitBeforeNextLine(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     useEffect(() => {
         loadData();
         getExpectedAmount(register.cashRegisterId).then((res) => {
@@ -188,7 +216,7 @@ function CashRegisterMovementHistory({
     if (!movements.length) {
         return createPortal(
             <div className="modal-backdrop">
-                <div className="modal">
+                <div className="modal-history">
 
                     <h3>Detalle de movimientos - Caja #{register.cashRegisterNumber}</h3>
 
@@ -211,7 +239,7 @@ function CashRegisterMovementHistory({
 
                         <div className="summary-item">
                             <div className="summary-label">Total diferencias</div>
-                            <div className={`summary-${formatDifferenceValues()}value`}>{register.cashRegisterReportedAmount ? formatCurrency(register.cashRegisterExpectedAmount - register.cashRegisterReportedAmount) : formatCurrency(null)}</div>
+                            <div className={`summary-${formatDifferenceValues()}value`}>{register.cashRegisterReportedAmount ? formatCurrency(register.cashRegisterReportedAmount - register.cashRegisterExpectedAmount) : formatCurrency(null)}</div>
                         </div>
 
                     </div>
@@ -241,16 +269,16 @@ function CashRegisterMovementHistory({
                         />
                     )}
 
-                    <div className="empty-state">Esta caja no tiene movimientos</div>;
+                    <div className="empty-state">Esta caja no tiene movimientos</div>
 
-                    <div className="register-movement-options">
-                        <button
+                    <div className="registers-movement-options">
+                        <Button
                             type="button"
-                            className="btn btn-outline"
+                            variant="outline"
                             onClick={onCancel}
                         >
                             Cerrar
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>,
@@ -316,15 +344,15 @@ function CashRegisterMovementHistory({
 
                 <div className="register-movement-container">
                     <div className="table-scroll">
-                    <table className="register-table">
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Usuario</th>
                                 <th>Monto</th>
-                                <th>Tipo de movimiento</th>
-                                <th>Movimiento manual</th>
-                                <th>Descripcion</th>
+                                <th>Tipo</th>
+                                <th>Manual</th>
+                                <th>Acciones</th>
 
                             </tr>
                         </thead>
@@ -341,7 +369,7 @@ function CashRegisterMovementHistory({
                                         <td>{formatManualInsert(m.cashRegisterMovementManual)}</td>
                                         <td className="actions">
                                             <Button
-                                                variant="outline"
+                                                variant="info"
                                                 size="sm"
                                                 onClick={() => setExpandedMovementId(expandedMovementId === m.cashRegisterMovementId ? null : m.cashRegisterMovementId)}
                                             >
@@ -352,9 +380,9 @@ function CashRegisterMovementHistory({
 
                                     {expandedMovementId === m.cashRegisterMovementId && (
                                         <tr className="registers-extra">
-                                            <td colSpan={9}>
+                                            <td colSpan={6}>
                                                 <section className="registers-details-flex">
-                                                    <span class="registers-details-remarks">
+                                                    <span className="registers-details-remarks">
                                                         <strong>Descripcion: </strong>
                                                         <br />
                                                         {m.cashRegisterMovementDescription}
@@ -371,21 +399,22 @@ function CashRegisterMovementHistory({
                     </table>
                     </div>
                 </div>
-                <div className="register-movement-options">
-                    <button
+                <div className="form-actions">
+                    <Button
                         type="button"
-                        className="btn btn-outline"
+                        variant="danger"
                         onClick={onCancel}
                     >
                         Cerrar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
-                        className="btn btn-outline"
+                        variant="primary"
                         onClick={() => handlePDFDownload(register.cashRegisterId, search, type, startDate, endDate)}
+                        disabled={loadingPdf === register.cashRegisterId}
                     >
                         {loadingPdf === register.cashRegisterId ? 'Generando...' : 'Descargar reporte'}
-                    </button>
+                    </Button>
                 </div>
 
             </div>

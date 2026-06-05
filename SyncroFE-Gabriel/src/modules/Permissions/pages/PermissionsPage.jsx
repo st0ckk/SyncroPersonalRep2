@@ -8,6 +8,7 @@ import {
     setRolePermissions,
 } from "../../../api/permissions.api";
 import Swal from "sweetalert2";
+import Button from "../../../components/Button";
 import "./PermissionsPage.css";
 
 // Role defaults mirror the MENU in Sidebar.jsx
@@ -190,13 +191,13 @@ export default function PermissionsPage() {
                             )}
 
                             <div className="perm-actions">
-                                <button
-                                    className="btn btn-primary"
+                                <Button
+                                    variant="success"
                                     onClick={saveUserPermissions}
                                     disabled={userSaving || userLoading}
                                 >
                                     {userSaving ? "Guardando..." : "Guardar permisos"}
-                                </button>
+                                </Button>
                             </div>
                         </>
                     )}
@@ -257,13 +258,13 @@ export default function PermissionsPage() {
                     )}
 
                     <div className="perm-actions">
-                        <button
-                            className="btn btn-primary"
+                        <Button
+                            variant="success"
                             onClick={saveRolePermissions}
                             disabled={roleSaving || roleLoading}
                         >
                             {roleSaving ? "Guardando..." : "Guardar permisos del perfil"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

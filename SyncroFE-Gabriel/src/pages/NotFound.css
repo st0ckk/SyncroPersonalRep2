@@ -1,5 +1,5 @@
 /* ===========================
-   PÁGINA 404 — FONDO
+   PÁGINA 404 — LIGHT BACKGROUND
 =========================== */
 .notfound-page {
   position: fixed;
@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 60%, #0f172a 100%);
+  background: var(--bg-main, #f1f3f6);
   overflow: hidden;
   z-index: 9999;
 }
@@ -18,7 +18,7 @@
 .snowflake {
   position: absolute;
   top: -30px;
-  color: #bfdbfe;
+  color: #cbd5e1;
   pointer-events: none;
   user-select: none;
   animation: snowfall linear infinite;
@@ -39,7 +39,7 @@
 }
 
 /* ===========================
-   TARJETA CENTRAL
+   TARJETA CENTRAL — LIGHT
 =========================== */
 .notfound-card {
   position: relative;
@@ -47,10 +47,9 @@
   text-align: center;
   padding: 48px 40px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  background: var(--bg-card, #fefdfb);
+  border: 1px solid var(--border, #e2e5ea);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   max-width: 420px;
   width: 90%;
 }
@@ -59,7 +58,7 @@
   font-size: 96px;
   font-weight: 800;
   line-height: 1;
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  background: linear-gradient(135deg, #2563eb, #c8952e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -70,13 +69,13 @@
 .notfound-title {
   font-size: 22px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--text-main, #1e293b);
   margin: 0 0 10px 0;
 }
 
 .notfound-subtitle {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary, #64748b);
   margin: 0 0 28px 0;
   line-height: 1.5;
 }
@@ -84,7 +83,7 @@
 .notfound-btn {
   display: inline-block;
   padding: 12px 28px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #2563eb, #c8952e);
   color: #fff;
   border: none;
   border-radius: 10px;
