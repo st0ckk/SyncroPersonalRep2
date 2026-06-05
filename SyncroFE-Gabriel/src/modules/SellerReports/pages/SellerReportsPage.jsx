@@ -33,14 +33,16 @@ export default function SellerReportsPage() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [paidStatus, setPaidStatus] = useState("");
+    const [status, setStatus] = useState("");
 
     const buildParams = useCallback(() => {
         const p = {};
         if (startDate) p.startDate = startDate;
         if (endDate) p.endDate = endDate;
         if (paidStatus) p.paidStatus = paidStatus;
+        if (status) p.status = status;
         return p;
-    }, [startDate, endDate, paidStatus]);
+    }, [startDate, endDate, paidStatus, status]);
 
     const loadData = useCallback(async () => {
         try {
@@ -69,6 +71,7 @@ export default function SellerReportsPage() {
         setStartDate("");
         setEndDate("");
         setPaidStatus("");
+        setStatus("");
     };
 
     const handleExport = async () => {
@@ -131,6 +134,20 @@ export default function SellerReportsPage() {
                             <option value="">Todos</option>
                             <option value="paid">Pagado</option>
                             <option value="unpaid">Pendiente</option>
+                        </select>
+                    </div>
+                )}
+
+                {tab === "sales" && (
+                    <div className="filter-group">
+                        <label>Estado</label>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="">Activas</option>
+                            <option value="all">Todas (incluye anuladas)</option>
+                            <option value="inactive">Solo anuladas</option>
                         </select>
                     </div>
                 )}
@@ -215,11 +232,12 @@ function MySalesView({ data }) {
                                 <th>Total</th>
                                 <th>Método</th>
                                 <th>Pagado</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             {rows.map((r) => (
-                                <tr key={`sale-${r.purchaseId}`}>
+                                <tr key={`sale-${r.purchaseId}`} className={r.isActive ? "" : "row-inactive"}>
                                     <td>{r.purchaseOrderNumber}</td>
                                     <td>{fmtDate(r.purchaseDate)}</td>
                                     <td>{r.clientName}</td>
@@ -228,6 +246,7 @@ function MySalesView({ data }) {
                                     <td className="num">{fmt(r.total)}</td>
                                     <td>{r.paymentMethod}</td>
                                     <td>{r.isPaid ? "✅" : "❌"}</td>
+                                    <td>{r.isActive ? "Activa" : "Anulada"}</td>
                                 </tr>
                             ))}
                         </tbody>
